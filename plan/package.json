@@ -1,0 +1,13 @@
+{
+  "name": "smartrail-plan",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Schedule, progress and AI-usage tracking for the SmartRail assessment. Zero dependencies.",
+  "bin": { "plan": "./plan.mjs" },
+  "scripts": {
+    "build": "node plan.mjs build",
+    "today": "node plan.mjs today",
+    "status": "node plan.mjs status"
+  }
+}

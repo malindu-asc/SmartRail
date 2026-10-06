@@ -1,0 +1,731 @@
+# SmartRail — single source of truth for schedule, progress and AI usage.
+#
+# Everything in docs/plan/ and PROGRESS.md is GENERATED from this file.
+# Never edit those by hand. Edit here (or use the CLI) then run:  npm run build
+#
+# Format rules (the parser is deliberately strict and tiny):
+#   - 2-space indent, no tabs
+#   - every list item starts with "- id: <value>"
+#   - inline arrays only for flat lists:  [a, b, c]
+#   - status: todo | doing | done | blocked | deferred
+#   - est/actual/saved are hours (numbers)
+#   - ai.verdict: not-used | accepted | accepted-with-edits | rejected
+
+meta:
+  project: SmartRail
+  owner: Malindu Pabasara
+  # D1 anchor. Change this ONE line to reshift the entire plan + Gantt.
+  startDate: 2026-09-29
+  totalDays: 21
+  hoursPerDay: 8
+  submitDay: 21
+
+phases:
+  - id: PH1
+    name: Discovery
+    from: 1
+    to: 3
+  - id: PH2
+    name: Design and Decide
+    from: 4
+    to: 5
+  - id: PH3
+    name: Backend Spine
+    from: 6
+    to: 7
+  - id: PH4
+    name: Live Core
+    from: 8
+    to: 9
+  - id: PH5
+    name: Client Apps
+    from: 10
+    to: 13
+  - id: PH6
+    name: External Integration
+    from: 14
+    to: 14
+  - id: PH7
+    name: Harden and Prove
+    from: 15
+    to: 18
+  - id: PH8
+    name: Evidence and Demo
+    from: 19
+    to: 21
+
+workstreams:
+  REQ: Requirements
+  ARCH: Architecture
+  SEC: Security
+  UX: Design and UX
+  BE: Backend
+  WEB: Ops Web Console
+  MOB: Mobile Flutter
+  KIOSK: Station Kiosk
+  INT: Catering Integration
+  QA: Quality Assurance
+  OPS: Observability and Ops
+  DOC: Docs and Demo
+
+gates:
+  - id: G1
+    name: Requirements frozen
+    day: 3
+  - id: G2
+    name: Spine runs and CI green
+    day: 7
+  - id: G3
+    name: Feature freeze
+    day: 14
+  - id: G4
+    name: Five E2E flows green
+    day: 16
+  - id: G5
+    name: Documentation complete
+    day: 19
+  - id: G6
+    name: Submission
+    day: 21
+
+tasks:
+  # ---------------- D1 ----------------
+  - id: D1-0
+    title: Author master delivery plan and scope decisions
+    ws: DOC
+    day: 1
+    est: 2
+    status: done
+    actual: 2
+    traces: [plan.md]
+    ai:
+      roles: [architect, requirements-analyst]
+      verdict: accepted-with-edits
+      saved: 4
+      note: Structure and stack justification drafted with AI then rewritten by me; AI underweighted device identity and service-date modelling until pushed.
+  - id: D1-1
+    title: Decompose brief into atomic statements tagged GIVEN IMPLIED ABSENT
+    ws: REQ
+    day: 1
+    est: 3
+    status: todo
+  - id: D1-2
+    title: Persona interviews 1 to 6 commuter traveller impaired driver station-manager controller
+    ws: REQ
+    day: 1
+    est: 3
+    status: todo
+  - id: D1-3
+    title: Create repo skeleton and docs folder structure
+    ws: ARCH
+    day: 1
+    est: 1
+    status: todo
+  - id: D1-4
+    title: Start AI journal and commit-trailer convention
+    ws: DOC
+    day: 1
+    est: 1
+    status: todo
+
+  # ---------------- D2 ----------------
+  - id: D2-1
+    title: Persona interviews 7 to 12 CS-agent catering security QA accessibility DPO
+    ws: REQ
+    day: 2
+    est: 3
+    status: todo
+  - id: D2-2
+    title: Adversarial pass what would make each persona distrust the system
+    ws: REQ
+    day: 2
+    est: 2
+    status: todo
+  - id: D2-3
+    title: Edge case catalogue target 40 plus entries
+    ws: REQ
+    day: 2
+    est: 2
+    status: todo
+  - id: D2-4
+    title: Assumptions register from plan section 6 findings
+    ws: REQ
+    day: 2
+    est: 1
+    status: todo
+
+  # ---------------- D3 ----------------
+  - id: D3-1
+    title: Reconcile persona conflicts and record losing options
+    ws: REQ
+    day: 3
+    est: 2
+    status: todo
+  - id: D3-2
+    title: Prioritise requirements MoSCoW plus risk times value
+    ws: REQ
+    day: 3
+    est: 1.5
+    status: todo
+  - id: D3-3
+    title: Write user stories and acceptance criteria for all Must items
+    ws: REQ
+    day: 3
+    est: 3
+    status: todo
+  - id: D3-4
+    title: Build traceability matrix skeleton REQ to US to AC to test
+    ws: REQ
+    day: 3
+    est: 1
+    status: todo
+  - id: D3-5
+    title: Send open questions OQ-01 to OQ-08 to assessors and freeze scope
+    ws: REQ
+    day: 3
+    est: 0.5
+    gate: G1
+    status: todo
+
+  # ---------------- D4 ----------------
+  - id: D4-1
+    title: Domain model stations routes services timetable versions calendars
+    ws: ARCH
+    day: 4
+    est: 3
+    status: todo
+  - id: D4-2
+    title: Journey state machine diagram including Unknown and TerminatedShort
+    ws: ARCH
+    day: 4
+    est: 2
+    status: todo
+  - id: D4-3
+    title: Write ADR 0001 to 0008
+    ws: ARCH
+    day: 4
+    est: 2
+    status: todo
+  - id: D4-4
+    title: C4 context and container diagrams
+    ws: ARCH
+    day: 4
+    est: 1
+    status: todo
+
+  # ---------------- D5 ----------------
+  - id: D5-1
+    title: STRIDE threat model per trust boundary
+    ws: SEC
+    day: 5
+    est: 2.5
+    status: todo
+  - id: D5-2
+    title: Permission matrix for ten roles with scoped permissions
+    ws: SEC
+    day: 5
+    est: 1.5
+    status: todo
+  - id: D5-3
+    title: Data classification and retention schedule
+    ws: SEC
+    day: 5
+    est: 1
+    status: todo
+  - id: D5-4
+    title: Design tokens v1 colour status semantics three type scales
+    ws: UX
+    day: 5
+    est: 2
+    status: todo
+  - id: D5-5
+    title: Wireframe the six demo-critical screens
+    ws: UX
+    day: 5
+    est: 1
+    status: todo
+
+  # ---------------- D6 ----------------
+  - id: D6-1
+    title: Scaffold dotnet solution with Domain Application Infrastructure Api layers
+    ws: BE
+    day: 6
+    est: 1.5
+    status: todo
+  - id: D6-2
+    title: EF Core model and first migration
+    ws: BE
+    day: 6
+    est: 2
+    status: todo
+  - id: D6-3
+    title: Seed network twelve stations six routes forty services
+    ws: BE
+    day: 6
+    est: 1.5
+    status: todo
+  - id: D6-4
+    title: Identity JWT per-audience tokens and permission claims
+    ws: BE
+    day: 6
+    est: 1.5
+    status: todo
+  - id: D6-5
+    title: First domain unit tests on invariants and IClock abstraction
+    ws: QA
+    day: 6
+    est: 1
+    status: todo
+  - id: D6-6
+    title: Docker compose api db redis seq and Flutter toolchain smoke test
+    ws: OPS
+    day: 6
+    est: 1.5
+    status: todo
+    note: Flutter and FCM validated here on purpose - risk R3 mitigation, not on D12.
+
+  # ---------------- D7 ----------------
+  - id: D7-1
+    title: Network and Timetable read endpoints stations departures routes
+    ws: BE
+    day: 7
+    est: 2.5
+    status: todo
+  - id: D7-2
+    title: Timetable admin writes with draft publish supersede versioning
+    ws: BE
+    day: 7
+    est: 2.5
+    status: todo
+  - id: D7-3
+    title: OpenAPI document and generated typed clients
+    ws: BE
+    day: 7
+    est: 1
+    status: todo
+  - id: D7-4
+    title: GitHub Actions pipeline build unit integration and architecture tests
+    ws: QA
+    day: 7
+    est: 2
+    gate: G2
+    status: todo
+
+  # ---------------- D8 ----------------
+  - id: D8-1
+    title: Journey generation from timetable plus service date handling
+    ws: BE
+    day: 8
+    est: 2
+    status: todo
+  - id: D8-2
+    title: Telemetry ingestion with sequence idempotency and plausibility rejection
+    ws: BE
+    day: 8
+    est: 2
+    status: todo
+  - id: D8-3
+    title: ETA propagation engine offset plus dwell model with confidence levels
+    ws: BE
+    day: 8
+    est: 2
+    status: todo
+  - id: D8-4
+    title: Redis journey progress projection
+    ws: BE
+    day: 8
+    est: 1
+    status: todo
+  - id: D8-5
+    title: Journey simulator with six seeded scenarios
+    ws: QA
+    day: 8
+    est: 1
+    status: todo
+
+  # ---------------- D9 ----------------
+  - id: D9-1
+    title: SignalR hub with snapshot then delta protocol and jittered reconnect
+    ws: BE
+    day: 9
+    est: 3
+    status: todo
+  - id: D9-2
+    title: Disruptions module publish update retract with scope and reason codes
+    ws: BE
+    day: 9
+    est: 2.5
+    status: todo
+  - id: D9-3
+    title: Append-only audit trail for high-consequence actions
+    ws: SEC
+    day: 9
+    est: 1.5
+    status: todo
+  - id: D9-4
+    title: Notification outbox dedup and throttle rules
+    ws: BE
+    day: 9
+    est: 1
+    status: todo
+
+  # ---------------- D10 ----------------
+  - id: D10-1
+    title: Ops console shell auth routing and layout
+    ws: WEB
+    day: 10
+    est: 2
+    status: todo
+  - id: D10-2
+    title: Live Network Board with realtime deltas and filters
+    ws: WEB
+    day: 10
+    est: 3.5
+    status: todo
+  - id: D10-3
+    title: Timetable and Journeys screen with per-journey actions
+    ws: WEB
+    day: 10
+    est: 2.5
+    status: todo
+
+  # ---------------- D11 ----------------
+  - id: D11-1
+    title: Disruption Console with passenger preview and network-wide confirm gate
+    ws: WEB
+    day: 11
+    est: 2.5
+    status: todo
+  - id: D11-2
+    title: Station and Device Health screen with heartbeat and revoke
+    ws: WEB
+    day: 11
+    est: 1.5
+    status: todo
+  - id: D11-3
+    title: Punctuality report with export
+    ws: WEB
+    day: 11
+    est: 1
+    status: todo
+  - id: D11-4
+    title: Kiosk display mode platform and concourse boards
+    ws: KIOSK
+    day: 11
+    est: 2
+    status: todo
+  - id: D11-5
+    title: Service worker last-known-good snapshot and staleness banner
+    ws: KIOSK
+    day: 11
+    est: 1
+    status: todo
+
+  # ---------------- D12 ----------------
+  - id: D12-1
+    title: Flutter melos monorepo core design_system api_client packages
+    ws: MOB
+    day: 12
+    est: 2
+    status: todo
+  - id: D12-2
+    title: Design token codegen tokens json to Dart and CSS
+    ws: UX
+    day: 12
+    est: 1
+    status: todo
+  - id: D12-3
+    title: Passenger plan and station departures screens
+    ws: MOB
+    day: 12
+    est: 2.5
+    status: todo
+  - id: D12-4
+    title: Passenger journey detail with live progress and confidence chip
+    ws: MOB
+    day: 12
+    est: 2.5
+    status: todo
+
+  # ---------------- D13 ----------------
+  - id: D13-1
+    title: Follow a journey subscriptions preferences and quiet hours
+    ws: MOB
+    day: 13
+    est: 1.5
+    status: todo
+  - id: D13-2
+    title: Push notifications via FCM with dedup verification
+    ws: MOB
+    day: 13
+    est: 1.5
+    status: todo
+  - id: D13-3
+    title: Driver duty roster and sign-on
+    ws: MOB
+    day: 13
+    est: 1.5
+    status: todo
+  - id: D13-4
+    title: Driver active journey glanceable stop list
+    ws: MOB
+    day: 13
+    est: 1.5
+    status: todo
+  - id: D13-5
+    title: Driver stop confirm with Drift offline queue and replay
+    ws: MOB
+    day: 13
+    est: 2
+    status: todo
+
+  # ---------------- D14 ----------------
+  - id: D14-1
+    title: RailBite Node app menu stock station eligibility and order lifecycle
+    ws: INT
+    day: 14
+    est: 2.5
+    status: todo
+  - id: D14-2
+    title: SmartRail outbound reference and ETA feed with API key auth
+    ws: INT
+    day: 14
+    est: 1.5
+    status: todo
+  - id: D14-3
+    title: Inbound HMAC signed webhooks with replay window and idempotency
+    ws: INT
+    day: 14
+    est: 2
+    status: todo
+  - id: D14-4
+    title: Outbox retry backoff circuit breaker and dead letter queue
+    ws: INT
+    day: 14
+    est: 1.5
+    status: todo
+  - id: D14-5
+    title: Passenger food ordering UI over external menu
+    ws: MOB
+    day: 14
+    est: 2
+    gate: G3
+    status: todo
+
+  # ---------------- D15 ----------------
+  - id: D15-1
+    title: Kiosk terminal mode search route explore station info and idle reset
+    ws: KIOSK
+    day: 15
+    est: 3
+    status: todo
+  - id: D15-2
+    title: Empty loading stale error offline states across all nineteen screens
+    ws: UX
+    day: 15
+    est: 2.5
+    status: todo
+  - id: D15-3
+    title: Nightly order state reconciliation job
+    ws: INT
+    day: 15
+    est: 1.5
+    status: todo
+  - id: D15-4
+    title: i18n scaffolding and secondary language strings for passenger and display
+    ws: UX
+    day: 15
+    est: 1
+    status: todo
+
+  # ---------------- D16 ----------------
+  - id: D16-1
+    title: E2E flow one passenger follows a delayed train
+    ws: QA
+    day: 16
+    est: 1.5
+    status: todo
+  - id: D16-2
+    title: E2E flow two driver confirms offline and reconciles
+    ws: QA
+    day: 16
+    est: 1.5
+    status: todo
+  - id: D16-3
+    title: E2E flow three ops cancels a running journey and it propagates
+    ws: QA
+    day: 16
+    est: 1.5
+    status: todo
+  - id: D16-4
+    title: E2E flow four food order across the external boundary
+    ws: QA
+    day: 16
+    est: 1.5
+    status: todo
+  - id: D16-5
+    title: E2E flow five display survives connectivity loss honestly
+    ws: QA
+    day: 16
+    est: 1
+    status: todo
+  - id: D16-6
+    title: Consumer driven contract tests both directions
+    ws: QA
+    day: 16
+    est: 1
+    gate: G4
+    status: todo
+
+  # ---------------- D17 ----------------
+  - id: D17-1
+    title: Authorization negative test suite IDOR cross-station role escalation
+    ws: SEC
+    day: 17
+    est: 2.5
+    status: todo
+  - id: D17-2
+    title: ZAP baseline scan and triage
+    ws: SEC
+    day: 17
+    est: 1.5
+    status: todo
+  - id: D17-3
+    title: Dependency and secret scanning gates in CI
+    ws: SEC
+    day: 17
+    est: 1
+    status: todo
+  - id: D17-4
+    title: Fix or formally accept every security finding in writing
+    ws: SEC
+    day: 17
+    est: 3
+    status: todo
+
+  # ---------------- D18 ----------------
+  - id: D18-1
+    title: Accessibility pass axe keyboard screen reader contrast dynamic type
+    ws: UX
+    day: 18
+    est: 3
+    status: todo
+  - id: D18-2
+    title: Display legibility verification at five to ten metres
+    ws: UX
+    day: 18
+    est: 0.5
+    status: todo
+  - id: D18-3
+    title: OpenTelemetry dashboards network integration and device health
+    ws: OPS
+    day: 18
+    est: 2.5
+    status: todo
+  - id: D18-4
+    title: Runbook SLO document and alert definitions
+    ws: OPS
+    day: 18
+    est: 2
+    status: todo
+
+  # ---------------- D19 ----------------
+  - id: D19-1
+    title: Finalise traceability matrix REQ to test coverage
+    ws: DOC
+    day: 19
+    est: 1.5
+    status: todo
+  - id: D19-2
+    title: Consolidate ADRs and architecture documentation
+    ws: DOC
+    day: 19
+    est: 1.5
+    status: todo
+  - id: D19-3
+    title: Write quality assessment including known weaknesses
+    ws: DOC
+    day: 19
+    est: 1.5
+    status: todo
+  - id: D19-4
+    title: Assemble AI usage pack journal prompt library and ai-was-wrong entries
+    ws: DOC
+    day: 19
+    est: 2
+    status: todo
+  - id: D19-5
+    title: Data and privacy document with classification and rights
+    ws: DOC
+    day: 19
+    est: 1
+    gate: G5
+    status: todo
+
+  # ---------------- D20 ----------------
+  - id: D20-1
+    title: Build deterministic demo seed scenario and narrative script
+    ws: DOC
+    day: 20
+    est: 2
+    status: todo
+  - id: D20-2
+    title: Rehearse full demo twice end to end
+    ws: DOC
+    day: 20
+    est: 2
+    status: todo
+  - id: D20-3
+    title: Record fallback demo video
+    ws: DOC
+    day: 20
+    est: 1.5
+    status: todo
+  - id: D20-4
+    title: Verify clean checkout to running system from README
+    ws: OPS
+    day: 20
+    est: 1.5
+    status: todo
+
+  # ---------------- D21 ----------------
+  - id: D21-1
+    title: Buffer for slipped work
+    ws: DOC
+    day: 21
+    est: 3
+    status: todo
+  - id: D21-2
+    title: Final presentation deck and engineering story
+    ws: DOC
+    day: 21
+    est: 2.5
+    status: todo
+  - id: D21-3
+    title: Final review and submission
+    ws: DOC
+    day: 21
+    est: 1
+    gate: G6
+    status: todo
+
+# Deferred register - things consciously cut. Keep adding here instead of silently dropping.
+deferred:
+  - id: X-01
+    title: Ticketing fares and seat reservation
+    reason: Not in the brief - SmartRail is an information platform, commerce would double the domain.
+  - id: X-02
+    title: Real card payments
+    reason: Payment ownership assigned to the catering provider - test mode only.
+  - id: X-03
+    title: Knock-on delay propagation between trains
+    reason: Requires a network capacity model - named as known real behaviour but out of scope.
+  - id: X-04
+    title: Train splitting joining and coach composition
+    reason: Rare and hard - documented as a domain extension point.
+  - id: X-05
+    title: SMS and email notification channels
+    reason: Push plus in-app covers the demonstrated journeys with no new architecture lesson.
+  - id: X-06
+    title: Kubernetes multi-region and autoscaling
+    reason: Documented as a production path - not built.
