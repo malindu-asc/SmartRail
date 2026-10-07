@@ -57,7 +57,7 @@ Service ──(instantiated per service date)──▶ Journey ◀──(assignm
 
 ### Planned maintenance
 
-- Fleet controller marks S12 unavailable 2026-10-20 06:00 to 2026-10-21 18:00 (REQ-OPS-012).
+- The scheduler marks S12 unavailable 2026-10-20 06:00 to 2026-10-21 18:00 (REQ-OPS-012).
 - Every journey assigned to S12 in that window raises "no vehicle" to the scheduler at T-24h and becomes a
   cancellation candidate at T-2h unless reassigned (REQ-LIVE-011).
 

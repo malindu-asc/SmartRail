@@ -1,6 +1,6 @@
 # Traceability
 
-> **Generated 2026-10-05** by `tools/docs/build_traceability.py` — do not edit by hand. Re-run after changing any requirement, story, use case, flow, edge case or test.
+> **Generated 2026-10-06** by `tools/docs/build_traceability.py` — do not edit by hand. Re-run after changing any requirement, story, use case, flow, edge case or test.
 
 Tests are linked by mentioning the requirement id in the test (name, attribute or comment), e.g. `[Trait("Req", "REQ-LIVE-004")]` in xUnit or `test('REQ-PAX-002 board shows delta', …)` in Playwright / Flutter.
 
@@ -8,10 +8,10 @@ Tests are linked by mentioning the requirement id in the test (name, attribute o
 
 | Measure | Count |
 |---|---|
-| Requirements | 102 |
-| Must | 66 |
-| Must with at least one story | 66 |
-| Must with a use case, flow or specification document | 66 |
+| Requirements | 135 |
+| Must | 88 |
+| Must with at least one story | 88 |
+| Must with a use case, flow or specification document | 88 |
 | Must with at least one test | 0 |
 | All requirements with at least one test | 0 |
 
@@ -25,7 +25,7 @@ None ✅
 
 ## Must requirements without a test
 
-REQ-LIVE-001, REQ-LIVE-002, REQ-LIVE-003, REQ-LIVE-004, REQ-LIVE-005, REQ-LIVE-006, REQ-LIVE-007, REQ-LIVE-008, REQ-LIVE-009, REQ-LIVE-010, REQ-LIVE-011, REQ-LIVE-013, REQ-LIVE-014, REQ-LIVE-017, REQ-PAX-001, REQ-PAX-002, REQ-PAX-003, REQ-PAX-004, REQ-PAX-005, REQ-PAX-007, REQ-PAX-008, REQ-PAX-009, REQ-PAX-011, REQ-PAX-012, REQ-PAX-014, REQ-DRV-001, REQ-DRV-002, REQ-DRV-003, REQ-DRV-005, REQ-DRV-006, REQ-DRV-007, REQ-DRV-010, REQ-DSP-001, REQ-DSP-002, REQ-DSP-003, REQ-DSP-004, REQ-DSP-005, REQ-TRM-001, REQ-TRM-003, REQ-OPS-001, REQ-OPS-002, REQ-OPS-003, REQ-OPS-004, REQ-OPS-005, REQ-OPS-007, REQ-OPS-008, REQ-OPS-009, REQ-OPS-011, REQ-SEC-001, REQ-SEC-002, REQ-SEC-003, REQ-SEC-004, REQ-SEC-005, REQ-DATA-001, REQ-DATA-002, REQ-DATA-003, REQ-NFR-001, REQ-NFR-003, REQ-NFR-004, REQ-NFR-005, REQ-NFR-006, REQ-NFR-008, REQ-SIM-001, REQ-SIM-002, REQ-SIM-003, REQ-SIM-004 *(expected before the build starts)*
+REQ-LIVE-001, REQ-LIVE-002, REQ-LIVE-003, REQ-LIVE-004, REQ-LIVE-005, REQ-LIVE-006, REQ-LIVE-007, REQ-LIVE-008, REQ-LIVE-009, REQ-LIVE-010, REQ-LIVE-011, REQ-LIVE-013, REQ-LIVE-014, REQ-LIVE-017, REQ-PAX-001, REQ-PAX-002, REQ-PAX-003, REQ-PAX-004, REQ-PAX-005, REQ-PAX-007, REQ-PAX-008, REQ-PAX-009, REQ-PAX-011, REQ-PAX-012, REQ-PAX-014, REQ-DRV-001, REQ-DRV-002, REQ-DRV-003, REQ-DRV-005, REQ-DRV-006, REQ-DRV-007, REQ-DRV-010, REQ-DSP-001, REQ-DSP-002, REQ-DSP-003, REQ-DSP-004, REQ-DSP-005, REQ-TRM-001, REQ-TRM-003, REQ-OPS-001, REQ-OPS-002, REQ-OPS-003, REQ-OPS-004, REQ-OPS-005, REQ-OPS-007, REQ-OPS-008, REQ-OPS-009, REQ-OPS-011, REQ-SEC-001, REQ-SEC-002, REQ-SEC-003, REQ-SEC-004, REQ-SEC-005, REQ-DATA-001, REQ-DATA-002, REQ-DATA-003, REQ-NFR-001, REQ-NFR-003, REQ-NFR-004, REQ-NFR-005, REQ-NFR-006, REQ-NFR-008, REQ-SIM-001, REQ-SIM-002, REQ-SIM-003, REQ-SIM-004, REQ-ACC-001, REQ-ACC-002, REQ-TKT-001, REQ-TKT-002, REQ-TKT-003, REQ-TKT-005, REQ-TKT-006, REQ-TKT-008, REQ-TKT-009, REQ-TKT-012, REQ-PAY-001, REQ-PAY-002, REQ-PAY-003, REQ-REF-001, REQ-REF-002, REQ-REF-003, REQ-REF-005, REQ-INS-001, REQ-INS-002, REQ-INS-003, REQ-INS-004, REQ-INS-005 *(expected before the build starts)*
 
 ## Matrix
 
@@ -66,16 +66,17 @@ REQ-LIVE-001, REQ-LIVE-002, REQ-LIVE-003, REQ-LIVE-004, REQ-LIVE-005, REQ-LIVE-0
 | REQ-PAX-013 | Two languages | Should | Yes | Proposed | — | — | — | — | — | — |
 | REQ-PAX-014 | Screen reader and text scaling | Must | Yes | Proposed | US-007 | — | — | 01-ux/README.md | EDG-064 | — |
 | REQ-PAX-015 | Notification inbox and push reliability | Should | Yes | Proposed | US-013 | UC-PAX-04 | CF-01 | 00-requirements/06-requirements/degraded-mode-matrix.md, 00-requirements/06-requirements/notification-matrix.md | EDG-071 | — |
-| REQ-DRV-001 | Driver authentication and session | Must | Yes | Proposed | US-020 | UC-DRV-01 | — | 00-requirements/06-requirements/permission-matrix.md | EDG-015 | — |
-| REQ-DRV-002 | Duty view, offline-capable | Must | Yes | Proposed | US-020 | UC-DRV-01 | — | — | EDG-012 | — |
+| REQ-DRV-001 | Driver authentication and session | Must | Yes | Proposed | US-020 | UC-DRV-01 | — | 00-requirements/06-requirements/permission-matrix.md | EDG-015, EDG-145 | — |
+| REQ-DRV-002 | Duty view, offline-capable | Must | Yes | Proposed | US-020 | UC-DRV-01 | — | — | EDG-012, EDG-144, EDG-147 | — |
 | REQ-DRV-003 | Permitted driver actions | Must | Yes | Proposed | US-021, US-022, US-025 | UC-DRV-02, UC-DRV-03, UC-DRV-06 | — | — | EDG-043, EDG-050 | — |
 | REQ-DRV-004 | No typing between stops | Should | Yes | Proposed | US-021 | UC-DRV-02 | — | 00-requirements/04-domain/state-models.md, 01-ux/README.md | — | — |
 | REQ-DRV-005 | Offline action queue | Must | Yes | Proposed | US-023 | UC-DRV-04 | CF-03 | — | EDG-044, EDG-045 | — |
 | REQ-DRV-006 | Replay and reconciliation | Must | Yes | Proposed | US-023 | UC-DRV-04 | CF-03 | — | EDG-041, EDG-046, EDG-048 | — |
 | REQ-DRV-007 | Control message delivery states | Must | Yes | Proposed | US-024 | UC-DRV-04, UC-DRV-05, UC-OPS-09 | CF-03 | 00-requirements/04-domain/state-models.md | EDG-049 | — |
 | REQ-DRV-008 | Orphaned events from an ended duty | Should | Yes | Proposed | — | UC-DRV-01, UC-DRV-04 | CF-03 | 00-requirements/04-domain/identity-model.md, 00-requirements/04-domain/state-models.md | EDG-013 | — |
-| REQ-DRV-009 | Crew handover mid-journey | Should | Thin | Proposed | — | UC-DRV-04, UC-DRV-07 | CF-03 | 00-requirements/04-domain/identity-model.md | EDG-047 | — |
+| REQ-DRV-009 | Crew handover mid-journey | Should | Thin | Proposed | — | UC-DRV-04, UC-DRV-07 | CF-03 | 00-requirements/04-domain/identity-model.md | EDG-047, EDG-148 | — |
 | REQ-DRV-010 | Driver location limits | Must | Yes | Proposed | US-026 | — | — | 00-requirements/06-requirements/data-classification.md | — | — |
+| REQ-DRV-011 | Stop events are validated against the journey | Should | Yes | Proposed | US-021 | UC-DRV-02 | — | — | EDG-146 | — |
 | REQ-DSP-001 | Platform display | Must | Yes | Proposed | US-060 | UC-DSP-01 | CF-05 | 01-ux/README.md | — | — |
 | REQ-DSP-002 | Concourse display | Must | Yes | Proposed | US-065 | UC-DSP-02 | — | — | EDG-087 | — |
 | REQ-DSP-003 | Device identity and delta stream | Must | Yes | Proposed | US-071 | UC-DSP-03, UC-DSP-04, UC-OPS-10 | — | 04-security/README.md | EDG-084 | — |
@@ -103,7 +104,7 @@ REQ-LIVE-001, REQ-LIVE-002, REQ-LIVE-003, REQ-LIVE-004, REQ-LIVE-005, REQ-LIVE-0
 | REQ-OPS-012 | Vehicle unavailability | Should | Thin | Proposed | — | UC-OPS-07 | CF-07 | 00-requirements/04-domain/identity-model.md | EDG-010 | — |
 | REQ-OPS-013 | Messages to drivers | Should | Thin | Proposed | US-033 | UC-DRV-05, UC-OPS-09 | — | — | — | — |
 | REQ-OPS-014 | Punctuality report | Should | Yes | Proposed | — | UC-OPS-11, UC-OPS-14 | — | — | EDG-098 | — |
-| REQ-OPS-015 | Customer service lookup | Could | Thin | Proposed | — | UC-OPS-12 | — | — | — | — |
+| REQ-OPS-015 | Customer service lookup | Could | No | Rejected | — | UC-OPS-12 | — | — | — | — |
 | REQ-OPS-016 | Planned disruptions (engineering works) | Should | Thin | Proposed | US-052 | UC-OPS-15, UC-PAX-03, UC-TRM-03 | — | 00-requirements/04-domain/state-models.md | EDG-074 | — |
 | REQ-OPS-017 | Time-boxed elevated access | Could | No | Proposed | — | — | — | — | — | — |
 | REQ-SEC-001 | Four authentication postures | Must | Yes | Proposed | US-070 | — | — | 02-architecture/README.md, 04-security/README.md | — | — |
@@ -128,8 +129,40 @@ REQ-LIVE-001, REQ-LIVE-002, REQ-LIVE-003, REQ-LIVE-004, REQ-LIVE-005, REQ-LIVE-0
 | REQ-SIM-003 | Fault injection | Must | Yes | Proposed | US-081 | — | — | 02-architecture/simulator-design.md, 03-qa/README.md | — | — |
 | REQ-SIM-004 | Scenario library | Must | Yes | Proposed | US-080 | — | — | 02-architecture/simulator-design.md | — | — |
 | REQ-SIM-005 | Scenario reset outside production | Should | Yes | Proposed | — | — | — | 02-architecture/simulator-design.md, 03-qa/README.md | — | — |
-| REQ-INT-001 | Separate catering system | Could | Thin | Proposed | — | — | — | — | — | — |
-| REQ-INT-002 | Outbound reference and ETA feed | Could | Thin | Proposed | US-091 | UC-EXT-01 | CF-01, CF-02 | 00-requirements/06-requirements/data-classification.md | EDG-113, EDG-114 | — |
-| REQ-INT-003 | Signed inbound webhooks | Could | Thin | Proposed | US-091 | UC-EXT-03 | — | 04-security/README.md | EDG-111, EDG-112, EDG-116 | — |
-| REQ-INT-004 | Outbox, retry and dead-letter | Could | Thin | Proposed | US-090 | UC-EXT-05 | CF-01 | 00-requirements/04-domain/system-context.md, 00-requirements/06-requirements/degraded-mode-matrix.md, 02-architecture/README.md | EDG-110 | — |
-| REQ-INT-005 | Single-screen collection order | Could | Thin | Proposed | US-092 | UC-EXT-02 | — | — | EDG-115 | — |
+| REQ-INT-001 | Separate catering system | Could | No | Rejected | — | — | — | — | — | — |
+| REQ-INT-002 | Outbound reference and ETA feed | Could | No | Rejected | US-091 | UC-EXT-01 | CF-01, CF-02 | 00-requirements/06-requirements/data-classification.md | EDG-113, EDG-114 | — |
+| REQ-INT-003 | Signed inbound webhooks | Could | No | Rejected | US-091 | UC-EXT-03 | — | 04-security/README.md | EDG-111, EDG-112, EDG-116 | — |
+| REQ-INT-004 | Outbox, retry and dead-letter | Could | No | Rejected | US-090 | UC-EXT-05 | CF-01 | 00-requirements/04-domain/system-context.md, 00-requirements/06-requirements/degraded-mode-matrix.md, 02-architecture/README.md | EDG-110 | — |
+| REQ-INT-005 | Single-screen collection order | Could | No | Rejected | US-092 | UC-EXT-02 | — | — | EDG-115 | — |
+| REQ-ACC-001 | Register and sign in | Must | Yes | Proposed | US-100 | UC-TKT-01 | CF-09 | 00-requirements/06-requirements/data-classification.md | — | — |
+| REQ-ACC-002 | Recover tickets on a new device | Must | Yes | Proposed | US-102 | UC-TKT-01 | — | — | EDG-137 | — |
+| REQ-ACC-003 | Delete my account | Should | Thin | Proposed | US-102 | — | — | 00-requirements/06-requirements/data-classification.md | EDG-140 | — |
+| REQ-ACC-004 | Sign-in protection | Should | Thin | Proposed | US-100 | — | — | — | — | — |
+| REQ-TKT-001 | Ticket bound to a journey, not a time | Must | Yes | Proposed | US-101 | UC-TKT-02, UC-TKT-03 | CF-09, CF-11 | — | EDG-120 | — |
+| REQ-TKT-002 | Sales window and double availability check | Must | Yes | Proposed | US-101, US-108 | UC-TKT-02 | CF-09 | — | EDG-121, EDG-122, EDG-125 | — |
+| REQ-TKT-003 | Fares and passenger categories | Must | Yes | Proposed | US-101 | UC-TKT-02 | CF-09 | — | — | — |
+| REQ-TKT-004 | Accessibility flag | Should | Yes | Proposed | US-101 | — | — | — | — | — |
+| REQ-TKT-005 | Ticket states and append-only history | Must | Yes | Proposed | US-102 | — | CF-11 | — | — | — |
+| REQ-TKT-006 | Issue only after confirmed payment | Must | Yes | Proposed | US-101 | UC-TKT-02 | CF-09 | — | EDG-126 | — |
+| REQ-TKT-007 | Unpaid orders expire | Should | Yes | Proposed | US-101 | UC-TKT-02 | CF-09 | — | EDG-126 | — |
+| REQ-TKT-008 | Regional only | Must | Yes | Proposed | US-101 | UC-TKT-02 | CF-09 | — | EDG-139 | — |
+| REQ-TKT-009 | Cancellation affects tickets | Must | Yes | Proposed | US-103 | UC-TKT-04 | CF-10 | — | EDG-123, EDG-124 | — |
+| REQ-TKT-010 | Auto-follow and platform changes | Should | Yes | Proposed | US-103 | UC-TKT-03 | — | — | EDG-138 | — |
+| REQ-TKT-011 | Ticket ends with the journey | Should | Yes | Proposed | US-102 | — | — | — | — | — |
+| REQ-TKT-012 | Signed QR and offline display | Must | Yes | Proposed | US-102 | UC-TKT-03 | — | — | EDG-134, EDG-136 | — |
+| REQ-TKT-013 | Rebooking rules (documented only) | Could | No | Proposed | — | — | — | — | EDG-143 | — |
+| REQ-PAY-001 | Provider-neutral payment with a fake default | Must | Yes | Proposed | US-101 | UC-TKT-02 | CF-09, CF-10 | 02-architecture/simulator-design.md | — | — |
+| REQ-PAY-002 | Idempotent payment confirmation | Must | Yes | Proposed | US-107 | UC-TKT-02 | CF-09 | — | EDG-127 | — |
+| REQ-PAY-003 | Authentic payment callbacks | Must | Yes | Proposed | US-107 | UC-TKT-02 | CF-09 | 02-architecture/simulator-design.md | EDG-128 | — |
+| REQ-PAY-004 | PayHere sandbox adapter | Could | No | Proposed | — | — | — | — | — | — |
+| REQ-REF-001 | Request a full refund after a railway cancellation | Must | Yes | Proposed | US-104 | UC-TKT-04 | CF-10 | — | — | — |
+| REQ-REF-002 | Refund is its own record | Must | Yes | Proposed | US-104 | UC-TKT-04, UC-TKT-06 | CF-10 | — | EDG-130 | — |
+| REQ-REF-003 | No double refunds | Must | Yes | Proposed | US-104 | UC-TKT-04, UC-TKT-06 | CF-10 | — | EDG-129, EDG-142 | — |
+| REQ-REF-004 | Automatic refund retry and visibility | Should | Thin | Proposed | US-106 | UC-TKT-04, UC-TKT-06 | CF-10 | — | EDG-130, EDG-142 | — |
+| REQ-REF-005 | Automatic refund when no ticket can be issued | Must | Yes | Proposed | US-108 | UC-TKT-02 | CF-09 | — | EDG-125 | — |
+| REQ-INS-001 | Ticket Inspector role in the staff app | Must | Yes | Proposed | US-105 | UC-TKT-05 | CF-11 | — | EDG-141 | — |
+| REQ-INS-002 | Server-side ticket validation | Must | Yes | Proposed | US-105 | UC-TKT-05 | CF-11 | — | EDG-133, EDG-134 | — |
+| REQ-INS-003 | Unusable tickets are rejected | Must | Yes | Proposed | US-105 | UC-TKT-05 | CF-11 | — | EDG-131 | — |
+| REQ-INS-004 | Travelling past the destination | Must | Yes | Proposed | US-105 | UC-TKT-05 | CF-11 | — | EDG-132 | — |
+| REQ-INS-005 | Inspection needs a connection | Must | Yes | Proposed | US-105 | UC-TKT-05 | CF-11 | — | EDG-135 | — |
+| REQ-INS-006 | Inspector position defaults to the live journey | Should | Yes | Proposed | US-105 | — | — | — | — | — |

@@ -20,7 +20,7 @@ freedom. **Status:** Simulator design seeded; the rest is planned for D4 per the
 
 | Document | Contents | Status |
 |---|---|---|
-| [simulator-design.md](simulator-design.md) | The train detection feed stand-in; scenario library SIM-01 … 18 | Seeded |
+| [simulator-design.md](simulator-design.md) | The train detection feed stand-in; scenario library SIM-01 … 20 | Seeded |
 | architecture.md | C4 context and container diagrams; module boundaries | Planned (D4) |
 | data-ownership.md | Which module owns which data; no cross-module writes | Planned (D4) |
 | integration.md | Feed contract, catering contract (OpenAPI), webhook signing | Planned (D4) |
@@ -43,7 +43,6 @@ freedom. **Status:** Simulator design seeded; the rest is planned for D4 per the
 ## ADRs already decided (titles; full text pending)
 
 0001 modular monolith · 0002 clean architecture layering · 0003 PostgreSQL + EF Core · 0004 SignalR · 0005 Redis
-for live state · 0006 three-source live tracking with confidence · 0007 outbox instead of a broker · 0008 Node.js
-for the external platform · 0009 one kiosk codebase, two modes · 0010 Flutter feature-based clean architecture ·
+for live state · 0006 three-source live tracking with confidence · 0007 outbox instead of a broker · 0008 Node.js for the external platform *(superseded — catering cut 2026-10-06)* · 0009 one kiosk codebase, two modes · 0010 Flutter feature-based clean architecture ·
 0011 permission-based authorisation · 0012 device identity · 0013 no passenger location · 0014 injectable clock and
-seeded simulator · 0015 shared design tokens, divergent density.
+seeded simulator · 0015 shared design tokens, divergent density. Added 2026-10-06: 0016 provider-neutral payment port with a fake provider · 0017 signed QR tickets with status held server-side · 0018 accounts scoped to purchase while public data stays anonymous.

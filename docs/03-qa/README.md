@@ -12,7 +12,7 @@ Risk-based, not coverage-based. Heavy where the rules are (domain), selective wh
 |---|---|---|
 | Unit | xUnit, flutter_test, vitest | State machines, ETA propagation, precedence, validation, permissions |
 | Integration | Testcontainers (PostgreSQL, Redis) | Endpoints, authorisation matrix, outbox, webhooks |
-| Contract | Consumer-driven | SmartRail ↔ RailBite |
+| Contract | Consumer-driven | SmartRail ↔ payment provider (fake) |
 | E2E | Playwright, Flutter integration_test | The five flows below |
 | Non-functional | k6, axe-core, OWASP ZAP | Freshness and performance, accessibility, security baseline |
 
@@ -23,7 +23,7 @@ Risk-based, not coverage-based. Heavy where the rules are (domain), selective wh
 | E2E-1 | Passenger follows a delayed train | [CF-01](../00-requirements/08-cross-app-flows/cf-01-delay-propagation.md) | SIM-02 |
 | E2E-2 | Driver offline and reconciliation | [CF-03](../00-requirements/08-cross-app-flows/cf-03-driver-offline.md) | SIM-09 |
 | E2E-3 | Controller cancels; every surface follows | [CF-02](../00-requirements/08-cross-app-flows/cf-02-cancellation.md) | SIM-08 |
-| E2E-4 | Food order across the boundary, with provider failure | [UC-EXT-04](../00-requirements/07-use-cases/external-catering.md), EDG-110 | SIM-02, SIM-08 |
+| E2E-4 | Buy a ticket, journey cancelled, ticket Affected, refund completes, inspector rejects it | [CF-09](../00-requirements/08-cross-app-flows/cf-09-purchase.md), [CF-10](../00-requirements/08-cross-app-flows/cf-10-affected-refund.md), [CF-11](../00-requirements/08-cross-app-flows/cf-11-inspection.md); EDG-125, 127, 129 | SIM-19, SIM-20 |
 | E2E-5 | Display survives connectivity loss | [CF-06](../00-requirements/08-cross-app-flows/cf-06-degraded-data.md), EDG-080 | — |
 
 Each flow's assertions are already written in its cross-app flow document.
@@ -31,7 +31,7 @@ Each flow's assertions are already written in its cross-app flow document.
 ## Testability built into the design
 
 `IClock` everywhere (REQ-NFR-005) · seeded, scriptable simulator using the real ingestion path (REQ-SIM-001,
-REQ-SIM-002) · fault injection (REQ-SIM-003) · RailBite fault switch · correlation id on every response
+REQ-SIM-002) · fault injection (REQ-SIM-003) · fake payment provider fault switches · correlation id on every response
 (REQ-NFR-004) · non-production scenario reset (REQ-SIM-005).
 
 ## Linking tests to requirements

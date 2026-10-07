@@ -67,3 +67,34 @@ For each lens: what would you need that is not written here?
 
 **Outcome.** Testability findings (injectable clock, simulator through the real ingestion path), device identity
 for unattended displays, and the degraded-mode matrix.
+
+---
+
+## P-05 — Feasibility check before committing scope
+
+**Tool:** Claude
+
+```
+Here is the scope, the days remaining and my working hours.
+Estimate effort per component (backend, each app, tests, security, docs, demo).
+Compare the total with the time available and say what must be cut to fit — and what it costs.
+```
+
+**Why structured this way.** Asking for a total against the time available forces a comparison instead of a feeling.
+**Outcome.** About 37 days of work against about 13: a cut list that I then chose to overrule (see
+[owner-decisions.md](owner-decisions.md), row 6). The value was making the risk explicit, not following the advice.
+
+---
+
+## P-06 — Role consolidation
+
+**Tool:** Claude
+
+```
+Which roles are needed to demonstrate the MVP flows? For each discovered role that is not built:
+say where its requirements went, what we give up, and what production would do instead.
+```
+
+**Outcome.** [mvp-roles.md](../00-requirements/06-requirements/mvp-roles.md): six roles built, the rest folded or deferred,
+each with a justification and the controls that offset the concentration of power.
+

@@ -10,20 +10,22 @@ What makes the system coherent is separating **who is allowed to assert a fact**
 
 ## Writers and readers
 
+> **MVP note (2026-10-06):** the incident, station and fleet rows below are *capabilities* held by the Network Controller and the Scheduler in the MVP (see [mvp-roles.md](../06-requirements/mvp-roles.md)). Authority is still divided by accountability; it is simply held by fewer accounts.
+
 | Actor | Asserts | Authority | Typical latency | Application |
 |---|---|---|---|---|
 | **Scheduler** | Planned timetable, calendars, stopping patterns, vehicle and driver assignments | *What should happen* | Days ahead | Ops console |
 | **Train detection feed** *(simulator)* | Train detected at / between locations | *Where it physically is* | Seconds | Backend ingestion API |
 | **Driver** | Arrived, departed, skipped, delay reason, request assistance | *What happened at the stop, and why* | Per stop | Driver app |
 | **Network controller** | Cancellation, termination, platform change, reassignment | *What changed in the plan, now* | Immediate | Ops console |
-| **Incident manager** | Incidents, severity, public messaging for serious events | *What is going on, officially* | Minutes | Ops console |
-| **Station manager** | Station-scoped facts: facilities, display assignment, local notices | *Local state at one station* | Minutes | Ops console (station-scoped) |
-| **Fleet controller** | Vehicle unavailable from / to | *What can run* | Hours ahead | Ops console |
+| **Incident manager** *(capability — Network controller)* | Incidents, severity, public messaging for serious events | *What is going on, officially* | Minutes | Ops console |
+| **Station manager** *(capability — Network controller)* | Station-scoped facts: facilities, display assignment, local notices | *Local state at one station* | Minutes | Ops console (station-scoped) |
+| **Fleet controller** *(capability — Scheduler)* | Vehicle unavailable from / to | *What can run* | Hours ahead | Ops console |
 | Passenger app | — | **read only** | follows | Flutter |
 | Station display | — | **read only** | follows | React kiosk (display mode) |
 | Station terminal | — | **read only** | follows | React kiosk (terminal mode) |
 | Catering provider | its own order state only | **reads railway state**, writes nothing into it | follows | External (Node) |
-| Customer service agent | — | **read only** | follows | Ops console |
+| Customer service agent *(deferred)* | — | **read only** | follows | Ops console |
 
 Two consequences fall straight out of this table:
 
@@ -52,7 +54,7 @@ Two consequences fall straight out of this table:
   Controller ─────────┤      │  + audit              │                   reads ETAs, sends order events
   (cancel, platform)  │      └──────────────────────┘                   back about ITS OWN orders only
                       │                │
-  Incident manager ───┘                ├── Notifications (push) ──▶ followers of a journey
+  Incident (NC) ──────┘                ├── Notifications (push) ──▶ followers of a journey
                                        └── Device registry ◀── heartbeats from displays/terminals
 ```
 
@@ -130,5 +132,21 @@ The simulator also publishes through **exactly the same authenticated ingestion 
 
 - **Knock-on delay between trains.** A delayed train holding up the one behind it needs a track-capacity model. It
   is named here so it is not mistaken for an omission (REQ-LIVE-018).
-- **Ticketing, fares, reservations.** Not in the brief.
+- **Reserved seating and rebooking.** Documented only; see [ticketing](../12-ticketing/README.md). Basic ticketing is in scope.
 - **Audio announcements.** A real station runs them in parallel; out of scope and noted as an accessibility limit.
+
+## Ticketing in the picture (added 2026-10-06)
+
+Ticketing adds one more kind of writer without breaking the reader rule:
+
+| Actor | Asserts | Never |
+|---|---|---|
+| **Authenticated passenger** | Purchases and refund requests, on **their own** tickets | Anything about a journey's state |
+| **Payment provider** (fake, or PayHere sandbox) | A payment or refund result, by signed callback | Ticket status directly — SmartRail decides |
+| **Ticket inspector** | A scan, which records the result the server returned | A ticket's validity — the server decides |
+| **Backend (automatic)** | A retry of a failed refund | Eligibility |
+
+The link between the two worlds is the **journey id**. A ticket is a promise about a journey; the journey's state is the
+railway's. When the journey changes (cancelled, terminated short), the railway state *causes* a ticket state change
+([CF-10](../08-cross-app-flows/cf-10-affected-refund.md)); the reverse never happens. Inspection
+([CF-11](../08-cross-app-flows/cf-11-inspection.md)) is the only place the two are read together.

@@ -1,5 +1,7 @@
 # External catering — use cases
 
+> **CUT from the MVP on 2026-10-06 (ASM-005, ASM-044).** Kept for the record. The boundary design remains a sound pattern if catering is ever revived; nothing here is built or tested.
+
 **Priority decision (ASM-005, user):** catering is low priority. It is built **thin and last**, but kept because
 §23 lists "a working integration with a simulated external catering platform" and §26 scores Integration. The
 point being demonstrated is the **boundary** — a separate system, a real contract, failure isolation — not food

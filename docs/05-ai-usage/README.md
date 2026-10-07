@@ -11,6 +11,7 @@ The documents here hold the **narrative** — the reasoned write-ups an assessor
 | Important prompts or workflows | [prompt-library.md](prompt-library.md) |
 | How output was validated | Tracker → AI Usage Log (validation column); the policy's operating rules |
 | Where AI output was incorrect or insufficient | [ai-was-wrong.md](ai-was-wrong.md) |
+| Decisions where I overruled or changed AI proposals, and AI contributions I accepted | [owner-decisions.md](owner-decisions.md) |
 | Where my own judgment improved the result | [ai-was-wrong.md](ai-was-wrong.md) — each entry states what I did instead |
 | AI-generated implementation significantly modified | modified-implementations.md (from the build phase) |
 

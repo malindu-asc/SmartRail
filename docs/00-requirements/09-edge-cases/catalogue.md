@@ -45,7 +45,7 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 | ID | Scenario | Expected behaviour | Apps | Sev | Requirements | Sim | Depth |
 |---|---|---|---|---|---|---|---|
 | EDG-020 | Platform not yet assigned | "Platform —" with accessible "to be announced" | PAX, DSP, TRM | Low | REQ-LIVE-014 | — | Registered |
-| EDG-021 | Platform changed after boarding started | Published immediately; "changed from"; urgent push; station manager highlighted | all | High | REQ-LIVE-014 | SIM-14 | **Specified** |
+| EDG-021 | Platform changed after boarding started | Published immediately; "changed from"; urgent push; station view highlighted | all | High | REQ-LIVE-014 | SIM-14 | **Specified** |
 | EDG-022 | Two journeys assigned the same platform overlapping | Warning naming the other journey; saved | OPS | Medium | REQ-LIVE-020 | — | Registered |
 | EDG-023 | Vehicle fails inspection at origin | Substitute (delay), or cancel; reason recorded | OPS | Medium | REQ-OPS-004 | — | Registered |
 | EDG-024 | Train ready early | Departure never shown earlier than scheduled | PAX, DSP | Medium | REQ-LIVE-012 | — | Registered |
@@ -64,7 +64,7 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 | EDG-034 | Controller decides to skip a stop | Stop `Skipped`; followers at that stop pushed; displays there updated | all | Medium | REQ-LIVE-016 | SIM-03 | Registered |
 | EDG-035 | Unscheduled stop (signal, passenger incident) | Shown as delay; no new stop added to the public timeline | BE | Low | REQ-LIVE-002 | — | Registered |
 | EDG-036 | Terminated short | Later stops cancelled; message names the last stop | all | High | REQ-OPS-004 | SIM-04 | Registered |
-| EDG-037 | Collision, derailment or serious accident | Incident manager declares; `TerminatedEmergency`; templates only; legal hold | all | High | REQ-OPS-008 | SIM-17 | **Specified** |
+| EDG-037 | Collision, derailment or serious accident | Network controller declares (confirmation, reason, audit); `TerminatedEmergency`; templates only; legal hold | all | High | REQ-OPS-008 | SIM-17 | **Specified** |
 | EDG-038 | Power or signal failure blocks a section | Section-scoped disruption resolves to all affected journeys | all | High | REQ-LIVE-016 | SIM-15 | Registered |
 | EDG-039 | Temporary speed restriction or weather | Modelled as delay on the section via disruption; no special model | BE | Low | REQ-LIVE-016 | — | Registered |
 
@@ -127,7 +127,7 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 |---|---|---|---|---|---|---|---|
 | EDG-080 | Display or terminal loses network | Last board with age at 60 s; scheduled-only at 300 s; never live markers | DSP, TRM | High | REQ-DSP-004, REQ-TRM-005 | — | **Specified** |
 | EDG-081 | Display clock wrong | Countdown from server offset; unaffected | DSP | Medium | REQ-DSP-006 | — | Registered |
-| EDG-082 | Display dead and nobody notices | Offline in device health at 90 s, visible to station manager | DSP, OPS | High | REQ-DSP-005 | — | Registered |
+| EDG-082 | Display dead and nobody notices | Offline in device health at 90 s, visible to the network controller (station view) | DSP, OPS | High | REQ-DSP-005 | — | Registered |
 | EDG-083 | Hundreds of displays reconnect at once | Jittered backoff; snapshot then delta | DSP, BE | Medium | REQ-NFR-007 | — | Registered |
 | EDG-084 | Display token revoked | Rejected on next request | DSP | Medium | REQ-DSP-003 | — | Registered |
 | EDG-085 | Terminal user walks away mid-search | Reset and cleared at 60 s | TRM | Medium | REQ-TRM-003 | — | Registered |
@@ -146,7 +146,7 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 | EDG-094 | Incident outlives the owner's shift | Ownership must be handed over with a note | OPS | Medium | REQ-OPS-007 | — | Registered |
 | EDG-095 | Cancellation attempted without reason | Rejected | OPS | Low | REQ-OPS-004 | — | Registered |
 | EDG-096 | System administrator attempts an operational action | 403 — separation of duties | OPS | High | REQ-OPS-001 | — | Registered |
-| EDG-097 | Station manager edits another station | 403 — scoped permission (IDOR) | OPS | High | REQ-SEC-003 | — | **Specified** |
+| EDG-097 | Passenger reads or refunds another passenger's ticket, or a driver requests another driver's duty | 403 — scoped permission (IDOR) | PAX, DRV, BE | High | REQ-SEC-003 | — | **Specified** |
 | EDG-098 | Recorded time later found wrong | Authorised correction; original kept; reports use corrected | OPS | Low | REQ-OPS-014 | — | Registered |
 | EDG-099 | Console loses connection mid-action | Banner; writes disabled; no "it worked" without confirmation | OPS | Medium | REQ-NFR-006 | — | Registered |
 
@@ -163,6 +163,8 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 
 ## L. External catering (EDG-110 – 116)
 
+> **Catering was cut from the MVP on 2026-10-06 (ASM-005).** These cases are kept for the record and are not tested.
+
 | ID | Scenario | Expected behaviour | Apps | Sev | Requirements | Sim | Depth |
 |---|---|---|---|---|---|---|---|
 | EDG-110 | Provider down | Outbox retains; retry with backoff; DLQ; railway unaffected | BE, EXT | Medium | REQ-INT-004 | — | **Specified** |
@@ -173,6 +175,45 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 | EDG-115 | Stock-out or price change at confirm | Clear rejection; no half-state | PAX, EXT | Low | REQ-INT-005 | — | Registered |
 | EDG-116 | Order events out of order | Tolerated; recorded; final state consistent | BE | Low | REQ-INT-003 | — | Registered |
 
+## M. Accounts, tickets, payments and inspection (EDG-120 – 143)
+
+| ID | Scenario | Expected behaviour | Apps | Sev | Requirements | Sim | Depth |
+|---|---|---|---|---|---|---|---|
+| EDG-120 | Train delayed after ticket purchase (09:00 scheduled, 09:20 expected) | Scheduled time unchanged, expected changes; ticket stays on the same journey id and stays Valid | PAX | Medium | REQ-TKT-001 | SIM-02 | Registered |
+| EDG-121 | Passenger buys a delayed train | Allowed until the journey departs the origin stop; no new journey is created | PAX | Medium | REQ-TKT-002 | SIM-02 | Registered |
+| EDG-122 | Purchase attempted after departure or on a cancelled journey | Rejected with the reason; nothing charged | PAX | Medium | REQ-TKT-002 | — | Registered |
+| EDG-123 | Journey cancelled after tickets were bought | Valid tickets become Affected within 5 s; holders pushed; refund offered; ticket unusable | PAX, BE | High | REQ-TKT-009 | SIM-20 | **Specified** |
+| EDG-124 | Journey terminated short | Only tickets whose destination lies beyond the termination point become Affected | PAX, BE | High | REQ-TKT-009 | SIM-20 | **Specified** |
+| EDG-125 | Journey cancelled while payment is in progress | Payment succeeds but no ticket is issued; automatic refund; passenger told why | PAX, BE | High | REQ-TKT-002, REQ-REF-005 | SIM-19 | **Specified** |
+| EDG-126 | Payment fails or is abandoned | No ticket; order Expired after 15 min | PAX | Medium | REQ-TKT-006, REQ-TKT-007 | SIM-19 | Registered |
+| EDG-127 | Duplicate payment confirmation | One ticket, one charge | BE | High | REQ-PAY-002 | SIM-19 | **Specified** |
+| EDG-128 | Payment callback with a bad signature or stale timestamp | Rejected, counted, order unchanged | BE | High | REQ-PAY-003 | SIM-19 | Registered |
+| EDG-129 | Refund requested twice (double tap or race) | Exactly one refund and one provider call | PAX, BE | High | REQ-REF-003 | SIM-20 | **Specified** |
+| EDG-130 | Provider refund call fails | Refund FAILED; ticket stays Affected; the system retries automatically | OPS, BE | Medium | REQ-REF-002, REQ-REF-004 | SIM-20 | Registered |
+| EDG-131 | Cancelled, refunded, expired or pending ticket scanned | Rejected as NOT_VALID_STATUS | INS | High | REQ-INS-003 | — | Registered |
+| EDG-132 | Passenger travels beyond the purchased destination | OUTSIDE_SEGMENT_PAST_DESTINATION; recorded; fare adjustment outside the system | INS | Medium | REQ-INS-004 | — | **Specified** |
+| EDG-133 | Ticket for a different journey or date presented | WRONG_JOURNEY or WRONG_DATE | INS | Medium | REQ-INS-002 | — | Registered |
+| EDG-134 | QR altered or forged | TAMPERED | INS | High | REQ-TKT-012, REQ-INS-002 | — | Registered |
+| EDG-135 | Inspector has no connection | UNABLE_TO_VERIFY; manual procedure; scan queued and logged on reconnect | INS | Medium | REQ-INS-005 | — | Registered |
+| EDG-136 | Passenger offline when asked for the ticket | Cached ticket and QR shown with 'last verified hh:mm' | PAX | Medium | REQ-TKT-012 | — | Registered |
+| EDG-137 | New or reinstalled device | Signing in restores all tickets | PAX | Medium | REQ-ACC-002 | — | Registered |
+| EDG-138 | Platform change after purchase | Ticket stays Valid; holder receives the update | PAX | Low | REQ-TKT-010 | SIM-14 | Registered |
+| EDG-139 | Intercity or High-speed journey selected for purchase | Not purchasable; information shown; clear message | PAX | Low | REQ-TKT-008 | — | Registered |
+| EDG-140 | Account deleted while tickets and refunds exist | Personal fields anonymised; financial records kept; refunds in flight complete | PAX, BE | Medium | REQ-ACC-003 | — | Registered |
+| EDG-141 | A driver without `ticket.inspect` tries to validate | 403; inspector mode not offered | INS | Medium | REQ-INS-001 | — | Registered |
+| EDG-142 | Refund retry races an in-flight attempt | One provider call; idempotent | OPS, BE | Medium | REQ-REF-003, REQ-REF-004 | SIM-20 | Registered |
+| EDG-143 | Passenger asks to rebook after a cancellation | Not available in this version; refund offered | PAX | Low | REQ-TKT-013 | — | Registered |
+
+## N. Driver app additions (EDG-144 – 148)
+
+| ID | Scenario | Expected behaviour | Apps | Sev | Requirements | Sim | Depth |
+|---|---|---|---|---|---|---|---|
+| EDG-144 | Driver has no assigned duty | "No duty assigned — contact control"; no journey actions offered; nothing invented | DRV | Medium | REQ-DRV-002 | — | Registered |
+| EDG-145 | Driver requests another driver's duty or journey | 403; only the own duty is ever returned | DRV, BE | High | REQ-DRV-001 | — | Registered |
+| EDG-146 | Event for the wrong stop, or out of sequence (e.g. Departed before Arrived) | Validated against the journey's stop sequence; rejected, or held for correction; never applied silently | DRV, BE | High | REQ-DRV-011 | SIM-16 | Registered |
+| EDG-147 | Offline at sign-on with no cached duty at all | App says so plainly; driver falls back to radio; no stale or invented duty | DRV | Medium | REQ-DRV-002 | — | Registered |
+| EDG-148 | Two drivers signed on to the same journey at once during handover | The outgoing duty must be closed before the incoming one is active; events stay with their own duty | DRV, BE | Medium | REQ-DRV-009 | — | Registered |
+
 ---
 
-**Totals:** 100 edge cases · 16 specified · 0 tested (update as tests land).
+**Totals:** 129 edge cases · 22 specified · 0 tested (update as tests land).

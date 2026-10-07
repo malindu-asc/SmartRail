@@ -17,7 +17,7 @@ alternatives, and anything assumed is labelled as assumed.
 
 | Folder | Contents | Brief section | Status |
 |---|---|---|---|
-| [00-requirements](00-requirements/README.md) | Problem framing, stakeholders, domain model, discovery, requirements, use cases, cross-app flows, edge cases, stories, scope | §3–§14, §20, §22, §25 | **Seeded — under review** |
+| [00-requirements](00-requirements/README.md) | Problem framing, stakeholders, domain model, discovery, requirements, use cases, cross-app flows, edge cases, stories, scope, ticketing | §3–§14, §20, §22, §25 | **Seeded — under review** |
 | [01-ux](01-ux/README.md) | UX discovery, flows, wireframes, design system, accessibility | §15, §23 Product and UX | Planned |
 | [02-architecture](02-architecture/README.md) | Architecture, ADRs, integration, simulator design | §23 Architecture, §24 | Simulator design seeded |
 | [03-qa](03-qa/README.md) | Test strategy, scenarios, defects, evidence, quality assessment | §18, §23 QA | Planned |

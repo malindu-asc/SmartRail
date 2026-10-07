@@ -16,7 +16,7 @@ REQ-LIVE-018, REQ-LIVE-011, REQ-OPS-012
 |---|---|---|---|---|---|
 | 08:40 | Feed: no movement; driver: delay reason "train fault" | Running, +4 | "+4 · live" | "Expected 08:44" | +4, fault |
 | 08:46 | Controller confirms the train cannot continue → **Interrupted** | `Interrupted`, position frozen | "**Stopped near Mill Lane — no estimate**" | "**Delayed — no estimate**" | Interrupted |
-| 08:47 | Fleet controller marks S12 `Failed` | — | — | — | S12's later journeys (1043, 1050) flagged **no vehicle** (REQ-LIVE-018) |
+| 08:47 | Scheduler marks S12 `Failed` | — | — | — | S12's later journeys (1043, 1050) flagged **no vehicle** (REQ-LIVE-018) |
 | 08:47 | Followers | — | Push: "1042 stopped near Mill Lane — no estimate yet" (once) | — | — |
 | 09:25 | Locomotive 841 couples; assignment S12 closes 09:25, assignment 841 opens 09:25 | still `Interrupted` | — | — | Assignment history shows both |
 | 09:30 | Controller resumes; feed now reports 841 | `Running`, +50 | "+50 · live" | "Expected 09:30" | Running |

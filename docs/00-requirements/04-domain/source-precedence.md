@@ -13,11 +13,11 @@ it is kept in the journey's event history, so the disagreement is visible later 
 | **Position between stops** | Train detection feed | Interpolation from last confirmed event + schedule | — | No position for 300 s → `Unknown`; never extrapolated past the next stop | — | No (high volume) |
 | **Stop skipped** | Controller decision | Driver report | Feed (passed without stopping) | Controller decision wins; a driver report of an unplanned skip raises an alert | Controller | Yes |
 | **Reason for delay** | Driver report | Controller | — | Driver reason kept; controller may reclassify, original retained | Controller | Yes |
-| **Cancellation / termination** | Controller decision | — | — | Only a controller (or incident manager for emergencies) can cancel | Incident manager | Yes |
+| **Cancellation / termination** | Controller decision | — | — | Only the network controller can cancel or terminate (emergencies add a confirmation step) | Network controller | Yes |
 | **Platform** | Controller / station manager (own station) | Timetable default | — | Latest authorised change wins; history kept | — | Yes |
 | **Planned times** | Published timetable version | — | — | Immutable; changes only via a new version | Scheduler + approver | Yes |
 | **Vehicle assignment** | Scheduler / fleet controller | — | — | Latest authorised assignment wins; time-ranged | — | Yes |
-| **Disruption content** | Author (controller / incident manager) | — | — | Latest published version wins; retracted beats any version | Incident manager | Yes |
+| **Disruption content** | Author (network controller) | — | — | Latest published version wins; retracted beats any version | Network controller | Yes |
 | **Device time** | Server time | — | — | Device time recorded but never trusted for ordering | — | No |
 
 ## Worked conflict cases

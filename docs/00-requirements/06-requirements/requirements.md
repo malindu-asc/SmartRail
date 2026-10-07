@@ -21,7 +21,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 |---|---|---|---|---|---|
 | [Live operations (backend)](#live) | 20 | 14 | 5 | 1 | 2 |
 | [Passenger app](#pax) | 15 | 11 | 4 | 0 | 0 |
-| [Driver app](#drv) | 10 | 7 | 3 | 0 | 1 |
+| [Driver app](#drv) | 11 | 7 | 4 | 0 | 1 |
 | [Station display](#dsp) | 8 | 5 | 3 | 0 | 0 |
 | [Station terminal](#trm) | 5 | 2 | 3 | 0 | 0 |
 | [Operations console](#ops) | 17 | 9 | 6 | 2 | 5 |
@@ -29,8 +29,13 @@ Every requirement here is written to be **testable**. Where a number was needed 
 | [Data and privacy](#data) | 3 | 3 | 0 | 0 | 0 |
 | [Platform / non-functional](#nfr) | 8 | 6 | 2 | 0 | 0 |
 | [Simulator](#sim) | 5 | 4 | 1 | 0 | 0 |
-| [External catering integration](#int) | 5 | 0 | 0 | 5 | 5 |
-| **Total** | **102** | **66** | **28** | **8** | **14** |
+| [External catering integration](#int) | 5 | 0 | 0 | 5 | 0 |
+| [Accounts](#acc) | 4 | 2 | 2 | 0 | 2 |
+| [Tickets](#tkt) | 13 | 8 | 4 | 1 | 0 |
+| [Payments](#pay) | 4 | 3 | 0 | 1 | 0 |
+| [Refunds](#ref) | 5 | 4 | 1 | 0 | 1 |
+| [Ticket inspection](#ins) | 6 | 5 | 1 | 0 | 0 |
+| **Total** | **135** | **88** | **37** | **10** | **12** |
 
 <a id="live"></a>
 
@@ -402,9 +407,9 @@ Every requirement here is written to be **testable**. Where a number was needed 
 #### REQ-DRV-009 — Crew handover mid-journey
 
 - **Type:** Functional · **Priority:** Should · **MVP:** Thin · **Status:** Proposed
-- **Requirement:** A second driver may sign on to a running journey; events are scoped to the duty, and the handover is logged.
+- **Requirement:** A second driver may sign on to a running journey; events are scoped to the duty, the outgoing duty must be closed before the incoming one is active, and the handover is logged.
 - **Rationale:** Crew change mid-journey.
-- **Acceptance:** Handover creates a new duty row; earlier queued events attach to the earlier duty.
+- **Acceptance:** Handover creates a new duty row only after the outgoing duty is closed; earlier queued events attach to the earlier duty.
 - **Sources:** DF-004
 
 #### REQ-DRV-010 — Driver location limits
@@ -415,6 +420,14 @@ Every requirement here is written to be **testable**. Where a number was needed 
 - **Acceptance:** Location endpoints return nothing outside a duty window; passenger API never exposes driver identity.
 - **Sources:** DF-104
 - **Assumptions:** ASM-027
+
+#### REQ-DRV-011 — Stop events are validated against the journey
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A driver stop event is checked against the journey's stop sequence. An event for the wrong stop, or out of order (for example Departed before Arrived), is rejected or held for correction and is never applied silently.
+- **Rationale:** Human mistakes are unavoidable; one wrong tap must not corrupt live state for every other surface.
+- **Acceptance:** Sending Departed for stop 4 while stop 3 is the current stop returns a modelled error and leaves the journey unchanged.
+- **Sources:** Driver edge-case review 2026-10-06 (owner list, case 4)
 
 <a id="dsp"></a>
 
@@ -539,7 +552,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 #### REQ-OPS-001 — Roles and separation of duties
 
 - **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
-- **Requirement:** Ten roles exist (NetworkController, Scheduler, StationManager, CustomerServiceAgent, IncidentManager, FleetController, ReportingAnalyst, SystemAdministrator, Driver, Device) with permission-based authorisation. SystemAdministrator manages users and devices but holds no operational permission.
+- **Requirement:** Permissions are role-based and checked on every request. Six roles have accounts in the MVP (Passenger, Driver, TicketInspector, NetworkController, Scheduler, SystemAdministrator); StationManager, IncidentManager, FleetController and ReportingAnalyst are capability bundles held by NetworkController or Scheduler, and CustomerService is deferred (mvp-roles.md). SystemAdministrator manages users and devices but holds no operational permission.
 - **Rationale:** Write authority divided by accountability; separation of duties.
 - **Acceptance:** SystemAdministrator token calling cancel or publish returns 403.
 - **Sources:** DF-010, DF-066, DF-057
@@ -588,9 +601,9 @@ Every requirement here is written to be **testable**. Where a number was needed 
 #### REQ-OPS-007 — Incident lifecycle
 
 - **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
-- **Requirement:** Incidents have severity, an owner and a timeline; only IncidentManager can declare Critical; ownership can be reassigned with a note.
+- **Requirement:** Incidents have severity, an owner and a timeline; only a user holding `incident.declare` (the NetworkController in the MVP) can declare Critical, behind a confirmation step, a reason and an audit entry; ownership can be reassigned with a note.
 - **Rationale:** Incident lifecycle.
-- **Acceptance:** NetworkController declaring Critical returns 403.
+- **Acceptance:** A Scheduler, Driver or SystemAdministrator declaring Critical returns 403; a NetworkController needs the confirmation step and produces an audit entry.
 - **Sources:** DF-015, DF-017, DF-026
 
 #### REQ-OPS-008 — Major incident (emergency termination)
@@ -628,7 +641,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 #### REQ-OPS-012 — Vehicle unavailability
 
 - **Type:** Functional · **Priority:** Should · **MVP:** Thin · **Status:** Proposed
-- **Requirement:** FleetController can mark a vehicle unavailable for a time window, creating alerts for journeys that lose their vehicle.
+- **Requirement:** The Scheduler can mark a vehicle unavailable for a time window, creating alerts for journeys that lose their vehicle.
 - **Rationale:** Maintenance and failure.
 - **Acceptance:** Marking a vehicle unavailable lists the affected journeys.
 - **Sources:** DF-003, DF-025, DF-053
@@ -651,7 +664,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 
 #### REQ-OPS-015 — Customer service lookup
 
-- **Type:** Functional · **Priority:** Could · **MVP:** Thin · **Status:** Proposed
+- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (deferred 2026-10-06: role not built; passenger self-service covers the MVP flow)
 - **Requirement:** CustomerServiceAgent has read-only lookup of journeys and disruptions using the same status vocabulary as passengers.
 - **Rationale:** Support must see what passengers see.
 - **Acceptance:** CustomerServiceAgent token on a write endpoint returns 403.
@@ -874,7 +887,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 
 #### REQ-INT-001 — Separate catering system
 
-- **Type:** Functional · **Priority:** Could · **MVP:** Thin · **Status:** Proposed
+- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (cut from MVP 2026-10-06)
 - **Requirement:** RailBite is a separate application with its own database. SmartRail never reads its storage.
 - **Rationale:** Brief 12 separation.
 - **Acceptance:** SmartRail has no connection string for the RailBite database.
@@ -882,7 +895,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 
 #### REQ-INT-002 — Outbound reference and ETA feed
 
-- **Type:** Functional · **Priority:** Could · **MVP:** Thin · **Status:** Proposed
+- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (cut from MVP 2026-10-06)
 - **Requirement:** SmartRail sends journey and station reference data, ETA changes and cancellations to RailBite using an API key, with a minimal payload that excludes passenger identity.
 - **Rationale:** Brief 11 and data minimisation.
 - **Acceptance:** Payload schema contains no personal fields (schema test).
@@ -890,7 +903,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 
 #### REQ-INT-003 — Signed inbound webhooks
 
-- **Type:** Functional · **Priority:** Could · **MVP:** Thin · **Status:** Proposed
+- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (cut from MVP 2026-10-06)
 - **Requirement:** RailBite sends order events as webhooks that are HMAC-signed, timestamped, idempotent and rejected outside a 5-minute replay window.
 - **Rationale:** At-least-once delivery requires idempotency and authenticity.
 - **Acceptance:** Replayed or tampered webhook is rejected; duplicate delivery is a no-op.
@@ -898,7 +911,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 
 #### REQ-INT-004 — Outbox, retry and dead-letter
 
-- **Type:** Functional · **Priority:** Could · **MVP:** Thin · **Status:** Proposed
+- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (cut from MVP 2026-10-06)
 - **Requirement:** Outbound events use an outbox with retry, backoff and a dead-letter queue; a RailBite outage never affects railway functions.
 - **Rationale:** Separation under failure.
 - **Acceptance:** Stopping RailBite leaves all core endpoints healthy and queues events.
@@ -906,8 +919,318 @@ Every requirement here is written to be **testable**. Where a number was needed 
 
 #### REQ-INT-005 — Single-screen collection order
 
-- **Type:** Functional · **Priority:** Could · **MVP:** Thin · **Status:** Proposed
+- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (cut from MVP 2026-10-06)
 - **Requirement:** Passengers can place a single collection order from one screen using RailBite's menu; the order may be rejected at confirm and the UI handles it.
 - **Rationale:** Brief 12, minimum viable.
 - **Acceptance:** Forced stock-out at confirm shows a clear message and no broken state.
 - **Sources:** DF-092
+
+<!-- Ticketing requirements added 2026-10-06 (decision log in 12-ticketing/README.md) -->
+
+<a id="acc"></a>
+
+## Accounts
+
+#### REQ-ACC-001 — Register and sign in
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Passengers can register and sign in with email and password. Boards, search, journey detail, following and disruptions never require sign-in; buying a ticket, viewing tickets and requesting a refund do.
+- **Rationale:** Brief section 14: some information is public, some functionality needs an account. Scoped so the public promise is kept.
+- **Acceptance:** Anonymous calls to ticket endpoints return 401; board, journey and disruption endpoints return 200 with no credentials.
+- **Sources:** Ticketing decision log — Decision 28
+- **Assumptions:** ASM-012, ASM-035
+
+#### REQ-ACC-002 — Recover tickets on a new device
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A passenger who signs in on a new or reinstalled device sees all of their tickets, including Affected and Refunded ones.
+- **Rationale:** Tickets belong to the account, not the device.
+- **Acceptance:** Signing in on a second device lists the same tickets with the same statuses.
+- **Sources:** Ticketing decision log — Decision 33
+- **Assumptions:** ASM-035
+
+#### REQ-ACC-003 — Delete my account
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Thin · **Status:** Proposed
+- **Requirement:** A passenger can delete their account. Personal fields are anonymised; ticket, payment and refund records are retained without personal data, and refunds in flight still complete.
+- **Rationale:** Personal data must be deletable (brief section 20) while financial records must survive.
+- **Acceptance:** After deletion no personal field is retrievable for the account; a PROCESSING refund still reaches a final state.
+- **Sources:** Ticketing decision log — Gap
+- **Assumptions:** ASM-035
+
+#### REQ-ACC-004 — Sign-in protection
+
+- **Type:** Non-functional · **Priority:** Should · **MVP:** Thin · **Status:** Proposed
+- **Requirement:** Repeated failed sign-ins lock the account for a defined period; registration and sign-in errors do not reveal whether an email is registered.
+- **Rationale:** Accounts now hold tickets and refund rights.
+- **Acceptance:** Five failed sign-ins lock the account; a duplicate registration shows a neutral message.
+- **Sources:** Ticketing decision log — Gap
+- **Assumptions:** ASM-035
+
+<a id="tkt"></a>
+
+## Tickets
+
+#### REQ-TKT-001 — Ticket bound to a journey, not a time
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A ticket is bound to a journey id, an origin stop, a destination stop and a service date. Delay, platform change or retiming never change it or create a new one.
+- **Rationale:** A delay changes expected times, not the promise the passenger bought.
+- **Acceptance:** A +20 min delay leaves the ticket's journey id, stops and date unchanged while the displayed expected time changes.
+- **Sources:** Ticketing decision log — Decisions 1, 2
+- **Assumptions:** ASM-035
+
+#### REQ-TKT-002 — Sales window and double availability check
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A ticket can be bought while the journey is not Cancelled and has not departed the passenger's origin stop. Availability is checked when checkout starts and again when payment succeeds; if the journey became unavailable in between, no ticket is issued and the payment is refunded automatically.
+- **Rationale:** A stale search result must not produce an invalid booking; a delayed train stays purchasable.
+- **Acceptance:** Cancelling a journey between order and payment confirmation yields no ticket and one refund; buying a +20 min delayed journey succeeds.
+- **Sources:** Ticketing decision log — Decisions 2, 35
+- **Assumptions:** ASM-042
+
+#### REQ-TKT-003 — Fares and passenger categories
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** The server computes the price in LKR from a seeded stage-based fare table multiplied by the passenger category (Adult, Child, Senior). Any price supplied by a client is ignored.
+- **Rationale:** Fare categories are a fare concept only; the client must not set prices.
+- **Acceptance:** A known origin, destination and category returns the seeded price; a tampered client price has no effect.
+- **Sources:** Ticketing decision log — Decision 26
+- **Assumptions:** ASM-039
+
+#### REQ-TKT-004 — Accessibility flag
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A passenger can flag that they need assistance. It is stored separately from the fare category, shown to authorised staff and the inspector, and triggers no workflow in the MVP.
+- **Rationale:** Accessibility is not a fare category; it applies to any passenger.
+- **Acceptance:** A Child ticket with the flag set keeps the Child price and shows the flag to staff.
+- **Sources:** Ticketing decision log — Decision 27
+- **Assumptions:** ASM-035
+
+#### REQ-TKT-005 — Ticket states and append-only history
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A ticket is in exactly one state of PendingPayment, Valid, Affected, Refunded or Expired. Every transition appends a history row; history is never deleted; illegal transitions are rejected.
+- **Rationale:** Audit and customer-service need the full story of a ticket.
+- **Acceptance:** Unit tests cover every legal and illegal transition; a refunded ticket still has all earlier history rows.
+- **Sources:** Ticketing decision log — Decisions 3, 31
+- **Assumptions:** ASM-035
+
+#### REQ-TKT-006 — Issue only after confirmed payment
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A ticket becomes Valid and its QR is issued only after a verified payment confirmation. A failed or abandoned payment issues nothing.
+- **Rationale:** No valid ticket without payment.
+- **Acceptance:** With payment failure injected, no Valid ticket exists and the order ends Expired.
+- **Sources:** Ticketing decision log — Decisions 23, 29
+- **Assumptions:** ASM-037
+
+#### REQ-TKT-007 — Unpaid orders expire
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A PendingPayment order expires 15 minutes after creation.
+- **Rationale:** Abandoned checkouts must not linger.
+- **Acceptance:** An order older than 15 min is Expired and cannot be paid.
+- **Sources:** Ticketing decision log — Decision 25
+- **Assumptions:** ASM-040
+
+#### REQ-TKT-008 — Regional only
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Only Regional (unreserved) journeys can be purchased. Intercity and High-speed journeys are shown with information but display that reservation tickets are not available in this version.
+- **Rationale:** Reserved seating needs seat inventory and concurrency control that are out of scope.
+- **Acceptance:** Selecting an Intercity journey offers no purchase and shows the message.
+- **Sources:** Ticketing decision log — Decisions 18-22
+- **Assumptions:** ASM-036
+
+#### REQ-TKT-009 — Cancellation affects tickets
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** When a journey is cancelled, or terminated short, Valid tickets that depend on the lost part of the journey become Affected within 5 seconds and their holders are notified. Tickets whose destination lies before the termination point are unaffected.
+- **Rationale:** Railway cancellation must reach the people holding tickets, and only them.
+- **Acceptance:** Terminating at stop 3: a ticket to stop 5 is Affected, a ticket to stop 2 stays Valid; one push per affected holder.
+- **Sources:** Ticketing decision log — Decision 3
+- **Assumptions:** ASM-035
+
+#### REQ-TKT-010 — Auto-follow and platform changes
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Buying a ticket subscribes the holder to the journey. A platform change does not invalidate the ticket and the holder receives the update.
+- **Rationale:** Ticket holders are the people who most need platform changes.
+- **Acceptance:** After purchase the holder receives a platform-change push; the ticket stays Valid.
+- **Sources:** Ticketing decision log — Decision 34
+- **Assumptions:** ASM-035
+
+#### REQ-TKT-011 — Ticket ends with the journey
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A Valid ticket becomes Expired when its journey is Completed.
+- **Rationale:** Old tickets must not look usable.
+- **Acceptance:** After journey completion the ticket reads Expired and an inspector scan returns NOT_VALID_STATUS.
+- **Sources:** Ticketing decision log — Gap
+- **Assumptions:** ASM-035
+
+#### REQ-TKT-012 — Signed QR and offline display
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** The ticket QR carries a signed token (ticket id, journey id, origin, destination, version) with no personal data. The passenger app caches issued tickets and shows them offline with a last-verified time; status is always checked server-side.
+- **Rationale:** A ticket must remain showable in a tunnel, and a forged QR must be detectable.
+- **Acceptance:** Airplane mode still displays the QR with 'last verified hh:mm'; altering one character of the token makes validation return TAMPERED.
+- **Sources:** Ticketing decision log — Decision 32
+- **Assumptions:** ASM-041
+
+#### REQ-TKT-013 — Rebooking rules (documented only)
+
+- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Proposed
+- **Requirement:** Rebooking after a railway cancellation is allowed only onto an eligible replacement with the same origin, destination, date, passenger and compatible fare; it never reuses a ticket for another route. Not built in the MVP.
+- **Rationale:** Keeps the rule consistent for a future build.
+- **Acceptance:** Documented; in the MVP the passenger is offered a refund and told rebooking is unavailable.
+- **Sources:** Ticketing decision log — Decisions 4-6
+- **Assumptions:** ASM-035
+
+<a id="pay"></a>
+
+## Payments
+
+#### REQ-PAY-001 — Provider-neutral payment with a fake default
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Payments go through a provider-neutral port with a hosted checkout. A fake provider is the default for development, tests and demo. Card data never reaches SmartRail.
+- **Rationale:** Keeps SmartRail out of card-data scope and testable without external keys.
+- **Acceptance:** The full purchase flow runs against the fake provider; no card fields exist in the SmartRail API or database.
+- **Sources:** Ticketing decision log — Decision 30
+- **Assumptions:** ASM-037
+
+#### REQ-PAY-002 — Idempotent payment confirmation
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A payment confirmation is idempotent on the provider reference: a duplicate callback creates no second ticket and no second charge.
+- **Rationale:** Providers deliver at least once.
+- **Acceptance:** Replaying a confirmation any number of times yields exactly one Valid ticket.
+- **Sources:** Ticketing decision log — Decision 24
+- **Assumptions:** ASM-037
+
+#### REQ-PAY-003 — Authentic payment callbacks
+
+- **Type:** Non-functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Payment callbacks must carry a valid signature and a timestamp inside a 5-minute window; otherwise they are rejected and counted.
+- **Rationale:** A forged callback would issue free tickets.
+- **Acceptance:** A callback with a wrong signature or a stale timestamp returns 401 and changes nothing.
+- **Sources:** Ticketing decision log — Gap
+- **Assumptions:** ASM-037
+
+#### REQ-PAY-004 — PayHere sandbox adapter
+
+- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Proposed
+- **Requirement:** A PayHere sandbox adapter implements the same payment port. Stretch only; needs the owner's sandbox keys, which never enter the repository.
+- **Rationale:** Shows the port is real without making the build depend on external credentials.
+- **Acceptance:** Documented; if built, the same payment tests run against it.
+- **Sources:** Ticketing decision log — Decision 30
+- **Assumptions:** ASM-037
+
+<a id="ref"></a>
+
+## Refunds
+
+#### REQ-REF-001 — Request a full refund after a railway cancellation
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A passenger can request a full refund for an Affected ticket with one action. Because the railway caused the problem, the refund is auto-approved.
+- **Rationale:** Eligibility is a fact, not a judgment; a manual queue adds delay and a screen for no decision.
+- **Acceptance:** Tapping Refund on an Affected ticket moves the refund to PROCESSING without staff action.
+- **Sources:** Ticketing decision log — Decisions 7, 8
+- **Assumptions:** ASM-038
+
+#### REQ-REF-002 — Refund is its own record
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A refund is a separate record with states REQUESTED, PROCESSING, REFUNDED and FAILED (FAILED can be retried). The ticket becomes Refunded only when the refund reaches REFUNDED.
+- **Rationale:** A failed provider call needs somewhere to live without corrupting the ticket.
+- **Acceptance:** With provider failure injected the refund ends FAILED and the ticket stays Affected.
+- **Sources:** Ticketing decision log — Decision 9
+- **Assumptions:** ASM-038
+
+#### REQ-REF-003 — No double refunds
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** At most one active refund exists per ticket, enforced by a unique constraint, and the provider refund call is idempotent.
+- **Rationale:** Refunding twice is a direct financial loss.
+- **Acceptance:** Two simultaneous refund requests for one ticket produce one refund and one provider call.
+- **Sources:** Ticketing decision log — Decision 10
+- **Assumptions:** ASM-038
+
+#### REQ-REF-004 — Automatic refund retry and visibility
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Thin · **Status:** Proposed
+- **Requirement:** A refund that fails at the provider is retried automatically with backoff (3 attempts). The passenger can request the refund again, which is idempotent. The NetworkController can see refunds by state, read-only. No staff action is needed to recover a failed refund.
+- **Rationale:** Failures need a recovery path that does not depend on a role that is not built.
+- **Acceptance:** With provider failure injected, the refund is retried automatically and reaches REFUNDED without staff action; a repeated request issues one provider call.
+- **Sources:** Ticketing decision log — Decision 8; role consolidation 2026-10-06
+- **Assumptions:** ASM-043, ASM-046
+
+#### REQ-REF-005 — Automatic refund when no ticket can be issued
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** If payment succeeds but the ticket cannot be issued because the journey became unavailable, the payment is refunded automatically.
+- **Rationale:** The passenger paid for something that no longer exists.
+- **Acceptance:** Cancelling a journey during checkout leaves the passenger with no ticket and a REFUNDED refund.
+- **Sources:** Ticketing decision log — Decision 35
+- **Assumptions:** ASM-038
+
+<a id="ins"></a>
+
+## Ticket inspection
+
+#### REQ-INS-001 — Ticket Inspector role in the staff app
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Inspection is a `ticket.inspect` permission held by a Ticket Inspector role, delivered as a mode of the staff Flutter app. A driver does not have it unless also assigned the role.
+- **Rationale:** Do not assume drivers inspect tickets; keep the capability explicit without building another app.
+- **Acceptance:** A driver token without the permission receives 403 from the validation endpoint and is not offered the mode.
+- **Sources:** Ticketing decision log — Decisions 13, 14
+- **Assumptions:** ASM-043
+
+#### REQ-INS-002 — Server-side ticket validation
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A scan is validated on the server: signature, status, journey, service date and whether the ticket's segment covers the inspector's current stop. The result is one of VALID, NOT_VALID_STATUS, WRONG_JOURNEY, WRONG_DATE, OUTSIDE_SEGMENT_PAST_DESTINATION, OUTSIDE_SEGMENT_BEFORE_ORIGIN, TAMPERED or UNABLE_TO_VERIFY.
+- **Rationale:** Status can change at any time, so the decision must be made where the truth lives.
+- **Acceptance:** Each result code has a test with a seeded ticket.
+- **Sources:** Ticketing decision log — Decisions 11, 12, 15
+- **Assumptions:** ASM-041
+
+#### REQ-INS-003 — Unusable tickets are rejected
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Affected, Refunded, Expired and PendingPayment tickets are rejected on scan.
+- **Rationale:** A ticket that should no longer be usable must not pass.
+- **Acceptance:** Scanning a Refunded ticket returns NOT_VALID_STATUS.
+- **Sources:** Ticketing decision log — Decisions 16, 17
+- **Assumptions:** ASM-035
+
+#### REQ-INS-004 — Travelling past the destination
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A scan at a stop beyond the ticket's destination returns OUTSIDE_SEGMENT_PAST_DESTINATION and is logged. Any fare adjustment happens outside the system.
+- **Rationale:** A ticket covers only what was bought.
+- **Acceptance:** Scanning a Central-to-Riverside ticket at Mill Lane returns OUTSIDE_SEGMENT_PAST_DESTINATION.
+- **Sources:** Ticketing decision log — Decisions 11, 12
+- **Assumptions:** ASM-035
+
+#### REQ-INS-005 — Inspection needs a connection
+
+- **Type:** Non-functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Validation requires connectivity. Offline, the inspector sees UNABLE_TO_VERIFY and the scan is queued and logged on reconnect.
+- **Rationale:** Revocation (refund, cancellation) cannot be checked offline; the limit is stated, not hidden.
+- **Acceptance:** With the inspector offline the app shows UNABLE_TO_VERIFY and the queued scan is logged after reconnect.
+- **Sources:** Ticketing decision log — Decision 32
+- **Assumptions:** ASM-041
+
+#### REQ-INS-006 — Inspector position defaults to the live journey
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** The inspector's current stop defaults to the journey's live position and can be changed manually; a manual stop is noted in the scan log.
+- **Rationale:** Inspection reuses the live journey state every other app shows.
+- **Acceptance:** With a Running journey the current stop is prefilled; with Unknown confidence the inspector must choose.
+- **Sources:** Ticketing decision log — Gap
+- **Assumptions:** ASM-041

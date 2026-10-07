@@ -21,13 +21,13 @@ Brief §20: identify what the platform collects, classify it, and document the i
 | Journey state, delays, platforms | Public | Live Operations | 13 months (aggregated) | Yes | ETA and status only | Everyone |
 | Disruption notices | Public | Disruptions | 13 months | Yes | No | Everyone |
 | Raw telemetry | Operational | Live Operations | **7 days**, unless legal hold | Counts only | No | NC, system |
-| Vehicle assignments, availability | Operational | Live Operations | 13 months | Yes | No | SCH, FC, NC |
-| Reason codes, data corrections | Operational | Live Operations | 13 months | Yes | No | NC, RA |
-| Incident records | Operational | Disruptions | 24 months | Yes | No | IM, NC |
-| Audit log | Sensitive-operational | Identity & Access / all | **24 months**, append-only | Its own store | No | IM, RA, SA (access changes) |
+| Vehicle assignments, availability | Operational | Live Operations | 13 months | Yes | No | SCH, NC |
+| Reason codes, data corrections | Operational | Live Operations | 13 months | Yes | No | NC |
+| Incident records | Operational | Disruptions | 24 months | Yes | No | NC |
+| Audit log | Sensitive-operational | Identity & Access / all | **24 months**, append-only | Its own store | No | NC, SA (access changes) |
 | Staff identities, roles | Personal | Identity & Access | Employment + 12 months | ID only, never name | No | SA |
 | **Driver duty and location** | **Sensitive-operational** | Live Operations | **7 days** (location), duty 13 months | **Never** coordinates | No | NC; **never public** |
-| Driver delay reports | Operational | Live Operations | 13 months | Yes | No | NC, RA |
+| Driver delay reports | Operational | Live Operations | 13 months | Yes | No | NC |
 | Passenger device subscription (push token, followed journeys) | Personal | Notifications | Until deleted; expired after 90 days inactivity | Never token | No | System only |
 | Catering order reference | Personal (linked to a device) | Catering Gateway | 90 days | Reference only | Reference only | System only |
 | Device tokens (displays) | Sensitive-operational | Identity & Access | Until revoked | Never | No | SA |
@@ -38,7 +38,7 @@ Brief §20: identify what the platform collects, classify it, and document the i
 | Decision | Reasoning | Ref |
 |---|---|---|
 | **No passenger location is collected** | No requirement needs it; station selection is manual or a one-shot coarse lookup | ADR-0013 |
-| **No passenger accounts in the MVP** | The only identity-needing feature is following a train; an anonymous device subscription does that with far less personal data | ASM-012 |
+| **Passenger accounts exist, but only for tickets** | Browsing, boards, following and disruptions stay anonymous; an account is required only to buy, hold and refund tickets | ASM-012, REQ-ACC-001 |
 | **Driver location only during a duty, never public, 7-day retention** | Train position comes from the infrastructure feed; driver location is employee monitoring and must be limited | REQ-DRV-010, CON-07 |
 | **Catering receives no passenger identity** | Order reference, journey reference, collection station and ETA are sufficient | REQ-INT-002 |
 | **Logs carry correlation ids, not identities** | Logs are widely accessible and long-lived | REQ-DATA-002 |
@@ -48,4 +48,17 @@ Brief §20: identify what the platform collects, classify it, and document the i
 ## Passenger rights in the MVP
 
 - Delete all follows and device data from the app (REQ-PAX-012).
-- No account means nothing to export beyond the device's own follows, which the app already shows.
+- Delete the account: personal fields are anonymised, financial records are kept without personal data (REQ-ACC-003).
+
+## Ticketing data (added 2026-10-06)
+
+| Data | Class | Owner module | Retention | In logs? | Who reads |
+|---|---|---|---|---|---|
+| Account (email, password hash, display name) | **Personal** | Identity & Access | Until deletion, then anonymised | **Never** email or hash | The passenger; system only |
+| Ticket (journey, stops, category, price, assistance flag) | Personal (linked to an account) | Ticketing | 24 months, anonymised on account deletion | Ticket id only | Owner, authorised inspector via scan result |
+| Ticket status history | Operational | Ticketing | 24 months | Yes | NC (read-only) |
+| Payment attempt (provider reference, amount, status) | Personal | Ticketing | 24 months | Reference only, never card data | NC (read-only) |
+| **Card data** | — | **Never stored by SmartRail** (hosted checkout) | — | **Never** | — |
+| Refund record | Personal (financial) | Ticketing | 24 months | Yes (ids) | NC (read-only), the passenger |
+| Inspection scan log | Sensitive-operational | Ticketing | 13 months | Ticket id and result only | Inspector (own), NC |
+| QR token | Operational | Ticketing | Life of the ticket | Never the token | The holder |

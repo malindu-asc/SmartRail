@@ -108,7 +108,23 @@ expect:
 | SIM-15 | Section blocked | operator section disruption | Scope resolution to many journeys | EDG-038, 067, 088 | — |
 | SIM-16 | Driver clock skew | skew +6 min | Confidence downgrade, ordering | EDG-042 | — |
 | SIM-17 | Major incident | operator emergency termination | Templates, legal hold | EDG-037 | — |
-| SIM-18 | Demo day | composite of 02, 09, 08, 14, 05 | The stakeholder demo narrative | — | demo |
+| SIM-18 | Demo day | composite of 02, 09, 14, 08, 19, 20, 05 | The stakeholder demo narrative | — | demo |
+| SIM-19 | Ticket purchase with payment faults | provider: duplicate callback, bad signature, abandoned payment; operator cancels mid-checkout | Idempotency, signature checks, double availability check, automatic refund | EDG-125, 126, 127, 128 | **E2E-4** |
+| SIM-20 | Cancellation with tickets and refund | operator terminates short; provider refund fails once, then succeeds on retry | Affected only for the lost part; one refund; retry; inspector rejection | EDG-123, 124, 129, 130, 131, 142 | **E2E-4** |
+
+## Fake payment provider
+
+The same simulator package ships a **fake payment provider** that implements the payment port (REQ-PAY-001), so purchases and
+refunds can be driven with no external account:
+
+| Capability | Behaviour |
+|---|---|
+| Hosted checkout page | A minimal page with Pay and Cancel; the real one is a redirect to the provider |
+| Callback | Signed confirmation to SmartRail, with a timestamp (REQ-PAY-003) |
+| Faults | `duplicate` (send twice), `badsig`, `stale` (old timestamp), `abandon`, `delay` |
+| Refund | Idempotent on SmartRail's key; faults `fail_once`, `fail_always` |
+
+The PayHere sandbox adapter, if built, implements the same port and runs the same tests.
 
 ## Reset (REQ-SIM-005)
 

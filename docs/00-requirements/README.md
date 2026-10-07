@@ -36,8 +36,9 @@ who is allowed to say what about it, discovery produces a list of features rathe
 | 05 | [Conflicts and ambiguities](05-discovery/conflicts-and-ambiguities.md) | Where requirements pull against each other | Seeded |
 | 05 | [Assumptions](05-discovery/assumptions.md) | Facts, decisions and assumptions — kept apart | Seeded |
 | 05 | [Open questions](05-discovery/open-questions.md) | What we would ask the organisation | Seeded |
-| 06 | [Requirements](06-requirements/requirements.md) | 102 testable requirements | Seeded |
+| 06 | [Requirements](06-requirements/requirements.md) | 134 testable requirements | Seeded |
 | 06 | [Permission matrix](06-requirements/permission-matrix.md) | Who may do what | Seeded |
+| 06 | [MVP roles](06-requirements/mvp-roles.md) | The six roles built in the MVP, and where the others went | Seeded |
 | 06 | [Notification matrix](06-requirements/notification-matrix.md) | Which event notifies whom, how, how often | Seeded |
 | 06 | [Degraded-mode matrix](06-requirements/degraded-mode-matrix.md) | What each app does when the network fails | Seeded |
 | 06 | [Data classification](06-requirements/data-classification.md) | What data exists, who owns it, how long it lives | Seeded |
@@ -47,6 +48,7 @@ who is allowed to say what about it, discovery produces a list of features rathe
 | 10 | [User stories](10-user-stories/stories.md) | Stories with Given/When/Then acceptance criteria | Seeded |
 | 11 | [MVP scope](11-scope/mvp-scope.md) | Build / thin / defer, with reasons | Seeded |
 | 11 | [Traceability](11-scope/traceability.md) | Generated — requirement to story, flow, edge case, test | Generated |
+| 12 | [Ticketing](12-ticketing/README.md) | Accounts, tickets, payments, refunds, inspection — the 35 decisions and the build gate | Seeded |
 
 ## How this maps to the brief's required artifacts (§23 Requirements)
 
@@ -73,3 +75,5 @@ recorded in the change log below with its impact, rather than rewritten silently
 | Date | Change | Impact | By |
 |---|---|---|---|
 | 2026-10-05 | Initial seed of all requirement documents from discovery work | — | Malindu (AI-assisted, under review) |
+| 2026-10-06 | Ticketing, accounts and payments brought into the MVP as a thin gated slice; catering cut entirely; E2E-4 replaced; role TicketInspector added; refund recovery is automatic; ASM-005, ASM-012, ASM-013 changed; REQ-ACC/TKT/PAY/REF/INS, UC-TKT, CF-09..11, EDG-120..143, US-100..108 added | Scope: +~4-5 days gated at D14; catering Integration row forgone | Malindu decision, Claude drafted |
+| 2026-10-06 | Role consolidation: MVP builds six roles; Station Manager, Incident Manager, Fleet, Reporting folded into Network Controller / Scheduler; Customer Service deferred; mvp-roles.md added; ASM-013, ASM-043 changed; ASM-045..047 added; REQ-OPS-001, 007, 012, 015, REQ-REF-004 reworded; EDG-097 and US-043, US-106 changed | Fewer accounts and tests; Network Controller concentration mitigated by audit, second approver and confirmation step | Malindu decision, Claude drafted |

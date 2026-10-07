@@ -32,7 +32,7 @@ A journey is **not** in a single "status". It has three independent dimensions, 
         │
         └──────▶ Cancelled  (from Planned or Ready)
 
-   Any state except Completed ──▶ TerminatedEmergency   (Incident manager only, REQ-OPS-007)
+   Any state except Completed ──▶ TerminatedEmergency   (`incident.declare` only, REQ-OPS-007)
    Cancelled ──▶ Planned        (reinstated, before scheduled departure, with reason)
 ```
 
@@ -45,7 +45,7 @@ A journey is **not** in a single "status". It has three independent dimensions, 
 | **Completed** | Reached its final stop | Arrival at terminus | Briefly, then removed | — |
 | **TerminatedShort** | Ended before its planned terminus | Controller decision | Yes, with the stop where it ended | — |
 | **Cancelled** | Will not run, or will not run further | Controller decision with reason | Yes, retained on boards for 15 min (ASM-024) | Planned (reinstated) |
-| **TerminatedEmergency** | Ended because of a serious incident | Incident manager only | Yes, approved template text only | — |
+| **TerminatedEmergency** | Ended because of a serious incident | `incident.declare` permission only | Yes, approved template text only | — |
 
 **Sub-state of Running:** `AtStop` (at a station, dwelling) or `InSection` (between two stations). The driver app
 uses this to disable free-text input between stops (REQ-DRV-004).
@@ -169,5 +169,4 @@ state; an unacknowledged message is visually distinct (REQ-DRV-007).
 
 ## 10. Incident
 
-`Declared → Managed → Resolved → Reviewed`. Severity: Minor, Major, Critical. Only an incident manager can
-declare Critical or move a journey to `TerminatedEmergency`.
+`Declared → Managed → Resolved → Reviewed`. Severity: Minor, Major, Critical. Only a holder of `incident.declare` (the network controller in the MVP) can declare Critical or move a journey to `TerminatedEmergency`.

@@ -31,7 +31,9 @@ detection feed (ASM-008): it adds what only a person knows, and is a fallback wh
 - F3 *Unsent events from a previous duty* — surfaced for review, not applied to this duty (REQ-DRV-008).
 - F4 *No duty rostered* — "No duty assigned — contact control"; nothing invented.
 
-**Requirements:** REQ-DRV-001, REQ-DRV-002, REQ-DRV-008 · **Edge cases:** EDG-012, EDG-013
+- F5 *Another driver's duty or journey requested* — 403; only the own duty is ever returned.
+
+**Requirements:** REQ-DRV-001, REQ-DRV-002, REQ-DRV-008 · **Edge cases:** EDG-012, EDG-013, EDG-144, EDG-145, EDG-147
 
 ---
 
@@ -56,8 +58,9 @@ detection feed (ASM-008): it adds what only a person knows, and is a fallback wh
 **Failure flows**
 - F1 *Between stops* — free-text disabled; only one-tap and pick-list actions (REQ-DRV-004).
 - F2 *Device clock wrong* — event accepted with downgraded confidence; server time used for ordering.
+- F3 *Wrong stop or out-of-order event* — validated against the stop sequence; rejected or held for correction, never applied silently.
 
-**Requirements:** REQ-DRV-003, REQ-DRV-004, REQ-LIVE-006 · **Edge cases:** EDG-041, EDG-042
+**Requirements:** REQ-DRV-003, REQ-DRV-004, REQ-DRV-011, REQ-LIVE-006 · **Edge cases:** EDG-041, EDG-042, EDG-146
 
 ---
 
@@ -162,4 +165,7 @@ detection feed (ASM-008): it adds what only a person knows, and is a fallback wh
 2. Incoming driver signs on to the running journey.
 3. Two duty records attach to one journey; handover logged (REQ-DRV-009).
 
-**Requirements:** REQ-DRV-009 · **Edge cases:** EDG-047
+**Failure flows**
+- F1 *Both drivers appear signed on* — the outgoing duty must be closed first; events stay with their own duty.
+
+**Requirements:** REQ-DRV-009 · **Edge cases:** EDG-047, EDG-148

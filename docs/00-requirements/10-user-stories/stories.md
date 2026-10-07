@@ -109,13 +109,15 @@ Traces: REQ-DRV-001, REQ-DRV-002 · Status: Proposed
 - **Given** I synced once **When** I lose signal **Then** my duty is still visible
 - **Given** my cache is from yesterday **When** I sign on offline **Then** I see "duty not current"
 - **Given** another driver's duty id **When** I request it **Then** I receive 403
+- **Given** I have no assigned duty **Then** the app says "No duty assigned — contact control" and offers no journey actions
 
 ### US-021 — Record stops with one tap
 *As a driver, I want large one-tap Arrived and Departed buttons, so that recording never distracts me.* · Must ·
-Traces: REQ-DRV-003, REQ-DRV-004 · Status: Proposed
+Traces: REQ-DRV-003, REQ-DRV-004, REQ-DRV-011 · Status: Proposed
 
 - **Given** the train is between stops **When** I open the app **Then** free-text entry is disabled
 - **Given** I tap Departed twice **When** events are sent **Then** one event exists
+- **Given** I record Departed for a stop that is not the current stop **Then** it is rejected or held for correction and the journey is unchanged
 
 ### US-022 — Say why we're late
 *As a driver, I want to record a delay reason from a short list, so that delay isn't attributed to me wrongly.* ·
@@ -170,12 +172,12 @@ REQ-OPS-004, REQ-OPS-011 · Status: Proposed
 - **Given** the action succeeds **Then** exactly one audit entry exists with before and after
 
 ### US-032 — Change a platform safely
-*As a controller or station manager, I want platform changes to reach screens, staff and followers at once.* · Must
+*As a network controller, I want platform changes to reach screens, staff and followers at once.* · Must
 · Traces: REQ-LIVE-014, REQ-LIVE-020 · Status: Proposed
 
 - **Given** I change 3 → 5 **When** I confirm **Then** displays show "changed from 3" and followers are pushed
 - **Given** platform 5 is occupied ± 5 min **When** I change **Then** I see a warning and can still save
-- **Given** I am a station manager at another station **When** I try **Then** I receive 403
+- **Given** a Driver or Scheduler token **When** it calls the platform-change endpoint **Then** I receive 403
 
 ### US-033 — Message a driver and know they got it
 *As a controller, I want to see delivered and acknowledged states, so that I know to use the radio if not.* ·
@@ -199,11 +201,11 @@ Status: Proposed
 Status: Proposed
 
 ### US-043 — Run a serious incident with one controlled voice
-*As an incident manager, I want approved templates, legal hold and handover.* · Must · Traces: REQ-OPS-007,
+*As a network controller handling a serious incident, I want approved templates, legal hold and handover.* · Must · Traces: REQ-OPS-007,
 REQ-OPS-008, REQ-DATA-003 · Status: Proposed
 
 - **Given** I terminate a journey for an emergency **Then** only template text is public and telemetry is held
-- **Given** a controller attempts the same **Then** they receive 403
+- **Given** a scheduler or driver token attempts the same **Then** they receive 403
 
 ## Epic E6 — Planning and allocation
 
@@ -237,7 +239,7 @@ REQ-DSP-004 · Status: Proposed
 - See EDG-080 for the full criteria (65 s banner, 305 s scheduled-only, 90 s offline in device health)
 
 ### US-062 — Know every screen is alive
-*As a station manager, I want offline screens flagged within 90 s.* · Must · Traces: REQ-DSP-005, REQ-OPS-009 ·
+*As a network controller, I want offline screens flagged within 90 s.* · Must · Traces: REQ-DSP-005, REQ-OPS-009 ·
 Status: Proposed
 
 ### US-063 — Find my way from a terminal without installing anything
@@ -340,7 +342,7 @@ REQ-NFR-006 · Status: Proposed
 
 - **Given** the degraded-mode matrix **Then** every row has a corresponding test or simulator scenario
 
-## Epic E10 — External catering (thin)
+## Epic E10 — External catering (CUT from the MVP 2026-10-06 — kept for the record)
 
 ### US-090 — Railway keeps working when the provider fails
 *As the organisation, I want a catering outage to have no effect on railway information.* · Could · Traces:
@@ -353,3 +355,69 @@ identity.* · Could · Traces: REQ-INT-002, REQ-INT-003 · Status: Proposed
 ### US-092 — Order food for collection in one screen
 *As a passenger, I want to order for collection at a stop on my journey.* · Could · Traces: REQ-INT-005 · Status:
 Proposed
+
+## Epic E11 — Accounts, tickets and refunds (added 2026-10-06)
+
+Decision log: [12-ticketing/README.md](../12-ticketing/README.md). Built as a thin slice, gated at D14.
+
+### US-100 — Sign in only when I need to
+*As a passenger, I want to browse trains without an account and sign in only to buy, so that the public information stays public.* · Must · Traces: REQ-ACC-001, REQ-ACC-004 · Status: Proposed
+
+- **Given** I am not signed in **When** I open boards, journeys or disruptions **Then** they load with no credentials
+- **Given** I am not signed in **When** I call a ticket endpoint **Then** I receive 401
+- **Given** five failed sign-ins **Then** the account is locked temporarily and no message reveals whether the email exists
+
+### US-101 — Buy a ticket for my journey
+*As a commuter, I want to buy a ticket between two stops of a train, so that I have a valid ticket on my phone.* · Must · Traces: REQ-TKT-001, REQ-TKT-002, REQ-TKT-003, REQ-TKT-004, REQ-TKT-006, REQ-TKT-007, REQ-TKT-008, REQ-PAY-001 · Status: Proposed
+
+- **Given** a Regional journey that has not departed my origin stop **When** I pay **Then** I receive one Valid ticket with a signed QR
+- **Given** the train is 20 min late **When** I buy **Then** the purchase succeeds and the ticket is unchanged by later delay
+- **Given** an Intercity journey **When** I look at it **Then** I see "not available in this version"
+- **Given** an unpaid order **When** 15 min pass **Then** it expires
+- **Given** I tamper with the price in the request **Then** the server price is used
+
+### US-102 — Always have my ticket
+*As a passenger, I want my tickets on any device and in a tunnel, so that I can show them whenever asked.* · Must · Traces: REQ-ACC-002, REQ-TKT-005, REQ-TKT-011, REQ-TKT-012, REQ-ACC-003 · Status: Proposed
+
+- **Given** a new device **When** I sign in **Then** my tickets reappear with their statuses
+- **Given** airplane mode **When** I open a ticket **Then** the QR displays with "last verified hh:mm"
+- **Given** my journey completed **Then** the ticket reads Expired
+
+### US-103 — Be told if my ticket is affected
+*As a passenger, I want to be told promptly when my train is cancelled or ends before my stop.* · Must · Traces: REQ-TKT-009, REQ-TKT-010 · Status: Proposed
+
+- **Given** the journey is terminated short **When** my destination lies beyond **Then** my ticket is Affected and I get one push
+- **Given** my destination lies before the termination **Then** nothing changes for me
+- **Given** a platform change **Then** my ticket stays Valid and I get the update
+
+### US-104 — Get my money back after a railway cancellation
+*As a passenger, I want a one-tap full refund, so that I'm not out of pocket for the railway's failure.* · Must · Traces: REQ-REF-001, REQ-REF-002, REQ-REF-003 · Status: Proposed
+
+- **Given** an Affected ticket **When** I tap Refund twice **Then** one refund exists and the provider is called once
+- **Given** the provider fails **Then** the refund shows FAILED/retrying and the ticket stays Affected
+- **Given** the refund completes **Then** the ticket reads Refunded
+
+### US-105 — Check tickets on board
+*As a ticket inspector, I want to scan a QR and see at once whether the passenger is covered here, so that I can check many people quickly.* · Must · Traces: REQ-INS-001, REQ-INS-002, REQ-INS-003, REQ-INS-004, REQ-INS-005, REQ-INS-006 · Status: Proposed
+
+- **Given** a Valid ticket covering the current stop **When** I scan **Then** I see VALID
+- **Given** a Refunded, Affected or Expired ticket **Then** NOT_VALID_STATUS
+- **Given** a stop past the destination **Then** OUTSIDE_SEGMENT_PAST_DESTINATION and a log entry
+- **Given** I am offline **Then** UNABLE_TO_VERIFY and the scan is logged later
+- **Given** I am a driver without the permission **Then** 403
+
+### US-106 — Recover a failed refund
+*As a passenger, I want a failed refund to be retried automatically, so that I am never left unrefunded and no staff member has to notice.* · Should · Traces: REQ-REF-004 · Status: Proposed
+
+- **Given** the provider fails the refund **Then** it is retried automatically up to 3 times with backoff
+- **Given** a FAILED refund **When** I request it again **Then** one provider call is made
+- **Given** I am a network controller **Then** I can see refunds by state, read-only
+
+### US-107 — Never charge or issue twice
+*As the organisation, I want payment confirmations to be authentic and idempotent.* · Must · Traces: REQ-PAY-002, REQ-PAY-003 · Status: Proposed
+
+- **Given** the same confirmation replayed **Then** exactly one ticket
+- **Given** a wrong signature or stale timestamp **Then** 401 and no change
+
+### US-108 — Don't keep money for a ticket that cannot exist
+*As a passenger, I want an automatic refund if the train was cancelled while I was paying.* · Must · Traces: REQ-REF-005, REQ-TKT-002 · Status: Proposed

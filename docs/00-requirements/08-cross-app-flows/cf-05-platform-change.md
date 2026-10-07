@@ -12,7 +12,7 @@ change reaches people late, they miss the train — and a passenger who needs as
 
 ## Timeline
 
-| Time | Actor | What happens | Station manager (console) | Platform 3 display | Platform 5 display | Concourse | Followers |
+| Time | Actor | What happens | Station view (console) | Platform 3 display | Platform 5 display | Concourse | Followers |
 |---|---|---|---|---|---|---|---|
 | 08:34:00 | Controller | Change platform 3 → 5, reason "platform blocked" | — | — | — | — | — |
 | 08:34:00 | Console | Warning: platform 5 has J-1050 departing 08:36 (within ±5 min) — warning, not a block (REQ-LIVE-020) | — | — | — | — | — |
@@ -25,7 +25,7 @@ change reaches people late, they miss the train — and a passenger who needs as
 
 | Choice | Reason |
 |---|---|
-| Publish immediately, station manager sees it at the same moment | A hold-back delay would leave passengers on the wrong platform; the console highlight gives staff the same lead time as passengers, no less (CON-08) |
+| Publish immediately, the station view shows it at the same moment | A hold-back delay would leave passengers on the wrong platform; the console highlight gives staff the same lead time as passengers, no less (CON-08) |
 | "Changed from 3" shown everywhere | Passengers who heard "platform 3" earlier need to see that it *changed*, not just a new number |
 | Platform 3 display keeps a "now platform 5" row for a period | People already on platform 3 look at platform 3's screen |
 | Push is never throttled for platform changes | Consequential and time-critical (notification matrix) |
@@ -35,7 +35,7 @@ change reaches people late, they miss the train — and a passenger who needs as
 
 | Branch | Behaviour |
 |---|---|
-| Station manager attempts the change at another station | 403 (scoped permission; IDOR negative test) |
-| Platform 5 display offline | Shows its last board with "Updated hh:mm"; station manager sees the display offline in device health |
+| A driver or scheduler token attempts the change | 403 (negative test) |
+| Platform 5 display offline | Shows its last board with "Updated hh:mm"; the station view shows the display offline in device health |
 | Change made after boarding started | Allowed; confirmation warns; push marked urgent |
 | Changed twice (3 → 5 → 4) | "Changed from 3" reflects the original; history keeps both |

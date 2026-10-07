@@ -1,6 +1,6 @@
 # Specified edge cases
 
-The sixteen edge cases specified to test level. They are chosen because each is either **High** severity, part
+The twenty-two edge cases specified to test level. They are chosen because each is either **High** severity, part
 of a cross-app flow that the five E2E tests cover, or the single clearest demonstration of a design decision.
 
 Format: Given / When / Then, with the thresholds from the assumptions register so the tests and the docs use the
@@ -19,7 +19,7 @@ same numbers.
 ### EDG-016 — Vehicle failure cascades through its rotation
 
 - **Given** vehicle S12 is assigned to journeys 1042, 1043 and 1050 today
-- **When** the fleet controller marks S12 `Failed` at 08:47
+- **When** the scheduler marks S12 `Failed` at 08:47
 - **Then** within 60 s journeys 1043 and 1050 appear in the "no vehicle" queue
 - **And** journeys assigned to other vehicles are unaffected
 - Ref: REQ-LIVE-018, REQ-LIVE-011 · SIM-06
@@ -31,7 +31,7 @@ same numbers.
 - **Then** within 5 s the platform 3 display shows "now platform 5", the platform 5 display shows
   "changed from 3", the concourse board and app show "Platform 5 (changed from 3)"
 - **And** the follower receives one immediate push regardless of throttle
-- **And** the Hill Town station manager's console highlights the change at the same moment
+- **And** the station view in the console highlights the change at the same moment
 - Ref: REQ-LIVE-014 · CF-05 · SIM-14
 
 ### EDG-030 — Breakdown between stations
@@ -66,10 +66,10 @@ same numbers.
 ### EDG-037 — Serious accident
 
 - **Given** J-1042 is Running
-- **When** an incident manager declares a Critical incident and moves J-1042 to `TerminatedEmergency`
+- **When** a network controller confirms a Critical incident and moves J-1042 to `TerminatedEmergency`
 - **Then** every public surface shows the approved template text only, and no ETA
 - **And** raw telemetry for J-1042 is under legal hold and excluded from the retention purge
-- **And** a network controller attempting the same transition receives 403
+- **And** a scheduler, driver or administrator attempting the same transition receives 403
 - Ref: REQ-OPS-007, REQ-OPS-008, REQ-DATA-003 · CF-08 · SIM-17
 
 ### EDG-044 — Driver app offline mid-journey
@@ -129,18 +129,18 @@ same numbers.
 - **When** its network is cut at T
 - **Then** by T+65 s it shows "Updated hh:mm — live information unavailable" and no live markers
 - **And** by T+305 s expected times are replaced by scheduled times
-- **And** by T+90 s the device shows Offline in the station manager's device health
+- **And** by T+90 s the device shows Offline in the network controller's device health
 - **And** on reconnect it returns to live with a single snapshot request
 - Ref: REQ-DSP-004, REQ-DSP-005 · CF-06
 
-### EDG-097 — Station manager edits another station
+### EDG-097 — Reading another person's ticket or duty
 
-- **Given** a station manager scoped to Hill Town
-- **When** they change a platform at Mill Lane through the API with an otherwise valid request
-- **Then** the response is 403, no change is made, and the attempt is audited
+- **Given** passenger A holds a ticket and driver D-07 has a duty
+- **When** passenger B requests A's ticket, or driver D-11 requests D-07's duty, with otherwise valid requests
+- **Then** the response is 403, nothing is returned, and the attempt is audited
 - Ref: REQ-SEC-003, REQ-OPS-001
 
-### EDG-110 — Catering provider down (E2E-4 variant)
+### EDG-110 — Catering provider down *(cut from the MVP 2026-10-06; kept for the record)*
 
 - **Given** a journey with an outstanding order
 - **When** RailBite is stopped and J-1042 is delayed by 8 minutes
@@ -148,3 +148,55 @@ same numbers.
 - **And** the ETA event stays in the outbox and is retried with backoff
 - **And** when RailBite returns, the event is delivered exactly once
 - Ref: REQ-INT-004
+
+---
+
+## Ticketing (added 2026-10-06)
+
+### EDG-123 — Journey cancelled after tickets were bought
+
+- **Given** two passengers hold Valid tickets on J-1042
+- **When** the controller cancels J-1042 before departure
+- **Then** within 5 s both tickets are `Affected` and each holder receives one push
+- **And** each ticket shows "Affected — refund available" and an inspector scan returns NOT_VALID_STATUS
+- Ref: REQ-TKT-009, REQ-INS-003 · CF-10 · SIM-20
+
+### EDG-124 — Terminate short affects only the lost part
+
+- **Given** A holds Riverside → Hill Town and B holds Central → Riverside on J-1042
+- **When** the controller terminates J-1042 at Mill Lane
+- **Then** A's ticket is `Affected` and B's stays `Valid`
+- **And** only A receives a push
+- Ref: REQ-TKT-009 · CF-10 · SIM-20
+
+### EDG-125 — Journey cancelled while payment is in progress
+
+- **Given** an order is PendingPayment for J-1042
+- **When** J-1042 is cancelled and then the provider confirms payment
+- **Then** no ticket is issued
+- **And** the payment is refunded automatically and the passenger is told why
+- **And** exactly one refund record exists
+- Ref: REQ-TKT-002, REQ-REF-005 · CF-09 · SIM-19
+
+### EDG-127 — Duplicate payment confirmation
+
+- **Given** a payment confirmation for provider reference P1 produced a Valid ticket
+- **When** the same confirmation arrives again, any number of times
+- **Then** no second ticket is created and no second charge is recorded
+- Ref: REQ-PAY-002 · CF-09 · SIM-19
+
+### EDG-129 — Refund requested twice
+
+- **Given** an Affected ticket
+- **When** two refund requests arrive at the same moment
+- **Then** exactly one refund record exists and the provider is called once
+- **And** the ticket becomes Refunded only when the refund reaches REFUNDED
+- Ref: REQ-REF-003 · CF-10 · SIM-20
+
+### EDG-132 — Travelling past the purchased destination
+
+- **Given** a Valid ticket Central → Riverside on J-1042
+- **When** an inspector scans it at Mill Lane, beyond Riverside
+- **Then** the result is OUTSIDE_SEGMENT_PAST_DESTINATION and the scan is logged
+- **And** scanning the same ticket at Central returns VALID
+- Ref: REQ-INS-004 · CF-11

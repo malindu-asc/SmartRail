@@ -1,7 +1,7 @@
 # Operations console — use cases
 
 React web console used by every staff role. **Station operations is a role-scoped view of this console**, not a
-separate application (ASM-010): a station manager sees and edits only their own station. Context of use: desk,
+separate application (ASM-010): in the MVP the Network Controller has a station view of the same console. Context of use: desk,
 keyboard, long sessions, high information density, decisions under time pressure during disruption.
 
 Authority for every action is in the [permission matrix](../06-requirements/permission-matrix.md). Every
@@ -13,7 +13,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | PER-06 network controller (also IM, SM scoped, CS read-only) |
+| Actor | PER-06 network controller (also holds the incident, station and reporting capabilities) |
 | Goal | A current, honest picture of every journey today |
 | Priority | Must · MVP Yes |
 
@@ -24,7 +24,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 4. Drill into a journey for its stop timeline, event history and source of each value.
 
 **Alternate flows**
-- A1 *Station manager* — board filtered to their station's arrivals and departures.
+- A1 *Station view* — the controller filters the board to one station's arrivals and departures.
 
 **Failure flows**
 - F1 *Journey goes Unknown* — highlighted; never shown as moving (REQ-LIVE-004).
@@ -41,7 +41,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | PER-06 (IM for emergencies) |
+| Actor | PER-06 network controller |
 | Goal | Change whether a train runs, and have everyone know |
 | Authority | journey.cancel / terminate_short / reinstate |
 | Priority | Must · MVP Yes |
@@ -70,18 +70,18 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | PER-06, PER-07 (own station) |
+| Actor | PER-06 network controller |
 | Goal | Reallocate a platform and have screens, staff and passengers follow |
 | Priority | Must · MVP Yes |
 
 **Main flow**
 1. Select journey stop → **Change platform** → new platform → reason.
 2. Warning if another journey occupies that platform within ±5 min (warning, not block — REQ-LIVE-020).
-3. Publish → platform state `Changed`; station manager sees it highlighted at the same moment; displays show
+3. Publish → platform state `Changed`; the station view highlights it at the same moment; displays show
    "Platform 5 (changed from 3)"; followers pushed immediately ([CF-05](../08-cross-app-flows/cf-05-platform-change.md)).
 
 **Failure flows**
-- F1 *Station manager tries another station* — 403 (IDOR negative test).
+- F1 *A driver or scheduler token tries to change a platform* — 403 (negative test).
 - F2 *Change after boarding started* — allowed, but the confirmation states it and the push is marked urgent.
 
 **Requirements:** REQ-LIVE-014, REQ-LIVE-020 · **Edge cases:** EDG-021, EDG-022, EDG-097 · **Flows:** CF-05
@@ -92,7 +92,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | PER-06, PER-09 (PER-07 for own-station notices) |
+| Actor | PER-06 network controller |
 | Goal | Tell passengers about a disruption once, consistently, and be able to take it back |
 | Priority | Must · MVP Yes |
 
@@ -146,7 +146,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | PER-08 scheduler, PER-11 fleet controller |
+| Actor | PER-08 scheduler (holds vehicle availability) |
 | Priority | Must · MVP Yes |
 
 **Main flow**
@@ -166,7 +166,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | PER-11 fleet controller |
+| Actor | PER-08 scheduler |
 | Priority | Should · MVP Thin |
 
 **Main flow**
@@ -182,12 +182,12 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | PER-09 incident manager |
+| Actor | PER-06 network controller (incident capability) |
 | Priority | Must · MVP Thin |
 | Flow | **[CF-08](../08-cross-app-flows/cf-08-major-incident.md)** |
 
 **Main flow**
-1. Declare incident with severity; only an incident manager may declare Critical.
+1. Declare incident with severity; Critical and emergency termination need a confirmation step, a reason and an audit entry (held by the network controller in the MVP, ASM-047).
 2. For a collision, derailment or similar: affected journey → `TerminatedEmergency`; ETA Unknown; public message
    from an **approved template** only.
 3. Raw telemetry for the journey placed under legal hold (REQ-OPS-008).
@@ -195,7 +195,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 5. Ownership can be handed over with a note; incident resolved, then reviewed.
 
 **Failure flows**
-- F1 *Controller tries to declare Critical* — 403.
+- F1 *Scheduler, driver or administrator tries to declare Critical* — 403.
 - F2 *Shift ends mid-incident* — handover required before the owner can sign off.
 - F3 *Sensor silence looks like a crash* — the system never infers an incident; it goes Unknown and alerts.
 
@@ -223,17 +223,17 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | PER-07 (own station), PER-12 system administrator |
+| Actor | PER-06 network controller, PER-12 system administrator |
 | Priority | Must · MVP Yes |
 
 **Main flow**
 1. Device health lists each display and terminal: station, location, state, last heartbeat (REQ-OPS-009).
-2. Offline after 90 s is highlighted to the station manager and controller.
+2. Offline after 90 s is highlighted to the network controller (station view).
 3. System administrator provisions a new device with a one-time pairing code, or revokes one.
 
 **Failure flows**
 - F1 *Revoked device keeps trying* — rejected on every request; counted.
-- F2 *Station manager tries to revoke* — not permitted; requests the administrator.
+- F2 *Network controller tries to revoke* — not permitted; requests the administrator.
 
 **Requirements:** REQ-OPS-009, REQ-DSP-003, REQ-DSP-005 · **Edge cases:** EDG-082, EDG-084
 
@@ -243,7 +243,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | Reporting analyst, controller |
+| Actor | Network controller |
 | Priority | Should · MVP Yes |
 
 **Main flow**
@@ -254,7 +254,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 ---
 
-### UC-OPS-12 — Answer a passenger's question
+### UC-OPS-12 — Answer a passenger's question *(deferred 2026-10-06 — role not built; passenger self-service covers the MVP flow)*
 
 | | |
 |---|---|

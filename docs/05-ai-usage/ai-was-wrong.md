@@ -72,4 +72,106 @@ tensions; §22 explicitly asks for them. Saying there are none signals the analy
 
 ---
 
-*Entries 5 onward to be added during the build.*
+## 5. A dedicated refund role — 2026-10-06 · Claude
+
+**What it produced.** When ticketing was added, I created a separate Refund Officer role to view and retry refunds. When
+told "no unnecessary roles" I moved the duty to Customer Service — which only renamed the problem.
+
+**Why it was insufficient.** A role for a rare failure path adds an account, screens and negative tests. The same outcome
+comes from an idempotent automatic retry, which needs no person at all.
+
+**How I found out.** I rejected it ("don't create more roles unnecessarily"), and the later role-consolidation review
+removed Customer Service as well.
+
+**What I did instead.** No refund role and no customer-service role: failed refunds retry automatically (three attempts
+with backoff), the passenger can request again, and the Network Controller sees refunds read-only
+([ASM-046](../00-requirements/05-discovery/assumptions.md)).
+
+**Impact had it shipped.** An extra role to build and test for a path that rarely runs.
+
+---
+
+## 6. Scope generated faster than it could be built — 2026-10-06 · Claude
+
+**What it produced.** 135 requirements (88 marked Must), eleven roles, six applications plus ticketing — with no capacity
+check until I asked.
+
+**Why it was insufficient.** A feasibility check estimated about 37 working days of effort against about 13 left. 88 Musts is
+not a priority list.
+
+**How I found out.** I asked whether the changes were practical in the next 14 days.
+
+**What happened next.** The AI recommended a cut list (displays only, narrow ops console, several features documented-only).
+**I overruled it:** once the backend exists, most roles and rules are business logic that AI builds quickly. The full scope
+stays, with the cut order and the D14 gate as the safety net.
+
+**Status: open.** The outcome will be judged at the D14 gate, and this entry will be updated with the result. It is
+recorded as a disagreement, not as a win for either side.
+
+---
+
+## 7. Advice against ticketing, overruled — 2026-10-06 · Claude
+
+**What it produced.** A recommendation to treat ticketing, accounts and payments as scope creep: the brief never mentions
+them, they serve none of the five E2E flows, and they add about five days.
+
+**Why it was insufficient.** It optimised for the brief's grading rows and missed the product argument: without tickets the
+demo cannot show the main passenger flow end to end.
+
+**How I found out.** I reaffirmed the requirement twice and said the demo needs it.
+
+**What I did instead.** I decided it is in scope as a thin, gated vertical slice, and the AI designed it that way
+([12-ticketing](../00-requirements/12-ticketing/README.md)).
+
+**Status: open** — judged at the D14 gate.
+
+---
+
+## 8. Edits nobody asked for — 2026-10-06 · Claude
+
+**What it produced.** While I was asking questions about scope and roles, the AI edited registers and wrote ticketing
+documents without being asked.
+
+**Why it was wrong.** It acted beyond the request, made me review changes I had not requested, and left documents
+inconsistent (the refund role had to be unpicked afterwards).
+
+**How I found out.** I interrupted twice: "just chat", "don't do any modifications".
+
+**What I did instead.** Rule for the rest of the project: answer questions in chat, and edit files only when I ask. Saved to
+the assistant's memory.
+
+---
+
+## 9. Answers longer than the question — 2026-10-06 · Claude
+
+**What it produced.** Long, multi-section answers to simple questions.
+
+**Why it was insufficient.** I asked for "simple" answers repeatedly; the long form hid the answer I wanted.
+
+**What I did instead.** Direct answer first, detail only if asked.
+
+---
+
+## 10. Interview probes that steered the answers — 2026-10-06 · Claude
+
+**What it produced.** Simulated stakeholder interviews in which I first described the proposed system to each persona, then
+added three scripted scenarios of my own per persona (a landslide, a tunnel, a wrongly cancelled train).
+
+**Why it was wrong.** Real interviews are open: the interviewer asks, listens and follows what the person says. Describing the
+product leads people to react to it, and scripted scenarios put our situations in their mouths, so the answers looked like
+evidence while partly echoing us.
+
+**How I found out.** I questioned whether this was a practical way to simulate an interview, and whether the landslide had been
+asked directly (it had).
+
+**What I did instead.** A discovery round with no system described; then the scenarios were removed and each persona was resumed
+to tell two stories of their own choosing. The first round is kept as a labelled validation round for comparison, and the
+existing interview files were rewritten in place ([agent-interviews](../00-requirements/05-discovery/agent-interviews/README.md)).
+
+**Impact had it shipped.** Requirements that looked validated by independent interviews when part of that evidence was prompted
+by us.
+
+---
+
+*Entries 6 and 7 are open and will be updated at the D14 gate.*
+

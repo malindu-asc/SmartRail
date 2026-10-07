@@ -49,14 +49,28 @@ This matrix is what that sentence has to mean before it can be built (REQ-NFR-00
 | Journey confidence → Unknown | Network controller | Console highlight | Medium |
 | Phantom movement / ghost journey | Network controller | Console list | Low |
 | Unplanned skip reported by driver | Network controller | Console alert | Medium |
-| Display or terminal offline (90 s) | Station manager (own station), network controller | Console device health | Medium |
-| Platform change at a station | Station manager of that station | Console highlight at publish time | High |
+| Display or terminal offline (90 s) | Network controller (station view) | Console device health | Medium |
+| Platform change at a station | Network controller (station view) | Console highlight at publish time | High |
 | Network-wide disruption awaiting approval | Second approver role holders | Console queue | High |
 | Disruption review-by passed | Disruption owner | Console "Expired — review" | Medium |
-| Critical incident declared | Incident managers, network controllers | Console alert | Critical |
+| Critical incident declared | Network controllers | Console alert | Critical |
 | Timetable version awaiting approval | Schedulers other than the author | Console queue | Low |
 | Feed lag, dead-letter queue, error rate | System owner (me) | Observability alerts | Varies |
 
 ## Not in MVP
 
 SMS and email channels (deferred, plan.md §3.2), audio announcements, quiet hours beyond a simple setting.
+
+## Ticket events (added 2026-10-06)
+
+| Event | Holder (push) | In-app | Throttle |
+|---|---|---|---|
+| Ticket issued | ✗ (shown on screen) | ✓ inbox | — |
+| Ticket becomes Affected | ✓ immediate: "Your ticket … is affected. Refund available." | ✓ | none |
+| Refund REQUESTED / PROCESSING | ✗ | ✓ status | — |
+| Refund REFUNDED | ✓ once: "Refunded LKR …" | ✓ | once |
+| Refund FAILED (will retry) | ✗ | ✓ "being retried" | — |
+| Automatic refund (no ticket could be issued) | ✓ immediate with the reason | ✓ | none |
+| Platform change on a held journey | ✓ immediate | ✓ | none (existing rule) |
+
+Operations: a refund still FAILED after its automatic retries is counted on the network controller's read-only refund view.

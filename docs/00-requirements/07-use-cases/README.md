@@ -10,7 +10,8 @@ failure flows are where most of the requirements live.
 | [operations.md](operations.md) | Ops console (React), all staff roles including station operations | UC-OPS-01 … 15 |
 | [station-display.md](station-display.md) | Station displays (React kiosk, display mode) | UC-DSP-01 … 04 |
 | [station-terminal.md](station-terminal.md) | Station terminal (React kiosk, terminal mode) | UC-TRM-01 … 05 |
-| [external-catering.md](external-catering.md) | External catering provider (RailBite) and its passenger touchpoint | UC-EXT-01 … 05 |
+| [ticketing.md](ticketing.md) | Accounts, tickets, refunds, inspection (passenger app, staff app, ops console) | UC-TKT-01 … 06 |
+| [external-catering.md](external-catering.md) | **CUT from the MVP 2026-10-06** — kept for the record | UC-EXT-01 … 05 |
 
 Cross-application behaviour — one event travelling through every app — is in
 [../08-cross-app-flows/](../08-cross-app-flows/README.md). Use cases link to those flows rather than repeating them.
@@ -46,4 +47,5 @@ Cross-app flows — CF ids
 | Operations | 15 | 9 | 9 | 6 |
 | Station display | 4 | 4 | 4 | 0 |
 | Station terminal | 5 | 3 | 5 | 0 |
-| External catering | 5 | 0 | 0 | 5 |
+| Ticketing | 6 | 5 | 5 | 1 |
+| External catering *(cut)* | 5 | 0 | 0 | 0 |

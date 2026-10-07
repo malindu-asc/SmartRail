@@ -13,13 +13,15 @@ They are the most direct answer to "how do these applications connect".
 | [CF-02 Cancellation](cf-02-cancellation.md) | Ops console | Every surface + driver + catering | **E2E-3** | SIM-08 |
 | [CF-03 Driver offline and reconciliation](cf-03-driver-offline.md) | Driver app (no signal) | Backend, ops | **E2E-2** | SIM-09 |
 | [CF-04 Disruption publish and retract](cf-04-disruption.md) | Ops console | Every surface | part of E2E-3 | — |
-| [CF-05 Platform change](cf-05-platform-change.md) | Ops console | Displays, app, station manager, followers | — | SIM-14 |
+| [CF-05 Platform change](cf-05-platform-change.md) | Ops console | Displays, app, station view, followers | — | SIM-14 |
 | [CF-06 Degraded and missing data](cf-06-degraded-data.md) | Feed silence / client offline | Every surface | **E2E-5** | SIM-05, SIM-10 |
-| [CF-07 Breakdown and vehicle substitution](cf-07-breakdown-substitution.md) | Feed + fleet controller | Every surface + later journeys | — | SIM-06, SIM-07 |
-| [CF-08 Major incident](cf-08-major-incident.md) | Incident manager | Every surface; legal hold | — | SIM-17 |
+| [CF-07 Breakdown and vehicle substitution](cf-07-breakdown-substitution.md) | Feed + scheduler | Every surface + later journeys | — | SIM-06, SIM-07 |
+| [CF-08 Major incident](cf-08-major-incident.md) | Network controller | Every surface; legal hold | — | SIM-17 |
+| [CF-09 Buying a ticket](cf-09-purchase.md) | Passenger app | Backend, payment provider, notifications | **E2E-4** | SIM-19 |
+| [CF-10 Cancellation reaches tickets, then refund](cf-10-affected-refund.md) | Ops console | Tickets, passenger app, network controller (read-only) | **E2E-4** | SIM-20 |
+| [CF-11 Ticket inspection](cf-11-inspection.md) | Staff app (Inspector mode) | Backend, live journey | part of **E2E-4** | — |
 
-E2E-4 (food order across the boundary) uses CF-01 and CF-02 for the railway side; the catering side is in
-[UC-EXT-04](../07-use-cases/external-catering.md).
+**E2E-4** is the ticket flow: [CF-09](cf-09-purchase.md) then [CF-10](cf-10-affected-refund.md), with inspection ([CF-11](cf-11-inspection.md)) asserted inside it. The catering variant was cut on 2026-10-06.
 
 ## Shared timing targets
 
