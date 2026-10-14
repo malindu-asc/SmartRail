@@ -1,0 +1,5 @@
+{
+  "name": "smartrail-web",
+  "private": true,
+  "workspaces": ["console", "kiosk", "packages/*"]
+}
