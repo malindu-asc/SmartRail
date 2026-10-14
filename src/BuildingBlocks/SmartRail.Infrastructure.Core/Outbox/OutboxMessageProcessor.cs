@@ -60,16 +60,19 @@ public sealed class OutboxMessageProcessor<TContext>(
 
                 message.ProcessedOnUtc = timeProvider.GetUtcNow();
                 message.Error = null;
+                SmartRailTelemetry.OutboxProcessed.Add(1, new KeyValuePair<string, object?>("module", typeof(TContext).Name));
             }
             catch (Exception ex)
             {
                 // Never set ProcessedOnUtc here: the message must be retried on the next poll.
                 message.Attempts++;
                 message.Error = ex.ToString();
+                SmartRailTelemetry.OutboxFailed.Add(1, new KeyValuePair<string, object?>("module", typeof(TContext).Name));
 
                 if (message.Attempts >= settings.MaxAttempts)
                 {
                     message.DeadLetteredOnUtc = timeProvider.GetUtcNow();
+                    SmartRailTelemetry.OutboxDeadLettered.Add(1, new KeyValuePair<string, object?>("module", typeof(TContext).Name));
                     logger.LogError(ex, "Outbox message {Id} dead-lettered after {Attempts} attempts", message.Id, message.Attempts);
                 }
                 else
