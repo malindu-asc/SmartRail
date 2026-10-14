@@ -1,0 +1,10 @@
+name: smartrail_mobile
+repository: https://github.com/malindu-asc/SmartRail
+packages:
+  - apps/*
+  - packages/*
+scripts:
+  analyze:
+    run: melos exec -- flutter analyze
+  test:
+    run: melos exec --dir-exists=test -- flutter test
