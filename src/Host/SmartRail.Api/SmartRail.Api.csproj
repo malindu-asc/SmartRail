@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Identity\SmartRail.Modules.Identity.Infrastructure\SmartRail.Modules.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Identity\SmartRail.Modules.Identity.Api\SmartRail.Modules.Identity.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Network\SmartRail.Modules.Network.Infrastructure\SmartRail.Modules.Network.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Network\SmartRail.Modules.Network.Api\SmartRail.Modules.Network.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Journeys\SmartRail.Modules.Journeys.Infrastructure\SmartRail.Modules.Journeys.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Journeys\SmartRail.Modules.Journeys.Api\SmartRail.Modules.Journeys.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Operations\SmartRail.Modules.Operations.Infrastructure\SmartRail.Modules.Operations.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Operations\SmartRail.Modules.Operations.Api\SmartRail.Modules.Operations.Api.csproj" />
+    <ProjectReference Include="..\..\Modules\Notifications\SmartRail.Modules.Notifications.Infrastructure\SmartRail.Modules.Notifications.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Notifications\SmartRail.Modules.Notifications.Api\SmartRail.Modules.Notifications.Api.csproj" />
+    <ProjectReference Include="..\SmartRail.ServiceDefaults\SmartRail.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\SmartRail.Infrastructure.Core\SmartRail.Infrastructure.Core.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\SmartRail.Api.Core\SmartRail.Api.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Keycloak.Authentication" Version="13.6.1-preview.1.26506.6" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.18.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

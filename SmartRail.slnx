@@ -1,0 +1,57 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/SmartRail.Api.Core/SmartRail.Api.Core.csproj" />
+    <Project Path="src/BuildingBlocks/SmartRail.Application.Core/SmartRail.Application.Core.csproj" />
+    <Project Path="src/BuildingBlocks/SmartRail.Infrastructure.Core/SmartRail.Infrastructure.Core.csproj" />
+    <Project Path="src/BuildingBlocks/SmartRail.SharedKernel/SmartRail.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/src/Host/">
+    <Project Path="src/Host/SmartRail.Api/SmartRail.Api.csproj" />
+    <Project Path="src/Host/SmartRail.AppHost/SmartRail.AppHost.csproj" />
+    <Project Path="src/Host/SmartRail.ServiceDefaults/SmartRail.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Identity/">
+    <Project Path="src/Modules/Identity/SmartRail.Modules.Identity.Api/SmartRail.Modules.Identity.Api.csproj" />
+    <Project Path="src/Modules/Identity/SmartRail.Modules.Identity.Application/SmartRail.Modules.Identity.Application.csproj" />
+    <Project Path="src/Modules/Identity/SmartRail.Modules.Identity.Contracts/SmartRail.Modules.Identity.Contracts.csproj" />
+    <Project Path="src/Modules/Identity/SmartRail.Modules.Identity.Domain/SmartRail.Modules.Identity.Domain.csproj" />
+    <Project Path="src/Modules/Identity/SmartRail.Modules.Identity.Infrastructure/SmartRail.Modules.Identity.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Journeys/">
+    <Project Path="src/Modules/Journeys/SmartRail.Modules.Journeys.Api/SmartRail.Modules.Journeys.Api.csproj" />
+    <Project Path="src/Modules/Journeys/SmartRail.Modules.Journeys.Application/SmartRail.Modules.Journeys.Application.csproj" />
+    <Project Path="src/Modules/Journeys/SmartRail.Modules.Journeys.Contracts/SmartRail.Modules.Journeys.Contracts.csproj" />
+    <Project Path="src/Modules/Journeys/SmartRail.Modules.Journeys.Domain/SmartRail.Modules.Journeys.Domain.csproj" />
+    <Project Path="src/Modules/Journeys/SmartRail.Modules.Journeys.Infrastructure/SmartRail.Modules.Journeys.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Network/">
+    <Project Path="src/Modules/Network/SmartRail.Modules.Network.Api/SmartRail.Modules.Network.Api.csproj" />
+    <Project Path="src/Modules/Network/SmartRail.Modules.Network.Application/SmartRail.Modules.Network.Application.csproj" />
+    <Project Path="src/Modules/Network/SmartRail.Modules.Network.Contracts/SmartRail.Modules.Network.Contracts.csproj" />
+    <Project Path="src/Modules/Network/SmartRail.Modules.Network.Domain/SmartRail.Modules.Network.Domain.csproj" />
+    <Project Path="src/Modules/Network/SmartRail.Modules.Network.Infrastructure/SmartRail.Modules.Network.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Notifications/">
+    <Project Path="src/Modules/Notifications/SmartRail.Modules.Notifications.Api/SmartRail.Modules.Notifications.Api.csproj" />
+    <Project Path="src/Modules/Notifications/SmartRail.Modules.Notifications.Application/SmartRail.Modules.Notifications.Application.csproj" />
+    <Project Path="src/Modules/Notifications/SmartRail.Modules.Notifications.Contracts/SmartRail.Modules.Notifications.Contracts.csproj" />
+    <Project Path="src/Modules/Notifications/SmartRail.Modules.Notifications.Domain/SmartRail.Modules.Notifications.Domain.csproj" />
+    <Project Path="src/Modules/Notifications/SmartRail.Modules.Notifications.Infrastructure/SmartRail.Modules.Notifications.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Operations/">
+    <Project Path="src/Modules/Operations/SmartRail.Modules.Operations.Api/SmartRail.Modules.Operations.Api.csproj" />
+    <Project Path="src/Modules/Operations/SmartRail.Modules.Operations.Application/SmartRail.Modules.Operations.Application.csproj" />
+    <Project Path="src/Modules/Operations/SmartRail.Modules.Operations.Contracts/SmartRail.Modules.Operations.Contracts.csproj" />
+    <Project Path="src/Modules/Operations/SmartRail.Modules.Operations.Domain/SmartRail.Modules.Operations.Domain.csproj" />
+    <Project Path="src/Modules/Operations/SmartRail.Modules.Operations.Infrastructure/SmartRail.Modules.Operations.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SmartRail.ArchitectureTests/SmartRail.ArchitectureTests.csproj" />
+  </Folder>
+  <Folder Name="/tools/" />
+  <Folder Name="/tools/Simulator/">
+    <Project Path="tools/Simulator/SmartRail.Simulator/SmartRail.Simulator.csproj" />
+  </Folder>
+</Solution>

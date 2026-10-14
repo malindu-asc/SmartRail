@@ -1,0 +1,131 @@
+{
+  "realm": "smartrail",
+  "enabled": true,
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "sslRequired": "none",
+  "accessTokenLifespan": 900,
+  "roles": {
+    "realm": [
+      { "name": "passenger", "description": "Public traveller using the passenger app" },
+      { "name": "driver", "description": "Train driver using the driver app" },
+      { "name": "controller", "description": "Network controller operating the service" },
+      { "name": "admin", "description": "System administrator managing users, roles and devices" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "smartrail-api",
+      "enabled": true,
+      "bearerOnly": true
+    },
+    {
+      "clientId": "smartrail-web",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["http://localhost:*", "https://localhost:*"],
+      "webOrigins": ["+"],
+      "attributes": { "pkce.code.challenge.method": "S256" },
+      "protocolMappers": [
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        },
+        {
+          "name": "api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "smartrail-api",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "smartrail-mobile",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["lk.smartrail.passenger:/*", "lk.smartrail.driver:/*"],
+      "attributes": { "pkce.code.challenge.method": "S256" },
+      "protocolMappers": [
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        },
+        {
+          "name": "api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "smartrail-api",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "passenger",
+      "email": "passenger@smartrail.test",
+      "firstName": "Pasan",
+      "lastName": "Passenger",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Passenger#123", "temporary": false }],
+      "realmRoles": ["passenger"]
+    },
+    {
+      "username": "driver",
+      "email": "driver@smartrail.test",
+      "firstName": "Dilan",
+      "lastName": "Driver",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Driver#123", "temporary": false }],
+      "realmRoles": ["driver"]
+    },
+    {
+      "username": "controller",
+      "email": "controller@smartrail.test",
+      "firstName": "Sarah",
+      "lastName": "Perera",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Controller#123", "temporary": false }],
+      "realmRoles": ["controller"]
+    },
+    {
+      "username": "admin",
+      "email": "admin@smartrail.test",
+      "firstName": "James",
+      "lastName": "Silva",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "Admin#123", "temporary": false }],
+      "realmRoles": ["admin"]
+    }
+  ]
+}

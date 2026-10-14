@@ -1,0 +1,33 @@
+using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using SmartRail.Modules.Operations.Application.Abstractions;
+using SmartRail.Modules.Operations.Infrastructure.Persistence;
+using SmartRail.Infrastructure.Core.Outbox;
+using SmartRail.Infrastructure.Core.Persistence;
+
+namespace SmartRail.Modules.Operations.Infrastructure.Extensions;
+
+public static class OperationsModule
+{
+    public static Assembly ApplicationAssembly => typeof(Application.AssemblyReference).Assembly;
+
+    public static IServiceCollection AddOperationsModule(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<OperationsDbContext>((sp, options) => options
+            .UseNpgsql(
+                configuration.GetConnectionString("smartraildb"),
+                b => b.MigrationsHistoryTable("__EFMigrationsHistory", OperationsDbContext.Schema))
+            .AddInterceptors(
+                sp.GetRequiredService<AuditableEntitiesInterceptor>(),
+                sp.GetRequiredService<OutboxMessagesInterceptor>()));
+
+        services.AddScoped<IOperationsUnitOfWork>(sp => sp.GetRequiredService<OperationsDbContext>());
+        services.AddScoped<IOutboxMessageProcessor, OutboxMessageProcessor<OperationsDbContext>>();
+
+        // Register repositories here.
+
+        return services;
+    }
+}

@@ -1,0 +1,23 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.5.2">
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartRail.Api\SmartRail.Api.csproj" />
+    <ProjectReference Include="..\..\..\tools\Simulator\SmartRail.Simulator\SmartRail.Simulator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.JavaScript" Version="13.6.1" />
+    <PackageReference Include="Aspire.Hosting.Keycloak" Version="13.6.1-preview.1.26506.6" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.6.1" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AspireUseCliBundle>true</AspireUseCliBundle>
+    <UserSecretsId>7c19aeb6-3e86-48ea-97b0-e0f109dfae83</UserSecretsId>
+  </PropertyGroup>
+
+</Project>

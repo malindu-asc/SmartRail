@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Modules\Identity\SmartRail.Modules.Identity.Domain\SmartRail.Modules.Identity.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Identity\SmartRail.Modules.Identity.Application\SmartRail.Modules.Identity.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Identity\SmartRail.Modules.Identity.Infrastructure\SmartRail.Modules.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Identity\SmartRail.Modules.Identity.Api\SmartRail.Modules.Identity.Api.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Identity\SmartRail.Modules.Identity.Contracts\SmartRail.Modules.Identity.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Network\SmartRail.Modules.Network.Domain\SmartRail.Modules.Network.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Network\SmartRail.Modules.Network.Application\SmartRail.Modules.Network.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Network\SmartRail.Modules.Network.Infrastructure\SmartRail.Modules.Network.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Network\SmartRail.Modules.Network.Api\SmartRail.Modules.Network.Api.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Network\SmartRail.Modules.Network.Contracts\SmartRail.Modules.Network.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Journeys\SmartRail.Modules.Journeys.Domain\SmartRail.Modules.Journeys.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Journeys\SmartRail.Modules.Journeys.Application\SmartRail.Modules.Journeys.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Journeys\SmartRail.Modules.Journeys.Infrastructure\SmartRail.Modules.Journeys.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Journeys\SmartRail.Modules.Journeys.Api\SmartRail.Modules.Journeys.Api.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Journeys\SmartRail.Modules.Journeys.Contracts\SmartRail.Modules.Journeys.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Operations\SmartRail.Modules.Operations.Domain\SmartRail.Modules.Operations.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Operations\SmartRail.Modules.Operations.Application\SmartRail.Modules.Operations.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Operations\SmartRail.Modules.Operations.Infrastructure\SmartRail.Modules.Operations.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Operations\SmartRail.Modules.Operations.Api\SmartRail.Modules.Operations.Api.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Operations\SmartRail.Modules.Operations.Contracts\SmartRail.Modules.Operations.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Notifications\SmartRail.Modules.Notifications.Domain\SmartRail.Modules.Notifications.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Notifications\SmartRail.Modules.Notifications.Application\SmartRail.Modules.Notifications.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Notifications\SmartRail.Modules.Notifications.Infrastructure\SmartRail.Modules.Notifications.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Notifications\SmartRail.Modules.Notifications.Api\SmartRail.Modules.Notifications.Api.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Notifications\SmartRail.Modules.Notifications.Contracts\SmartRail.Modules.Notifications.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

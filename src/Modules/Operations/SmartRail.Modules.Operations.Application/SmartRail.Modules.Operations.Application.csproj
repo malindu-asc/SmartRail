@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartRail.Modules.Operations.Domain\SmartRail.Modules.Operations.Domain.csproj" />
+    <ProjectReference Include="..\SmartRail.Modules.Operations.Contracts\SmartRail.Modules.Operations.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\SmartRail.Application.Core\SmartRail.Application.Core.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

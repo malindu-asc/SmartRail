@@ -1,0 +1,30 @@
+# .NET
+bin/
+obj/
+*.user
+.vs/
+TestResults/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins*
+build/
+*.iml
+.idea/
+local.properties
+
+# Secrets and local config
+.env
+.env.*
+appsettings.Local.json
+secrets.json
+
+# Local tooling
+.claude/settings.local.json
+*.xlsx.tmp
+~$*
