@@ -1,0 +1,17 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/.git/
+**/.vs/
+**/.idea/
+**/.dart_tool/
+**/build/
+**/dist/
+**/*.user
+**/.env
+**/.env.*
+apps/mobile/
+docs/
+plan/
+tests/
+*.xlsx

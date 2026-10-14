@@ -1,0 +1,50 @@
+name: Feature request
+description: Propose a new capability or an improvement
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: role
+    attributes:
+      label: Who is it for?
+      options:
+        - Passenger
+        - Driver
+        - Network controller
+        - System administrator
+        - Station display / terminal
+        - Developer / operations
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is the user trying to do, and what gets in the way?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+      description: Describe what should happen, in plain language.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - Given ... when ... then ...
+        - Given ... when ... then ...
+    validations:
+      required: true
+  - type: textarea
+    id: edge
+    attributes:
+      label: Edge cases and data freshness
+      description: What happens when data is stale, missing or the device is offline?
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope

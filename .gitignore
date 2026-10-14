@@ -21,6 +21,7 @@ local.properties
 # Secrets and local config
 .env
 .env.*
+!.env.example
 appsettings.Local.json
 secrets.json
 

@@ -1,0 +1,39 @@
+groups:
+  - name: smartrail-platform
+    rules:
+      - alert: ApiHighErrorRate
+        expr: |
+          sum(rate(http_server_request_duration_seconds_count{service_name="smartrail-api", http_response_status_code=~"5.."}[5m]))
+            / clamp_min(sum(rate(http_server_request_duration_seconds_count{service_name="smartrail-api"}[5m])), 1) > 0.05
+        for: 5m
+        labels: { severity: critical }
+        annotations:
+          summary: "More than 5% of API requests are failing"
+
+      - alert: ApiSlow
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{service_name="smartrail-api"}[5m]))) > 1
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: "API p95 latency is above 1 second"
+
+      - alert: OutboxDeadLettered
+        expr: increase(smartrail_outbox_dead_lettered_total[15m]) > 0
+        labels: { severity: critical }
+        annotations:
+          summary: "Outbox messages were dead-lettered, so some screens may not have been told of a change"
+
+      - alert: OutboxFailing
+        expr: sum(rate(smartrail_outbox_failed_total[5m])) > 0
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "Outbox dispatch is failing and retrying"
+
+      - alert: ServiceSilent
+        expr: absent(http_server_request_duration_seconds_count{service_name="smartrail-api"})
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: "No API telemetry received for 10 minutes"
