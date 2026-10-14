@@ -18,6 +18,7 @@ Brief §20: identify what the platform collects, classify it, and document the i
 |---|---|---|---|---|---|---|
 | Stations, platforms, facilities | Public | Network & Timetable | Indefinite | Yes | Yes (reference) | Everyone |
 | Published timetable | Public | Network & Timetable | Versions kept indefinitely | Yes | Yes (reference) | Everyone |
+| Catering menu, categories, prices, station phone numbers | Public | External catering service (RailBite) | Provider's own | Yes | n/a — SmartRail only reads it | Everyone |
 | Journey state, delays, platforms | Public | Live Operations | 13 months (aggregated) | Yes | ETA and status only | Everyone |
 | Disruption notices | Public | Disruptions | 13 months | Yes | No | Everyone |
 | Raw telemetry | Operational | Live Operations | **7 days**, unless legal hold | Counts only | No | NC, system |
@@ -30,7 +31,7 @@ Brief §20: identify what the platform collects, classify it, and document the i
 | Driver delay reports | Operational | Live Operations | 13 months | Yes | No | NC |
 | Passenger device subscription (push token, followed journeys) | Personal | Notifications | Until deleted; expired after 90 days inactivity | Never token | No | System only |
 | Catering order reference | Personal (linked to a device) | Catering Gateway | 90 days | Reference only | Reference only | System only |
-| Device tokens (displays) | Sensitive-operational | Identity & Access | Until revoked | Never | No | SA |
+| Device tokens (displays, terminals, gate scanners) | Sensitive-operational | Identity & Access | Until revoked | Never | No | SA |
 | Feed source keys, webhook secrets | Sensitive-operational | Infrastructure | Until rotated | Never | No | Deployment only |
 
 ## Decisions that matter
@@ -61,4 +62,5 @@ Brief §20: identify what the platform collects, classify it, and document the i
 | **Card data** | — | **Never stored by SmartRail** (hosted checkout) | — | **Never** | — |
 | Refund record | Personal (financial) | Ticketing | 24 months | Yes (ids) | NC (read-only), the passenger |
 | Inspection scan log | Sensitive-operational | Ticketing | 13 months | Ticket id and result only | Inspector (own), NC |
+| **Gate scan log** (ticket id, scan type, station, result, excess fare due, time) | Personal (linked to a ticket) | Ticketing | 13 months | Ticket id and result only | Station Master (own station), NC |
 | QR token | Operational | Ticketing | Life of the ticket | Never the token | The holder |

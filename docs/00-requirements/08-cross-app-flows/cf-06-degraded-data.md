@@ -32,7 +32,7 @@ If it broke down at 08:15, every downstream screen would be counting down to a t
 | 08:30:00 | Network cut. Keeps last board. | Unaffected |
 | 08:30:30 | Missed heartbeat → `Stale` | — |
 | 08:31:00 | 60 s → banner **"Updated 08:30 — live information unavailable"**; live markers removed | — |
-| 08:31:30 | — | Device health shows display **Offline** to the network controller (90 s) |
+| 08:31:30 | — | Device health shows display **Offline** to the Station Master and the network controller (90 s) |
 | 08:35:00 | 300 s → **scheduled times only**, "Listen for announcements" | — |
 | 08:37:00 | Network returns → jittered backoff → snapshot → deltas → normal board | Device Online |
 

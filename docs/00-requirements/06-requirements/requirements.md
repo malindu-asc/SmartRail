@@ -24,18 +24,19 @@ Every requirement here is written to be **testable**. Where a number was needed 
 | [Driver app](#drv) | 11 | 7 | 4 | 0 | 1 |
 | [Station display](#dsp) | 8 | 5 | 3 | 0 | 0 |
 | [Station terminal](#trm) | 5 | 2 | 3 | 0 | 0 |
-| [Operations console](#ops) | 17 | 9 | 6 | 2 | 5 |
+| [Operations console](#ops) | 19 | 10 | 7 | 2 | 4 |
 | [Security](#sec) | 6 | 5 | 1 | 0 | 1 |
 | [Data and privacy](#data) | 3 | 3 | 0 | 0 | 0 |
 | [Platform / non-functional](#nfr) | 8 | 6 | 2 | 0 | 0 |
 | [Simulator](#sim) | 5 | 4 | 1 | 0 | 0 |
-| [External catering integration](#int) | 5 | 0 | 0 | 5 | 0 |
+| [External catering integration](#int) | 5 | 0 | 0 | 5 | 3 |
 | [Accounts](#acc) | 4 | 2 | 2 | 0 | 2 |
 | [Tickets](#tkt) | 13 | 8 | 4 | 1 | 0 |
 | [Payments](#pay) | 4 | 3 | 0 | 1 | 0 |
 | [Refunds](#ref) | 5 | 4 | 1 | 0 | 1 |
 | [Ticket inspection](#ins) | 6 | 5 | 1 | 0 | 0 |
-| **Total** | **135** | **88** | **37** | **10** | **12** |
+| [Gates and scans](#gat) | 10 | 8 | 2 | 0 | 0 |
+| **Total** | **147** | **97** | **40** | **10** | **14** |
 
 <a id="live"></a>
 
@@ -552,9 +553,9 @@ Every requirement here is written to be **testable**. Where a number was needed 
 #### REQ-OPS-001 — Roles and separation of duties
 
 - **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
-- **Requirement:** Permissions are role-based and checked on every request. Six roles have accounts in the MVP (Passenger, Driver, TicketInspector, NetworkController, Scheduler, SystemAdministrator); StationManager, IncidentManager, FleetController and ReportingAnalyst are capability bundles held by NetworkController or Scheduler, and CustomerService is deferred (mvp-roles.md). SystemAdministrator manages users and devices but holds no operational permission.
+- **Requirement:** Permissions are role-based and checked on every request. Seven roles have accounts in the MVP (Passenger, Driver, TicketInspector, NetworkController, StationMaster, Scheduler, SystemAdministrator); IncidentManager and ReportingAnalyst are capability bundles held by NetworkController, FleetController is held by Scheduler, and CustomerService is deferred (mvp-roles.md). SystemAdministrator manages users and devices but holds no operational permission.
 - **Rationale:** Write authority divided by accountability; separation of duties.
-- **Acceptance:** SystemAdministrator token calling cancel or publish returns 403.
+- **Acceptance:** SystemAdministrator token calling cancel or publish returns 403; a StationMaster at one station editing another station returns 403.
 - **Sources:** DF-010, DF-066, DF-057
 - **Assumptions:** ASM-013, ASM-006
 
@@ -685,6 +686,23 @@ Every requirement here is written to be **testable**. Where a number was needed 
 - **Rationale:** Rigid roles obstruct incident response; unchecked elevation is a hole.
 - **Acceptance:** Documented only for MVP; design reviewed in the threat model.
 - **Sources:** DF-061
+
+#### REQ-OPS-018 — Station Master: own-station view and actions
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A Station Master sees and acts only on their own station: its live arrivals and departures, the health of its displays and gate scanners, the gate scan log and the excess-fare list. They can post local station notices, update lift, stair and gate status, and mark an excess fare as collected. They cannot cancel journeys, publish disruptions, change platforms, edit timetables, manage users, or touch another station.
+- **Rationale:** Gates and station work create duties that are local and need a scoped role; it also keeps the Network Controller from carrying everything.
+- **Acceptance:** A Station Master token calling cancel or publish returns 403; editing another station's notices, lift status, scan log or devices returns 403.
+- **Sources:** Station Master decision 2026-10-07 (mvp-roles.md)
+- **Assumptions:** ASM-013, ASM-045
+
+#### REQ-OPS-019 — Live access status (lifts, stairs, gates)
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Each station holds a status for its lifts, stairs and gates (working, faulty, closed) with a last-updated time, set by the Station Master and shown on the passenger app and the terminal.
+- **Rationale:** A passenger who needs step-free access must know before arriving; raised by the accessibility specialist and the traveller in the discovery interviews.
+- **Acceptance:** Marking a lift faulty at Hill Town shows "lift out of service, updated hh:mm" on the passenger app and terminal within 5 s.
+- **Sources:** Discovery interviews (accessibility, traveller); Station Master decision 2026-10-07
 
 <a id="sec"></a>
 
@@ -885,17 +903,18 @@ Every requirement here is written to be **testable**. Where a number was needed 
 
 ## External catering integration
 
-#### REQ-INT-001 — Separate catering system
+#### REQ-INT-001 — Separate catering menu service
 
-- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (cut from MVP 2026-10-06)
-- **Requirement:** RailBite is a separate application with its own database. SmartRail never reads its storage.
-- **Rationale:** Brief 12 separation.
-- **Acceptance:** SmartRail has no connection string for the RailBite database.
+- **Type:** Functional · **Priority:** Could · **MVP:** Thin · **Status:** Proposed
+- **Requirement:** RailBite is a separate small service with its own seeded data: catering stations, categories, items, prices and a phone number per station. SmartRail reads it only through an API with an API key and never reads its storage.
+- **Rationale:** Brief 11 and 12: the provider remains a separate external system; a read-only menu is the minimum that demonstrates the boundary.
+- **Acceptance:** SmartRail has no connection to RailBite's data store; a request with a missing or wrong API key returns 401.
 - **Sources:** DF-087
+- **Assumptions:** ASM-005
 
 #### REQ-INT-002 — Outbound reference and ETA feed
 
-- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (cut from MVP 2026-10-06)
+- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (not built 2026-10-07: the integration is read-only)
 - **Requirement:** SmartRail sends journey and station reference data, ETA changes and cancellations to RailBite using an API key, with a minimal payload that excludes passenger identity.
 - **Rationale:** Brief 11 and data minimisation.
 - **Acceptance:** Payload schema contains no personal fields (schema test).
@@ -903,27 +922,29 @@ Every requirement here is written to be **testable**. Where a number was needed 
 
 #### REQ-INT-003 — Signed inbound webhooks
 
-- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (cut from MVP 2026-10-06)
+- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (not built 2026-10-07: no orders pass through SmartRail)
 - **Requirement:** RailBite sends order events as webhooks that are HMAC-signed, timestamped, idempotent and rejected outside a 5-minute replay window.
 - **Rationale:** At-least-once delivery requires idempotency and authenticity.
 - **Acceptance:** Replayed or tampered webhook is rejected; duplicate delivery is a no-op.
 - **Sources:** DF-087, DF-064
 
-#### REQ-INT-004 — Outbox, retry and dead-letter
+#### REQ-INT-004 — Menu failure never affects the railway
 
-- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (cut from MVP 2026-10-06)
-- **Requirement:** Outbound events use an outbox with retry, backoff and a dead-letter queue; a RailBite outage never affects railway functions.
-- **Rationale:** Separation under failure.
-- **Acceptance:** Stopping RailBite leaves all core endpoints healthy and queues events.
+- **Type:** Functional · **Priority:** Could · **MVP:** Thin · **Status:** Proposed
+- **Requirement:** SmartRail asks RailBite with a short timeout (3 s) and caches the menu for 5 minutes. When RailBite is down or slow the passenger app shows "Menu unavailable right now" and hides the phone number. No railway function depends on RailBite.
+- **Rationale:** Separation under failure (brief 12).
+- **Acceptance:** Stopping RailBite leaves every other endpoint healthy and the app shows the message within 3 s.
 - **Sources:** DF-037
+- **Assumptions:** ASM-005
 
-#### REQ-INT-005 — Single-screen collection order
+#### REQ-INT-005 — Food menu and call to order
 
-- **Type:** Functional · **Priority:** Could · **MVP:** No · **Status:** Rejected (cut from MVP 2026-10-06)
-- **Requirement:** Passengers can place a single collection order from one screen using RailBite's menu; the order may be rejected at confirm and the UI handles it.
-- **Rationale:** Brief 12, minimum viable.
-- **Acceptance:** Forced stock-out at confirm shows a clear message and no broken state.
+- **Type:** Functional · **Priority:** Could · **MVP:** Thin · **Status:** Proposed
+- **Requirement:** For stops on the passenger's journey that have catering, the passenger app shows "Food at <station>": the menu grouped by category with prices and a tap-to-call button for the provider's phone number, with the line "Ordering and payment are handled by the catering provider." SmartRail takes no orders and no payment.
+- **Rationale:** Brief 12 asks who owns the menu, the order and the payment; the provider does, so SmartRail only shows the information.
+- **Acceptance:** Hill Town shows its categories, items and prices and a working call button; a stop with no catering shows no food section.
 - **Sources:** DF-092
+- **Assumptions:** ASM-005, ASM-054
 
 <!-- Ticketing requirements added 2026-10-06 (decision log in 12-ticketing/README.md) -->
 
@@ -1010,7 +1031,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 #### REQ-TKT-005 — Ticket states and append-only history
 
 - **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
-- **Requirement:** A ticket is in exactly one state of PendingPayment, Valid, Affected, Refunded or Expired. Every transition appends a history row; history is never deleted; illegal transitions are rejected.
+- **Requirement:** A ticket is in exactly one state of PendingPayment, Valid, Boarded, Completed, Affected, Refunded or Expired. Every transition appends a history row; history is never deleted; illegal transitions are rejected.
 - **Rationale:** Audit and customer-service need the full story of a ticket.
 - **Acceptance:** Unit tests cover every legal and illegal transition; a refunded ticket still has all earlier history rows.
 - **Sources:** Ticketing decision log — Decisions 3, 31
@@ -1064,9 +1085,9 @@ Every requirement here is written to be **testable**. Where a number was needed 
 #### REQ-TKT-011 — Ticket ends with the journey
 
 - **Type:** Functional · **Priority:** Should · **MVP:** Yes · **Status:** Proposed
-- **Requirement:** A Valid ticket becomes Expired when its journey is Completed.
+- **Requirement:** A Valid ticket that was never scanned at boarding becomes Expired when its journey is Completed. A Boarded ticket with no exit scan becomes Completed, flagged 'no exit scan', at the same moment (REQ-GAT-006).
 - **Rationale:** Old tickets must not look usable.
-- **Acceptance:** After journey completion the ticket reads Expired and an inspector scan returns NOT_VALID_STATUS.
+- **Acceptance:** After journey completion an unscanned ticket reads Expired; a Boarded ticket without an exit scan reads Completed with the flag; a scan of either returns NOT_VALID_STATUS.
 - **Sources:** Ticketing decision log — Gap
 - **Assumptions:** ASM-035
 
@@ -1184,7 +1205,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 #### REQ-INS-001 — Ticket Inspector role in the staff app
 
 - **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
-- **Requirement:** Inspection is a `ticket.inspect` permission held by a Ticket Inspector role, delivered as a mode of the staff Flutter app. A driver does not have it unless also assigned the role.
+- **Requirement:** Inspection is a `ticket.inspect` permission held by a Ticket Inspector role, delivered as a mode of the staff Flutter app on the inspector's own phone, used for spot checks while the gates cover everyone. A driver does not have it unless also assigned the role.
 - **Rationale:** Do not assume drivers inspect tickets; keep the capability explicit without building another app.
 - **Acceptance:** A driver token without the permission receives 403 from the validation endpoint and is not offered the mode.
 - **Sources:** Ticketing decision log — Decisions 13, 14
@@ -1193,7 +1214,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 #### REQ-INS-002 — Server-side ticket validation
 
 - **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
-- **Requirement:** A scan is validated on the server: signature, status, journey, service date and whether the ticket's segment covers the inspector's current stop. The result is one of VALID, NOT_VALID_STATUS, WRONG_JOURNEY, WRONG_DATE, OUTSIDE_SEGMENT_PAST_DESTINATION, OUTSIDE_SEGMENT_BEFORE_ORIGIN, TAMPERED or UNABLE_TO_VERIFY.
+- **Requirement:** A scan is validated on the server: signature, status, journey, service date and whether the ticket's segment covers the inspector's current stop. The scan carries its scan type (inspect), the inspector's current journey and stop, a client scan id and the time. The result is one of VALID, NOT_VALID_STATUS, WRONG_JOURNEY, WRONG_DATE, OUTSIDE_SEGMENT_PAST_DESTINATION, OUTSIDE_SEGMENT_BEFORE_ORIGIN, TAMPERED or UNABLE_TO_VERIFY.
 - **Rationale:** Status can change at any time, so the decision must be made where the truth lives.
 - **Acceptance:** Each result code has a test with a seeded ticket.
 - **Sources:** Ticketing decision log — Decisions 11, 12, 15
@@ -1211,7 +1232,7 @@ Every requirement here is written to be **testable**. Where a number was needed 
 #### REQ-INS-004 — Travelling past the destination
 
 - **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
-- **Requirement:** A scan at a stop beyond the ticket's destination returns OUTSIDE_SEGMENT_PAST_DESTINATION and is logged. Any fare adjustment happens outside the system.
+- **Requirement:** A scan at a stop beyond the ticket's destination returns OUTSIDE_SEGMENT_PAST_DESTINATION with the excess fare due (REQ-GAT-005) and is logged. Collecting it happens in person, outside the system.
 - **Rationale:** A ticket covers only what was bought.
 - **Acceptance:** Scanning a Central-to-Riverside ticket at Mill Lane returns OUTSIDE_SEGMENT_PAST_DESTINATION.
 - **Sources:** Ticketing decision log — Decisions 11, 12
@@ -1234,3 +1255,91 @@ Every requirement here is written to be **testable**. Where a number was needed 
 - **Acceptance:** With a Running journey the current stop is prefilled; with Unknown confidence the inspector must choose.
 - **Sources:** Ticketing decision log — Gap
 - **Assumptions:** ASM-041
+
+<a id="gat"></a>
+
+## Gates and scans
+
+#### REQ-GAT-001 — Gate scanner device
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A gate scanner is the kiosk app in gate mode, with a station-scoped device token like a display. It scans a QR ticket (camera, or pasted/test input), sends board and exit scans to the validation endpoint, shows the result in large text, and sends heartbeats. In the MVP gates are screens, not physical barriers.
+- **Rationale:** Scanning every passenger at boarding and exit is how real systems cope with volume; an inspector cannot check everyone.
+- **Acceptance:** A provisioned gate scanner at Hill Town scans a seeded ticket and shows the server's result; revoking its token stops it within one heartbeat.
+- **Sources:** Gate decision 2026-10-07
+- **Assumptions:** ASM-048
+
+#### REQ-GAT-002 — Board scan
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A board scan is accepted only when the signature is valid, the ticket is Valid, the journey and service date match, and the scan is at the ticket's origin station. The ticket then becomes Boarded. Otherwise the result is NOT_VALID_STATUS, WRONG_JOURNEY, WRONG_DATE, WRONG_STATION or TAMPERED, with a reason.
+- **Rationale:** A ticket is a promise for one journey between two stops.
+- **Acceptance:** A Valid ticket scanned at its origin becomes Boarded; the same ticket scanned at another station returns WRONG_STATION; a Refunded ticket returns NOT_VALID_STATUS.
+- **Sources:** Gate decision 2026-10-07
+
+#### REQ-GAT-003 — Exit scan
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** An exit scan is accepted when the ticket is Boarded and the exit station is at or before the destination in the journey's stop order; the ticket becomes Completed (an early exit is allowed and flagged). An exit after the destination returns OUTSIDE_SEGMENT_PAST_DESTINATION with the excess fare (REQ-GAT-005) and the ticket becomes Completed with that flag. An exit with no board scan returns NOT_BOARDED.
+- **Rationale:** The exit scan is what closes the journey and reveals travel beyond the ticket.
+- **Acceptance:** Exit at the destination completes the ticket; exit two stops past it returns OUTSIDE_SEGMENT_PAST_DESTINATION; exit with no board scan returns NOT_BOARDED.
+- **Sources:** Gate decision 2026-10-07
+
+#### REQ-GAT-004 — Double scans and retries
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A second board scan of a Boarded ticket returns ALREADY_BOARDED. A retried delivery of the same scan (same client scan id) is idempotent: one log entry and the same result.
+- **Rationale:** A copied QR must fail at the gate, and a flaky connection must not create duplicate events.
+- **Acceptance:** Scanning one QR twice at boarding rejects the second; replaying one scan request five times writes one log entry.
+- **Sources:** Gate decision 2026-10-07
+
+#### REQ-GAT-005 — Excess fare shown at the exit
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** At an exit past the destination, the server computes the excess fare as (fare from origin to the exit station minus the fare paid) plus a flat penalty, and the gate screen shows it. The amount is logged. No payment is taken and nobody is blocked; collection is in person.
+- **Rationale:** Station-to-station fares are known, so the amount can be shown without building payment collection.
+- **Acceptance:** Exiting two stops past the destination shows the correct fare difference plus the penalty.
+- **Sources:** Gate decision 2026-10-07
+- **Assumptions:** ASM-039, ASM-049
+
+#### REQ-GAT-006 — Missing exit scan
+
+- **Type:** Functional · **Priority:** Should · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A Boarded ticket with no exit scan is closed as Completed, flagged 'no exit scan', when its journey completes.
+- **Rationale:** Tickets must not stay open forever, and a missing exit scan is common.
+- **Acceptance:** After journey completion a Boarded ticket with no exit scan reads Completed with the flag.
+- **Sources:** Gate decision 2026-10-07
+
+#### REQ-GAT-007 — Scan context
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Every scan sends the QR token, the scan type (board, exit or inspect), the device (which fixes the station for a gate) or the inspector's current journey and stop, a client scan id and the time. The server resolves stop order from the timetable and never trusts the device clock for decisions.
+- **Rationale:** The validator needs both what the ticket says and where the scan happens to decide.
+- **Acceptance:** A scan with a missing scan type or an unknown device returns a modelled error; a device clock 10 minutes wrong does not change the result.
+- **Sources:** Gate decision 2026-10-07
+
+#### REQ-GAT-008 — Gate offline
+
+- **Type:** Non-functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** A gate that cannot reach the server shows "Can't verify — see staff". It decides nothing locally and records no scan, and the Station Master sees the gate offline within 90 seconds.
+- **Rationale:** Status (refunded, cancelled) cannot be checked offline; the limit is stated, not hidden.
+- **Acceptance:** Cutting the network to a gate shows the message and an offline flag in the Station Master's view within 90 s.
+- **Sources:** Gate decision 2026-10-07; degraded-mode matrix
+- **Assumptions:** ASM-029
+
+#### REQ-GAT-009 — Scan log
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** Every scan is logged append-only: ticket id, scan type, station or stop, device or inspector, result code, excess fare due and time. A Station Master sees their own station's log, the Network Controller sees all, the passenger never does.
+- **Rationale:** Accountability for every decision, and the evidence for physical follow-up.
+- **Acceptance:** A scan produces one log row; a Station Master at another station cannot read it.
+- **Sources:** Gate decision 2026-10-07
+
+#### REQ-GAT-010 — Fraud is detected and logged, handled in person
+
+- **Type:** Functional · **Priority:** Must · **MVP:** Yes · **Status:** Proposed
+- **Requirement:** The system detects and logs fraud (tampered, reused, past-destination). It never blocks an account, fines, or collects money; staff handle the passenger in person.
+- **Rationale:** Responding to fraud is a railway procedure, not a SmartRail feature.
+- **Acceptance:** After a tampered scan, the log has the entry and the passenger's account is unchanged.
+- **Sources:** Gate decision 2026-10-07
+- **Assumptions:** ASM-050

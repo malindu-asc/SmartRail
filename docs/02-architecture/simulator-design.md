@@ -27,6 +27,7 @@ Consequences:
 | Position update | Ingestion API | source id, journey id (via vehicle assignment), sequence, event time, location (between stop *n* and *n+1*, fraction), speed |
 | Stop event | Ingestion API | source id, journey id, stop sequence, arrived / departed / passed, event time |
 | Driver event *(optional)* | Driver API with a driver test token | duty id, stop event or delay reason, device time, sequence, idempotency key |
+| Gate scan *(optional)* | Scan API with a gate device token | scan type `board` or `exit`, ticket token, client scan id — so gate flows can be scripted |
 | Operator action *(optional)* | Ops API with a test controller token | cancel, platform change, interrupt, resume — so a whole cross-app flow can be scripted |
 
 ## Time
@@ -108,9 +109,11 @@ expect:
 | SIM-15 | Section blocked | operator section disruption | Scope resolution to many journeys | EDG-038, 067, 088 | — |
 | SIM-16 | Driver clock skew | skew +6 min | Confidence downgrade, ordering | EDG-042 | — |
 | SIM-17 | Major incident | operator emergency termination | Templates, legal hold | EDG-037 | — |
-| SIM-18 | Demo day | composite of 02, 09, 14, 08, 19, 20, 05 | The stakeholder demo narrative | — | demo |
+| SIM-18 | Demo day | composite of 21, 02, 14, 08, 20, 22, 05 | The stakeholder demo narrative | — | demo |
 | SIM-19 | Ticket purchase with payment faults | provider: duplicate callback, bad signature, abandoned payment; operator cancels mid-checkout | Idempotency, signature checks, double availability check, automatic refund | EDG-125, 126, 127, 128 | **E2E-4** |
 | SIM-20 | Cancellation with tickets and refund | operator terminates short; provider refund fails once, then succeeds on retry | Affected only for the lost part; one refund; retry; inspector rejection | EDG-123, 124, 129, 130, 131, 142 | **E2E-4** |
+| SIM-21 | Gate happy path Central → Riverside | board scan, driver stops, exit scan; one passenger never scans out | Boarded → Completed; missing exit scan closes cleanly | EDG-153, 157 | **E2E-4** |
+| SIM-22 | Gate faults | double board scan; wrong station; exit past the destination (excess fare); exit with no board; gate offline; replayed scan request | Rejections with reasons; excess fare calculated and logged; idempotent scans | EDG-149 … 152, 154, 156 | **E2E-4** |
 
 ## Fake payment provider
 

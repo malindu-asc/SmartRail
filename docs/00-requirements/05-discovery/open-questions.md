@@ -19,7 +19,7 @@ and **Malindu** (for scope). Each has a default assumption so the work never blo
 | OQ-03 | Station operations: role-scoped console view, or a separate application? | ~2 days of scope | Role-scoped view (ASM-010) | UC-OPS | Open |
 | OQ-04 | Station experience: both displays and terminal, or one? | ~1 day | Both, one codebase (ASM-011) | UC-DSP, UC-TRM | Open |
 | OQ-05 | Passenger accounts, or anonymous device subscriptions? | ~1 day plus privacy surface | Anonymous (ASM-012) | UC-PAX-05, REQ-PAX-007 | Answered 2026-10-06: accounts exist for ticketing; public information stays anonymous (ASM-012) |
-| OQ-06 | Catering depth: thin and last (one day), contract only, or cut? | A graded §23/§26 row | Thin and last (ASM-005) | UC-EXT | Answered 2026-10-06: catering cut entirely (ASM-005) |
+| OQ-06 | Catering depth: thin and last (one day), contract only, or cut? | A graded §23/§26 row | Thin and last (ASM-005) | UC-EXT | **Answered 2026-10-07:** minimal read-only menu with call-to-order (ASM-005, ASM-054) |
 
 ## For the assessors
 
@@ -47,4 +47,5 @@ and **Malindu** (for scope). Each has a default assumption so the work never blo
 |---|---|---|---|---|
 | OQ-17 | Will you provide PayHere sandbox merchant keys, to be kept out of the repository? | Needed only for the stretch PayHere adapter | Fake provider only | Open |
 | OQ-18 | Should the fare table use real-looking Sri Lankan fares or placeholders? | Demo credibility | Placeholders (ASM-039) | Open |
-| OQ-19 | Is a fine or excess fare for travelling past the destination in scope? | Inspection outcome | Out of scope; recorded only | Open |
+| OQ-19 | Is a fine or excess fare for travelling past the destination in scope? | Inspection outcome | **Answered 2026-10-07:** shown at the exit scanner and logged; collected in person; flat penalty placeholder (ASM-049) | Answered |
+| OQ-20 | What penalty amount should the excess fare use? | Demo credibility | LKR 500 flat placeholder (ASM-049) | Open |

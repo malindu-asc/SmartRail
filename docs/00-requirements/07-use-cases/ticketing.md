@@ -116,14 +116,13 @@ buying on a phone, often in a hurry; the inspector is on a moving train with one
 | Flow | **[CF-11](../08-cross-app-flows/cf-11-inspection.md)** |
 
 **Main flow**
-1. Inspector opens the staff app in Inspector mode; the journey and **current stop** come from the live journey.
+1. Inspector opens the staff app in Inspector mode **on their own phone**; the journey and **current stop** come from the live journey. Inspection is by **spot check**: the gates (UC-GAT-01, 02) cover everyone.
 2. Scans the QR; the server validates signature, status, journey, service date and segment.
 3. Result in large, simple form: green VALID with name and stops, or red with the reason.
 
 **Failure flows**
 - F1 *Affected / Refunded / Expired / Pending* — rejected (EDG-131).
-- F2 *Passenger travelled past their destination* — "OUTSIDE SEGMENT — past destination"; recorded; any fare
-  adjustment is outside the system (EDG-132).
+- F2 *Passenger travelled past their destination* — "OUTSIDE SEGMENT — past destination" with the excess fare due; recorded; collected in person (EDG-132).
 - F3 *Different journey or date* — rejected (EDG-133).
 - F4 *Tampered QR* — rejected (EDG-134).
 - F5 *Inspector offline* — "Unable to verify"; scan queued and logged on reconnect (EDG-135).

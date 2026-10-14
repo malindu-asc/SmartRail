@@ -239,7 +239,7 @@ REQ-DSP-004 · Status: Proposed
 - See EDG-080 for the full criteria (65 s banner, 305 s scheduled-only, 90 s offline in device health)
 
 ### US-062 — Know every screen is alive
-*As a network controller, I want offline screens flagged within 90 s.* · Must · Traces: REQ-DSP-005, REQ-OPS-009 ·
+*As a Station Master, I want my station's offline screens and gate scanners flagged within 90 s.* · Must · Traces: REQ-DSP-005, REQ-OPS-009 ·
 Status: Proposed
 
 ### US-063 — Find my way from a terminal without installing anything
@@ -342,19 +342,22 @@ REQ-NFR-006 · Status: Proposed
 
 - **Given** the degraded-mode matrix **Then** every row has a corresponding test or simulator scenario
 
-## Epic E10 — External catering (CUT from the MVP 2026-10-06 — kept for the record)
+## Epic E10 — External catering (minimal: read-only menu with call-to-order)
 
-### US-090 — Railway keeps working when the provider fails
-*As the organisation, I want a catering outage to have no effect on railway information.* · Could · Traces:
-REQ-INT-004 · Status: Proposed
+### US-090 — The railway keeps working when the menu service fails
+*As the organisation, I want a catering outage to have no effect on railway information.* · Could · Traces: REQ-INT-004 · Status: Proposed
 
-### US-091 — Provider learns about delays as they happen
-*As the catering provider, I want ETA changes and cancellations for journeys with orders, without passenger
-identity.* · Could · Traces: REQ-INT-002, REQ-INT-003 · Status: Proposed
+- **Given** the menu service is stopped **When** I open a journey **Then** everything works and only the food section says "Menu unavailable right now"
 
-### US-092 — Order food for collection in one screen
-*As a passenger, I want to order for collection at a stop on my journey.* · Could · Traces: REQ-INT-005 · Status:
-Proposed
+### US-091 — The provider learns about delays *(not built)*
+*As the catering provider, I want ETA changes and cancellations for journeys with orders.* · Could · Traces: REQ-INT-002, REQ-INT-003 · Status: Rejected (not built 2026-10-07: read-only integration)
+
+### US-092 — See the food at a stop and call to order
+*As a passenger, I want to see what food is available at a stop on my journey and how to order it.* · Could · Traces: REQ-INT-001, REQ-INT-005 · Status: Proposed
+
+- **Given** a stop with catering **Then** I see its menu by category with prices and a call-to-order button
+- **Given** a stop with no catering **Then** I see no food section
+- **Given** a missing API key **When** the app asks the service **Then** 401 and no menu is shown
 
 ## Epic E11 — Accounts, tickets and refunds (added 2026-10-06)
 
@@ -421,3 +424,43 @@ Decision log: [12-ticketing/README.md](../12-ticketing/README.md). Built as a th
 
 ### US-108 — Don't keep money for a ticket that cannot exist
 *As a passenger, I want an automatic refund if the train was cancelled while I was paying.* · Must · Traces: REQ-REF-005, REQ-TKT-002 · Status: Proposed
+
+## Epic E12 — Gates and the station (added 2026-10-07)
+
+### US-109 — Board with one scan
+*As a passenger, I want to scan my QR at the gate to board, so that I do not queue for a person.* · Must · Traces: REQ-GAT-001, REQ-GAT-002, REQ-GAT-004, REQ-GAT-007 · Status: Proposed
+
+- **Given** a Valid ticket **When** I scan at my origin gate **Then** it becomes Boarded
+- **Given** the same QR **When** it is scanned again at boarding **Then** it is rejected as ALREADY_BOARDED
+- **Given** a Refunded or Affected ticket **When** scanned **Then** I see the reason
+- **Given** a scan at another station **Then** WRONG_STATION
+
+### US-110 — Leave with one scan, and see what I owe if I went too far
+*As a passenger, I want to scan out at my destination, and be told clearly if I travelled past it.* · Must · Traces: REQ-GAT-003, REQ-GAT-005 · Status: Proposed
+
+- **Given** a Boarded ticket **When** I exit at my destination **Then** it becomes Completed
+- **Given** I exit two stops past my destination **Then** the screen shows the fare difference plus the penalty and nothing is charged or blocked
+- **Given** no board scan **When** I scan out **Then** NOT_BOARDED
+
+### US-111 — Run my station
+*As a Station Master, I want a view of my own station only, so that I can run it without touching anything else.* · Must · Traces: REQ-OPS-018, REQ-OPS-019, REQ-GAT-009 · Status: Proposed
+
+- **Given** I am signed in at Hill Town **Then** I see only Hill Town's arrivals, devices, scan log and excess-fare list
+- **Given** a lift is faulty **When** I mark it **Then** passengers see it within 5 s
+- **Given** an excess fare was paid in person **When** I mark it collected **Then** it leaves the list
+- **Given** another station's data **When** I request it **Then** 403
+
+### US-112 — A gate that admits when it cannot verify
+*As a passenger and a Station Master, I want an offline gate to say so, not guess.* · Must · Traces: REQ-GAT-008 · Status: Proposed
+
+- **Given** the gate loses its connection **Then** it shows "Can't verify — see staff", decides nothing, and the Station Master sees it offline within 90 s
+
+### US-113 — Every journey closes cleanly
+*As the organisation, I want tickets closed when the journey ends, even if someone forgot to scan out.* · Should · Traces: REQ-GAT-006, REQ-TKT-011 · Status: Proposed
+
+- **Given** a Boarded ticket with no exit scan **When** the journey completes **Then** it is Completed and flagged 'no exit scan'
+
+### US-114 — Fraud is recorded, then handled by a person
+*As the organisation, I want the system to detect and log fraud, and staff to deal with it in person.* · Must · Traces: REQ-GAT-010, REQ-GAT-009 · Status: Proposed
+
+- **Given** a tampered, reused or past-destination scan **Then** it is logged with the result and the passenger's account is unchanged

@@ -1,7 +1,7 @@
 # Operations console — use cases
 
 React web console used by every staff role. **Station operations is a role-scoped view of this console**, not a
-separate application (ASM-010): in the MVP the Network Controller has a station view of the same console. Context of use: desk,
+separate application (ASM-010): in the MVP the Station Master has an own-station view of the same console. Context of use: desk,
 keyboard, long sessions, high information density, decisions under time pressure during disruption.
 
 Authority for every action is in the [permission matrix](../06-requirements/permission-matrix.md). Every
@@ -13,7 +13,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | PER-06 network controller (also holds the incident, station and reporting capabilities) |
+| Actor | PER-06 network controller (also holds the incident and reporting capabilities); PER-07 Station Master sees only their own station |
 | Goal | A current, honest picture of every journey today |
 | Priority | Must · MVP Yes |
 
@@ -24,7 +24,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 4. Drill into a journey for its stop timeline, event history and source of each value.
 
 **Alternate flows**
-- A1 *Station view* — the controller filters the board to one station's arrivals and departures.
+- A1 *Station Master* — sees only their own station's arrivals and departures.
 
 **Failure flows**
 - F1 *Journey goes Unknown* — highlighted; never shown as moving (REQ-LIVE-004).
@@ -77,7 +77,7 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 **Main flow**
 1. Select journey stop → **Change platform** → new platform → reason.
 2. Warning if another journey occupies that platform within ±5 min (warning, not block — REQ-LIVE-020).
-3. Publish → platform state `Changed`; the station view highlights it at the same moment; displays show
+3. Publish → platform state `Changed`; the Station Master's view highlights it at the same moment; displays show
    "Platform 5 (changed from 3)"; followers pushed immediately ([CF-05](../08-cross-app-flows/cf-05-platform-change.md)).
 
 **Failure flows**
@@ -223,17 +223,17 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 
 | | |
 |---|---|
-| Actor | PER-06 network controller, PER-12 system administrator |
+| Actor | PER-07 Station Master (own station), PER-06 network controller, PER-12 system administrator |
 | Priority | Must · MVP Yes |
 
 **Main flow**
 1. Device health lists each display and terminal: station, location, state, last heartbeat (REQ-OPS-009).
-2. Offline after 90 s is highlighted to the network controller (station view).
+2. Offline after 90 s is highlighted to the Station Master (own station) and the network controller.
 3. System administrator provisions a new device with a one-time pairing code, or revokes one.
 
 **Failure flows**
 - F1 *Revoked device keeps trying* — rejected on every request; counted.
-- F2 *Network controller tries to revoke* — not permitted; requests the administrator.
+- F2 *Station Master tries to revoke* — not permitted; requests the administrator.
 
 **Requirements:** REQ-OPS-009, REQ-DSP-003, REQ-DSP-005 · **Edge cases:** EDG-082, EDG-084
 
@@ -314,3 +314,25 @@ high-consequence action requires a reason code and writes an audit entry (REQ-OP
 2. Visible on affected journeys and in journey search in advance; activates automatically at start.
 
 **Requirements:** REQ-OPS-016 · **Edge cases:** EDG-074
+
+---
+
+### UC-OPS-16 — Run my station
+
+| | |
+|---|---|
+| Actor | PER-07 Station Master (own station only) |
+| Goal | Keep one station running: information, screens, gates and local problems |
+| Priority | Must · MVP Yes |
+
+**Main flow**
+1. See the station's arrivals and departures live, with platform changes the moment they happen.
+2. See the station's displays and gate scanners and whether each is online.
+3. Update lift, stair and gate status; post a local notice that shows on the station's screens and terminal (REQ-OPS-019).
+4. See the gate scan log and the excess-fare list; mark an excess fare as collected when it is paid in person.
+
+**Failure flows**
+- F1 *A gate or display goes offline* — highlighted within 90 s.
+- F2 *Tries another station, or a journey action* — 403.
+
+**Requirements:** REQ-OPS-018, REQ-OPS-019, REQ-GAT-009 · **Edge cases:** EDG-159

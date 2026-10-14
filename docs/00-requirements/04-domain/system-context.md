@@ -10,7 +10,7 @@ What makes the system coherent is separating **who is allowed to assert a fact**
 
 ## Writers and readers
 
-> **MVP note (2026-10-06):** the incident, station and fleet rows below are *capabilities* held by the Network Controller and the Scheduler in the MVP (see [mvp-roles.md](../06-requirements/mvp-roles.md)). Authority is still divided by accountability; it is simply held by fewer accounts.
+> **MVP note (2026-10-06):** the incident row below is a *capability* of the Network Controller and the fleet row a capability of the Scheduler in the MVP; the Station Master is a role of its own (see [mvp-roles.md](../06-requirements/mvp-roles.md)). Authority is still divided by accountability; it is simply held by fewer accounts.
 
 | Actor | Asserts | Authority | Typical latency | Application |
 |---|---|---|---|---|
@@ -19,12 +19,13 @@ What makes the system coherent is separating **who is allowed to assert a fact**
 | **Driver** | Arrived, departed, skipped, delay reason, request assistance | *What happened at the stop, and why* | Per stop | Driver app |
 | **Network controller** | Cancellation, termination, platform change, reassignment | *What changed in the plan, now* | Immediate | Ops console |
 | **Incident manager** *(capability — Network controller)* | Incidents, severity, public messaging for serious events | *What is going on, officially* | Minutes | Ops console |
-| **Station manager** *(capability — Network controller)* | Station-scoped facts: facilities, display assignment, local notices | *Local state at one station* | Minutes | Ops console (station-scoped) |
+| **Station Master** *(own station only)* | Station-scoped facts: facilities, display assignment, local notices | *Local state at one station* | Minutes | Ops console (station-scoped) |
 | **Fleet controller** *(capability — Scheduler)* | Vehicle unavailable from / to | *What can run* | Hours ahead | Ops console |
+| **Gate scanner** *(device)* | Board and exit scan events | *Who passed which gate, and when* | Seconds | Kiosk gate mode |
 | Passenger app | — | **read only** | follows | Flutter |
 | Station display | — | **read only** | follows | React kiosk (display mode) |
 | Station terminal | — | **read only** | follows | React kiosk (terminal mode) |
-| Catering provider | its own order state only | **reads railway state**, writes nothing into it | follows | External (Node) |
+| Catering menu service | its own menu data only | **nothing** — SmartRail reads its menu; no railway data flows to it | follows | External (Node) |
 | Customer service agent *(deferred)* | — | **read only** | follows | Ops console |
 
 Two consequences fall straight out of this table:
@@ -122,7 +123,7 @@ The simulator also publishes through **exactly the same authenticated ingestion 
 
 | Boundary | Rule |
 |---|---|
-| SmartRail ↔ catering provider | Separate system, separate database. SmartRail sends journey and ETA data; the provider sends events about its own orders. Neither writes the other's data. A provider outage never affects railway functions (REQ-INT-004). |
+| SmartRail ↔ catering menu service | A separate service with its own seeded data. SmartRail reads the menu through an API key, caches it, and shows it with a call-to-order number. No railway data is sent to it and no orders pass through SmartRail. If it is down only the menu is unavailable (REQ-INT-004). |
 | SmartRail ↔ train detection feed | Authenticated per source (REQ-SEC-004). Validated, de-duplicated, plausibility-checked (REQ-LIVE-005). |
 | SmartRail ↔ safety systems | **None.** SmartRail is an information system. It never replaces signalling, radio or safety procedures (ASM-009). |
 | Public ↔ operational | Public endpoints are read-only, anonymous, cached and rate-limited (REQ-PAX-001, REQ-SEC-002). |

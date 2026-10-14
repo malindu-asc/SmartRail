@@ -17,6 +17,7 @@ Thresholds: stale at 60 s (ASM-019), Unknown at 300 s (ASM-020), device offline 
 | **Platform display** | Last board snapshot | Until reconnect | "Updated hh:mm" banner | After 300 s: scheduled times only, "Live information unavailable — listen for announcements"; no live markers | Showing expected times as live | A platform crowd waiting for a train that has been cancelled |
 | **Concourse display** | Last board + disruptions | Until reconnect | As platform | As platform; disruptions retained with their published time | As platform | As platform |
 | **Station terminal** | Station info, facilities, timetable | 24 h | "as of" on live values | Timetable-only mode; banner; live search columns hidden | Live-only features (follow, live status) | A visitor planning around live data that isn't live |
+| **Gate scanner** | Nothing | — | Heartbeat banner for staff | Shows "Can't verify — see staff"; decides nothing locally; records no scan | Accepting any ticket offline | A refunded or copied ticket passing, or a good passenger wrongly rejected |
 | **Ops console** | Nothing persistent (desk, wired) | — | Per-journey age shown in the board | Connection-lost banner; actions disabled until reconnected | Any write while disconnected (no offline writes for high-consequence actions) | A controller cancelling a train believing it worked |
 
 ## Backend and integrations
@@ -30,7 +31,7 @@ Thresholds: stale at 60 s (ASM-019), Unknown at 300 s (ASM-020), device offline 
 | Database unavailable | Health check | Read endpoints served from cache where possible; writes rejected with a clear error | Ops; passengers see "as of" |
 | Redis (live state) unavailable | Health check | Live estimates unavailable → Scheduled confidence; core reads continue from database | Everyone, as labels |
 | Push provider failing | Delivery errors | Retry once; inbox remains (REQ-PAX-015) | Passengers via inbox |
-| Catering provider down | Outbox failures | Events retained, retried with backoff, dead-lettered after limit; railway unaffected (REQ-INT-004) | Ops metrics |
+| Catering menu service down or slow | Request timeout (3 s) | Cached menu for up to 5 minutes, then "Menu unavailable right now"; phone number hidden; railway unaffected (REQ-INT-004) | Passengers (food section only) |
 
 ## How this is verified
 

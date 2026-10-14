@@ -17,7 +17,7 @@ REQ-LIVE-001, REQ-PAX-007, REQ-DSP-007, REQ-INT-002
 | 08:34 | Controller | Confirms | — | — | — | — |
 | 08:34 | Backend | Journey → `TerminatedShort` at Mill Lane; stops 4–6 → `Cancelled`; **audit entry** with actor, reason, before/after (REQ-OPS-011) | — | — | — | — |
 | 08:34 (≤ 5 s) | Realtime | Deltas to all connected clients | **Push:** "1042 terminates at Mill Lane — train fault. Not calling at Hill Town." | "Cancelled" (stops 4–6) | "Journey terminated at Mill Lane" message | Termination event; RailBite applies its policy |
-| 08:34 | Ops console | The station view highlights the change for stops 4–6 | — | — | — | — |
+| 08:34 | Ops console | The Station Masters at stops 4–6 see the change highlighted | — | — | — | — |
 | 08:35 | Passenger | Opens app → alternatives via journey search | next train listed | next train shown | — | — |
 | 08:49 | Displays | Cancelled rows retained 15 min after scheduled departure, then removed (ASM-024) | — | removed | — | — |
 
@@ -37,7 +37,7 @@ REQ-LIVE-001, REQ-PAX-007, REQ-DSP-007, REQ-INT-002
 | Another controller edited J-1042 at 08:33 | Second save rejected with the current version (REQ-OPS-010) |
 | Controller lacks permission (e.g. a scheduler) | 403, attempt audited |
 | Driver app offline at 08:34 | Message stays `Sent`; controller sees it unacknowledged; driver app shows "messages may be missing" on reconnect (CF-03) |
-| A display at stop 5 is offline | It shows "Updated 08:30 — live information unavailable" and never claims the train is on time (CF-06); the station view shows the display offline |
+| A display at stop 5 is offline | It shows "Updated 08:30 — live information unavailable" and never claims the train is on time (CF-06); the Station Master sees the display offline |
 | Wrong journey cancelled | Reinstate (before scheduled departure) or re-plan; reinstatement is pushed to followers too |
 | Passengers hold tickets for this journey | Affected tickets and refunds are handled in [CF-10](cf-10-affected-refund.md) |
 

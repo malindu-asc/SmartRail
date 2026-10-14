@@ -1,6 +1,6 @@
 # Specified edge cases
 
-The twenty-two edge cases specified to test level. They are chosen because each is either **High** severity, part
+The twenty-six edge cases specified to test level. They are chosen because each is either **High** severity, part
 of a cross-app flow that the five E2E tests cover, or the single clearest demonstration of a design decision.
 
 Format: Given / When / Then, with the thresholds from the assumptions register so the tests and the docs use the
@@ -31,7 +31,7 @@ same numbers.
 - **Then** within 5 s the platform 3 display shows "now platform 5", the platform 5 display shows
   "changed from 3", the concourse board and app show "Platform 5 (changed from 3)"
 - **And** the follower receives one immediate push regardless of throttle
-- **And** the station view in the console highlights the change at the same moment
+- **And** the Station Master's view in the console highlights the change at the same moment
 - Ref: REQ-LIVE-014 · CF-05 · SIM-14
 
 ### EDG-030 — Breakdown between stations
@@ -133,20 +133,19 @@ same numbers.
 - **And** on reconnect it returns to live with a single snapshot request
 - Ref: REQ-DSP-004, REQ-DSP-005 · CF-06
 
-### EDG-097 — Reading another person's ticket or duty
+### EDG-097 — Reading or editing what belongs to someone else
 
-- **Given** passenger A holds a ticket and driver D-07 has a duty
-- **When** passenger B requests A's ticket, or driver D-11 requests D-07's duty, with otherwise valid requests
-- **Then** the response is 403, nothing is returned, and the attempt is audited
-- Ref: REQ-SEC-003, REQ-OPS-001
+- **Given** passenger A holds a ticket, driver D-07 has a duty, and a Station Master is scoped to Hill Town
+- **When** passenger B requests A's ticket, driver D-11 requests D-07's duty, or the Hill Town Station Master edits Mill Lane's lift status, with otherwise valid requests
+- **Then** the response is 403, nothing is returned or changed, and the attempt is audited
+- Ref: REQ-SEC-003, REQ-OPS-001, REQ-OPS-018
 
-### EDG-110 — Catering provider down *(cut from the MVP 2026-10-06; kept for the record)*
+### EDG-110 — Catering menu service down
 
-- **Given** a journey with an outstanding order
-- **When** RailBite is stopped and J-1042 is delayed by 8 minutes
-- **Then** every railway surface updates normally
-- **And** the ETA event stays in the outbox and is retried with backoff
-- **And** when RailBite returns, the event is delivered exactly once
+- **Given** the passenger app is showing "Food at Hill Town" from the menu service
+- **When** RailBite is stopped and the 5-minute cache has expired
+- **Then** the app shows "Menu unavailable right now" within 3 s and hides the phone number
+- **And** every railway function (boards, journeys, tickets, refunds, alerts) works normally
 - Ref: REQ-INT-004
 
 ---
@@ -193,10 +192,44 @@ same numbers.
 - **And** the ticket becomes Refunded only when the refund reaches REFUNDED
 - Ref: REQ-REF-003 · CF-10 · SIM-20
 
-### EDG-132 — Travelling past the purchased destination
+### EDG-132 — Travelling past the purchased destination (inspector)
 
 - **Given** a Valid ticket Central → Riverside on J-1042
 - **When** an inspector scans it at Mill Lane, beyond Riverside
-- **Then** the result is OUTSIDE_SEGMENT_PAST_DESTINATION and the scan is logged
+- **Then** the result is OUTSIDE_SEGMENT_PAST_DESTINATION with the excess fare due, and the scan is logged
 - **And** scanning the same ticket at Central returns VALID
-- Ref: REQ-INS-004 · CF-11
+- Ref: REQ-INS-004, REQ-GAT-005 · CF-11
+
+---
+
+## Gates (added 2026-10-07)
+
+### EDG-149 — Double board scan
+
+- **Given** a Valid ticket Central → Riverside on J-1042
+- **When** it is scanned at the Central gate with type `board`, and then scanned again
+- **Then** the first scan returns VALID BOARD and the ticket is Boarded
+- **And** the second returns ALREADY_BOARDED and changes nothing
+- Ref: REQ-GAT-004 · CF-11 · SIM-22
+
+### EDG-151 — Exit past the destination
+
+- **Given** a Boarded ticket Central → Riverside (fare LKR 120)
+- **When** it is scanned at the exit gate at Hill Town, two stops past Riverside (fare Central → Hill Town LKR 200)
+- **Then** the result is OUTSIDE_SEGMENT_PAST_DESTINATION and the screen shows LKR 80 plus the flat penalty
+- **And** the amount is logged, the ticket is Completed with the flag, and no payment is taken and no account is blocked
+- Ref: REQ-GAT-003, REQ-GAT-005, REQ-GAT-010 · CF-11 · SIM-22
+
+### EDG-153 — No exit scan
+
+- **Given** a Boarded ticket whose holder never scans at exit
+- **When** J-1042 completes
+- **Then** the ticket is Completed, flagged 'no exit scan'
+- Ref: REQ-GAT-006, REQ-TKT-011 · SIM-21
+
+### EDG-159 — Another station's data
+
+- **Given** a Station Master scoped to Hill Town
+- **When** they request Mill Lane's scan log, or edit its notices, lift status or devices
+- **Then** 403, no data returned, no change, and the attempt is audited
+- Ref: REQ-OPS-018, REQ-SEC-003

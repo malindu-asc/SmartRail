@@ -11,6 +11,7 @@ failure flows are where most of the requirements live.
 | [station-display.md](station-display.md) | Station displays (React kiosk, display mode) | UC-DSP-01 … 04 |
 | [station-terminal.md](station-terminal.md) | Station terminal (React kiosk, terminal mode) | UC-TRM-01 … 05 |
 | [ticketing.md](ticketing.md) | Accounts, tickets, refunds, inspection (passenger app, staff app, ops console) | UC-TKT-01 … 06 |
+| [station-gate.md](station-gate.md) | Gate scanners (kiosk gate mode), with the Station Master handling problems in person | UC-GAT-01 … 04 |
 | [external-catering.md](external-catering.md) | **CUT from the MVP 2026-10-06** — kept for the record | UC-EXT-01 … 05 |
 
 Cross-application behaviour — one event travelling through every app — is in
@@ -44,8 +45,9 @@ Cross-app flows — CF ids
 |---|---|---|---|---|
 | Passenger | 7 | 5 | 7 | 0 |
 | Driver | 7 | 5 | 6 | 1 |
-| Operations | 15 | 9 | 9 | 6 |
+| Operations | 16 | 10 | 10 | 6 |
 | Station display | 4 | 4 | 4 | 0 |
 | Station terminal | 5 | 3 | 5 | 0 |
+| Station gates | 4 | 4 | 4 | 0 |
 | Ticketing | 6 | 5 | 5 | 1 |
 | External catering *(cut)* | 5 | 0 | 0 | 0 |

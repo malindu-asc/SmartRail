@@ -49,11 +49,12 @@ This matrix is what that sentence has to mean before it can be built (REQ-NFR-00
 | Journey confidence → Unknown | Network controller | Console highlight | Medium |
 | Phantom movement / ghost journey | Network controller | Console list | Low |
 | Unplanned skip reported by driver | Network controller | Console alert | Medium |
-| Display or terminal offline (90 s) | Network controller (station view) | Console device health | Medium |
-| Platform change at a station | Network controller (station view) | Console highlight at publish time | High |
+| Display, terminal or gate scanner offline (90 s) | Station Master (own station), network controller | Console device health | Medium |
+| Platform change at a station | Station Master of that station | Console highlight at publish time | High |
 | Network-wide disruption awaiting approval | Second approver role holders | Console queue | High |
 | Disruption review-by passed | Disruption owner | Console "Expired — review" | Medium |
 | Critical incident declared | Network controllers | Console alert | Critical |
+| Excess fare due at an exit scan | Shown on the gate screen; listed for the Station Master | Gate screen and console list | Medium |
 | Timetable version awaiting approval | Schedulers other than the author | Console queue | Low |
 | Feed lag, dead-letter queue, error rate | System owner (me) | Observability alerts | Varies |
 

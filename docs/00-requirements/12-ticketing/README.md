@@ -22,7 +22,8 @@ requirement. The design principle that keeps it coherent:
 | Buy a single-journey ticket between two stops; Adult / Child / Senior fare | Seat holds, double-booking protection, standing capacity |
 | Fake payment provider (default); idempotent, signed confirmation | PayHere sandbox adapter (stretch — needs your sandbox keys) |
 | Signed QR ticket in a passenger wallet; available offline | Rebooking onto a replacement service |
-| Ticket Inspector mode in the staff Flutter app: scan and validate | Fare adjustment for travelling past the destination |
+| Ticket Inspector mode in the staff Flutter app, on the inspector's own phone: spot-check scan and validate | Collecting the excess fare in the system, fines, account blocking |
+| **Gate scanners** (kiosk gate mode): board and exit validation through one scan endpoint; excess fare shown at the exit and collected in person | Physical gates and barriers |
 | Journey cancelled or terminated short → ticket **Affected** + push | Screenshot-sharing / duplicate-use detection |
 | Full refund, auto-approved; refund record; Retry for failed refunds | Back-office manual approval queue |
 | Ticket history kept; refund is a separate record | Group purchases; season tickets; delay compensation |
@@ -41,9 +42,13 @@ Account ──< Ticket >── Journey
 ### Ticket states
 
 ```
-PendingPayment ──payment confirmed──▶ Valid ──journey cancelled / terminated short beyond destination──▶ Affected ──refund completed──▶ Refunded
-      │                                  │
-      └──15 min / payment failed──▶ Expired        └──journey completed──▶ Expired
+PendingPayment ──paid──▶ Valid ──board scan──▶ Boarded ──exit scan──▶ Completed
+      │                    │                      │
+      │                    │                      └──journey ends, no exit scan──▶ Completed (flag)
+      │                    ├── journey cancelled / ended before the destination ──▶ Affected ──refund──▶ Refunded
+      └──15 min / failed──▶ Expired        └── journey completes, never scanned ──▶ Expired
+
+Affected can also be reached from Boarded.
 ```
 
 | State | Meaning | Inspector result |
@@ -52,7 +57,9 @@ PendingPayment ──payment confirmed──▶ Valid ──journey cancelled / 
 | Valid | Paid; the journey has not been cancelled | Valid if segment covered |
 | Affected | The railway cancelled the journey, or ended it before the destination | Not valid |
 | Refunded | Money returned | Not valid |
-| Expired | Unpaid after 15 min, or the journey is over | Not valid |
+| Boarded | Scanned in at the origin gate | Valid if the segment covers the stop |
+| Completed | Exited, or the journey ended with no exit scan (flagged) | Not valid |
+| Expired | Unpaid after 15 min, or the journey ended and the ticket was never used | Not valid |
 
 ### Refund states (separate record)
 
@@ -103,7 +110,7 @@ Ticket Inspector role.
 | 13 | Ticket Inspector is a role and permission, as a mode in the staff Flutter app — not a new app | Build |
 | 14 | A driver is not automatically an inspector | Build |
 | 15 | Validation: signature, status, journey, date, segment (reservation n/a in MVP) | Build |
-| 16 | **Reinterpreted:** unreserved tickets have no "consumed" state; reuse is blocked by status | Build |
+| 16 | **Changed 2026-10-07:** a board scan marks the ticket Boarded and an exit scan Completed, so a copied QR is rejected at the gate; capacity for unreserved services is still not modelled | Build |
 | 17 | Cancelled / refunded tickets are rejected on scan | Build |
 | 18 | Regional = unreserved; Intercity / High-speed = reserved. Only Regional is purchasable | Doc |
 | 19 | Reserved services with no reservation are "sold out"; no standing model | Doc |
@@ -136,6 +143,24 @@ Ticket Inspector role.
 | Card data | Never touches SmartRail — hosted checkout via the provider |
 | Account deletion with tickets and refunds | Personal fields anonymised; financial records retained |
 
+## Gates, exit and excess fare (added 2026-10-07)
+
+**Decision (Malindu):** every passenger is validated through one endpoint when boarding and leaving; the inspector spot-checks and handles
+problems in person. Gates are screens in the MVP, not barriers (ASM-048).
+
+| Question | Answer |
+|---|---|
+| What does the validator need? | The ticket's journey, origin, destination and status (from the database), plus where the scan happens (station from the gate's identity, or the inspector's current stop), the scan type and the stop order from the timetable |
+| What decides? | The server. The scanner only displays the result |
+| Board rule | Valid ticket, right journey and date, scan at the origin → **Boarded** |
+| Exit rule | Boarded, exit at or before the destination → **Completed**; after it → excess fare shown |
+| Excess fare | (fare to the exit station − fare paid) + flat penalty (LKR 500 placeholder, ASM-049); shown and logged; collected in person |
+| Fraud | Detected and logged; handled physically; nothing is blocked or fined by the system (ASM-050) |
+| Gate offline | "Can't verify — see staff"; nothing decided or recorded |
+| Missing exit scan | Closed as Completed, flagged, when the journey completes |
+
+Cost: about **1 to 1.5 days** including tests, built after tickets and refunds, and the first to be cut at the D14 gate.
+
 ## What this costs, and what pays for it
 
 Estimated **4 to 5 days** including tests: accounts 0.5 · fares and purchase 1 · payment port, fake provider and
@@ -144,7 +169,7 @@ view 1 · docs and tests 0.5.
 
 | Paid for by | Saves |
 |---|---|
-| **Catering cut completely** (ASM-005) | ~1–2.5 days |
+| **Catering reduced to a read-only menu with call-to-order** (ASM-005) | ~1.5–2 days |
 | Rebooking, reserved seats, manual refund approval not built | ~3 days avoided |
 | Journey QR from terminal and display demoted to *Could* | ~0.5 day |
 
@@ -167,4 +192,5 @@ unfinished is cut to documented-only, with the reason recorded. Order of build i
 | [CF-09](../08-cross-app-flows/cf-09-purchase.md) · [CF-10](../08-cross-app-flows/cf-10-affected-refund.md) · [CF-11](../08-cross-app-flows/cf-11-inspection.md) | Purchase, cancellation → refund, inspection |
 | [09-edge-cases/catalogue.md](../09-edge-cases/catalogue.md) | EDG-120 … 143 |
 | [10-user-stories/stories.md](../10-user-stories/stories.md) | Epic E11, US-100 … 108 |
+| [07-use-cases/station-gate.md](../07-use-cases/station-gate.md) | UC-GAT-01 … 04 (gates) |
 | [06-requirements/permission-matrix.md](../06-requirements/permission-matrix.md) | Ticket Inspector; refunds recover automatically |

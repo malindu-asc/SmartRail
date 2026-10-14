@@ -1,41 +1,66 @@
-# CF-11 — Ticket inspection
+# CF-11 — Gates and inspection
 
-**Scenario:** An inspector on J-1042 at Mill Lane checks four passengers. Each scan shows how the same ticket
-data, the live journey and the ticket status combine into one answer.
+**Scenario:** A passenger boards J-1042 at Central, rides to Riverside and exits; another travels past their destination; an
+inspector spot-checks on board. All scans go through **one validation endpoint**; the server decides, the scanner only shows.
 
-**Why it connects the apps:** inspection is the only place where the **live journey** (where the train is now) and
-the **ticket** (what the passenger paid for) meet. The inspector's current stop comes from the same journey state
-every other app shows.
+**Why it connects the apps:** the scan is where the **ticket** (what was paid for), the **journey** (the stop order and where the
+train is) and the **station** (which gate) meet.
 
-**Requirements:** REQ-INS-001…005, REQ-TKT-001, REQ-TKT-005 · **Edge cases:** EDG-131…135, 141
+**Requirements:** REQ-GAT-001 … 010, REQ-INS-001 … 006, REQ-TKT-001, REQ-TKT-005 · **Edge cases:** EDG-131 … 135, EDG-141, EDG-149 … 159
+· **Simulator:** SIM-21, SIM-22 · **Test:** part of E2E-4
 
-## Timeline
+## What every scan carries
 
-| # | Passenger holds | Inspector scans at Mill Lane | Result shown |
-|---|---|---|---|
-| 1 | Central → Hill Town, Valid | Signature OK, status Valid, journey J-1042, date OK, Mill Lane is within the segment | **VALID** — name, stops |
-| 2 | Central → Riverside, Valid | Mill Lane is **past** their destination | **OUTSIDE SEGMENT — past destination.** Recorded; fare adjustment outside the system |
-| 3 | Central → Hill Town, **Refunded** | Status check | **NOT VALID — refunded** |
-| 4 | Ticket for J-1043 (a different journey) | Journey check | **WRONG JOURNEY** |
+| Field | Why |
+|---|---|
+| QR token (signed) | Proves the ticket is genuine; names the ticket |
+| Scan type: `board`, `exit`, `inspect` | Decides which rules apply |
+| Device identity (gate) or inspector's current journey and stop | Fixes where the scan happens |
+| Client scan id | Makes retries idempotent |
+| Time | Logged; **never trusted for decisions** — the server uses its own clock |
 
-## Rules
+The server also knows the journey's ordered stops, so it can say whether one stop is before or after another.
 
-- The inspector's current stop defaults to the journey's live position; it can be corrected by hand.
-- The result is decided on the **server** (status can change at any time); the app only shows it.
-- Every scan is logged: ticket id, inspector, journey, stop, result, time. Not shown to passengers.
-- The QR contains no personal data; the passenger's display name is returned only to an authorised inspector.
+## Happy path — Central to Riverside
+
+| # | Where | Scan | Result | Ticket |
+|---|---|---|---|---|
+| 1 | Central gate (board) | Passenger A | Origin matches, Valid → **VALID BOARD** | Valid → **Boarded** |
+| 2 | On board (inspect) | Inspector, current stop Mill Lane | Segment covers the stop → **VALID** | unchanged |
+| 3 | Riverside gate (exit) | Passenger A | Boarded, exit at destination → **VALID EXIT** | Boarded → **Completed** |
+
+## Problems — all recorded, none blocked
+
+| # | Where | Scan | Result shown | Ticket |
+|---|---|---|---|---|
+| 4 | Central gate | Passenger B scans the same QR again | **ALREADY_BOARDED** | unchanged |
+| 5 | Mill Lane gate | Passenger C, ticket to Riverside, exits at Mill Lane (two stops past) | **OUTSIDE YOUR TICKET — excess fare LKR X, including a penalty**; amount logged | Completed, flagged |
+| 6 | Hill Town gate | Passenger D scans a Refunded ticket | **NOT VALID — refunded** | unchanged |
+| 7 | Central gate | Ticket for another journey | **WRONG_JOURNEY** | unchanged |
+| 8 | Any | Altered QR | **TAMPERED** | unchanged |
+| 9 | Riverside gate | Exit with no board scan | **NOT_BOARDED** | unchanged |
+
+## After the scan
+
+- **Excess fare:** the Station Master sees it in the excess-fare list, collects it in person, and marks it collected. The system
+  takes no payment and blocks nobody (ASM-049, ASM-050).
+- **No exit scan:** when the journey completes, a Boarded ticket is closed as Completed, flagged 'no exit scan' (REQ-GAT-006).
+- **Cancellation while on board:** a Boarded passenger whose journey is terminated short before their destination has an Affected
+  ticket and can be refunded (CF-10, EDG-158).
 
 ## Failure branches
 
 | Branch | Behaviour | Edge case |
 |---|---|---|
-| Inspector offline | `UNABLE_TO_VERIFY`; the inspector falls back to the manual procedure; scans are queued and logged on reconnect | EDG-135 |
-| Tampered or forged QR | `TAMPERED` | EDG-134 |
-| A driver without `ticket.inspect` | 403; the Inspector mode is not even offered | EDG-141 |
-| Journey is Unknown (no live position) | The inspector selects the stop manually; the result notes it was manual | CF-06 |
-| Passenger's phone is offline | Ticket still displays from cache; validation does not need the passenger's connection | EDG-136 |
+| The gate cannot reach the server | "Can't verify — see staff"; nothing decided or recorded; the Station Master sees it offline within 90 s | EDG-154 |
+| The inspector is offline | `UNABLE_TO_VERIFY`; manual procedure; the scan is queued and logged on reconnect | EDG-135 |
+| The same scan request is delivered twice | Idempotent; one log entry, same answer | EDG-156 |
+| A driver without `ticket.inspect` | 403; the inspector mode is not offered | EDG-141 |
+| A Station Master at another station reads the log | 403 | EDG-159 |
+| The journey is Unknown (no live position) | The inspector chooses the stop manually; the result notes it | CF-06 |
+| The passenger's phone is offline | The cached ticket and QR still display; validation does not need the passenger's connection | EDG-136 |
 
 ## What it deliberately does not do
 
-No gates, no boarding or "used" status for unreserved tickets, no detection of a ticket shared by screenshot, no
-fare adjustment. A fine or an excess fare is the railway's process, not SmartRail's.
+No physical barriers, no fines, no blocking an account, no payment collection, no screenshot-sharing detection beyond the
+single-use board scan. Fraud is detected and logged; people handle it.

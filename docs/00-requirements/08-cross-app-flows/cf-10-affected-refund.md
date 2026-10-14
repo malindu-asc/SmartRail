@@ -38,6 +38,8 @@
 | Rebooking requested | Not available; refund offered | EDG-143 |
 | Whole journey cancelled before departure | All Valid tickets on it become Affected | EDG-123 |
 
+**Passengers already Boarded:** if the journey is terminated short before their destination, their ticket also becomes Affected and can be refunded (EDG-158).
+
 ## Assertions for E2E-4 (part 2)
 
 1. Only the ticket whose destination is beyond the termination point becomes Affected.

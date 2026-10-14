@@ -8,7 +8,7 @@ own duty). The application layer checks scope, not just role (REQ-OPS-001, ADR-0
 do what* and holds **no** operational permission. One compromised admin account cannot run the railway.
 
 **Testing rule:** every ✓ cell has a positive test and every ✗ in a row with at least one ✓ has a negative test
-(REQ-SEC-003). **MVP:** six roles have accounts, demo users and full negative coverage — NC, SCH, SA, DRV, TI and the passenger (ASM-013, ASM-045; see [mvp-roles.md](mvp-roles.md)). SM, IM, CS, FC and RA below are **capability bundles**: kept so the design stays complete, but held by NC or SCH in the MVP (CS is deferred).
+(REQ-SEC-003). **MVP:** seven roles have accounts, demo users and full negative coverage — NC, SM, SCH, SA, DRV, TI and the passenger (ASM-013, ASM-045; see [mvp-roles.md](mvp-roles.md)). IM and RA below are **capability bundles** held by NC, FC is held by SCH, and CS is deferred.
 
 ## Roles
 
@@ -16,7 +16,7 @@ do what* and holds **no** operational permission. One compromised admin account 
 |---|---|---|---|
 | NC | Network Controller | ✓ account (two demo users) | Staff |
 | SCH | Scheduler | ✓ account | Staff |
-| SM | Station Manager | capability of NC | Staff (station-scoped in production) |
+| SM | Station Master | ✓ account (two demo users, different stations) | Staff (station-scoped) |
 | IM | Incident Manager | capability of NC | Staff |
 | CS | Customer Service Agent | deferred | Staff |
 | FC | Fleet Controller | capability of SCH | Staff |
@@ -40,7 +40,7 @@ do what* and holds **no** operational permission. One compromised admin account 
 | journey.reinstate | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | journey.terminate_short | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | journey.terminate_emergency | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| journey.platform.change | ✓ | ✗ | own | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| journey.platform.change | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | journey.vehicle.assign | ✗ | ✓ | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | journey.driver.assign | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | journey.stop_event.record | ✓ correction | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | own | ✗ | ✓ | ✗ |
@@ -63,10 +63,10 @@ do what* and holds **no** operational permission. One compromised admin account 
 
 | Permission | NC | SCH | SM | IM | CS | FC | RA | SA | DRV | DEV | FEED | PUB |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| disruption.create | ✓ | ✓ planned only | own station | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| disruption.publish (scope ≤ route) | ✓ | ✗ | own station | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| disruption.create | ✓ | ✓ planned only | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| disruption.publish (scope ≤ route) | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | disruption.approve_network_wide *(second person)* | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| disruption.retract | ✓ | ✗ | own station | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| disruption.retract | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | incident.declare (Minor, Major) | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | incident.declare (Critical) | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | incident.reassign_owner | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
@@ -94,9 +94,7 @@ do what* and holds **no** operational permission. One compromised admin account 
 - **Scheduler can create only *planned* disruptions** (engineering works), not live ones.
 - **Timetable approval must be by a different person** from the author (REQ-OPS-003). The check is on user, not
   role.
-- **Scoped permissions in the MVP** are demonstrated by the Driver (`own` duty) and the Passenger (`own` tickets): reading another
-  driver's duty or another passenger's ticket must fail even when the request is otherwise valid. The Station Manager's station-scoped
-  permission is kept in the design for production but not built (ASM-045).
+- **Scoped permissions in the MVP** are demonstrated by the Driver (`own` duty), the Passenger (`own` tickets) and the **Station Master (`own` station)**: reading another driver's duty, another passenger's ticket, or editing another station must fail even when the request is otherwise valid.
 - **Driver's `own` scope** is the duty: a driver cannot read another driver's roster by changing an id
   (REQ-DRV-001).
 - **FEED** can only ingest. It cannot read anything back.
@@ -122,3 +120,23 @@ passenger acting on **their own** tickets only. The PUB (anonymous) column stays
 **Negative tests that matter:** a passenger reading or refunding **another passenger's** ticket (IDOR); a driver token calling
 `ticket.inspect`; a network controller refunding or inspecting; the system administrator refunding or inspecting; an anonymous call to
 any ticket endpoint.
+
+## Station and gate permissions (added 2026-10-07)
+
+**SM** is the Station Master (own station only). **DEV(gate)** is a gate scanner device. The earlier station-manager cells for platform
+changes and disruptions were changed to ✗: the Station Master sees them, but decisions stay with the Network Controller.
+
+| Permission | PAX | TI | NC | SM | SCH | SA | DRV | DEV(gate) |
+|---|---|---|---|---|---|---|---|---|
+| scan.board / scan.exit (send a scan) | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ own station |
+| scan.inspect (send an inspection scan) | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| scan.log.read | ✗ | own scans | ✓ all | own station | ✗ | ✗ | ✗ | ✗ |
+| excess_fare.mark_collected | ✗ | ✗ | ✗ | own station | ✗ | ✗ | ✗ | ✗ |
+| station.notice.publish | ✗ | ✗ | ✗ | own station | ✗ | ✗ | ✗ | ✗ |
+| station.access_status.set (lift, stair, gate) | ✗ | ✗ | ✗ | own station | ✗ | ✗ | ✗ | ✗ |
+| device.health.read | ✗ | ✗ | ✓ all | own station | ✗ | ✓ all | ✗ | ✗ |
+| gate.provision / revoke | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ |
+
+**Negative tests that matter:** a Station Master at one station reading another's scan log, editing its notices or lift status, or
+seeing its devices; a Station Master cancelling a journey or publishing a disruption; a gate device token calling any endpoint
+other than scan; an inspector marking an excess fare collected.

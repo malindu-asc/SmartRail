@@ -45,7 +45,7 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 | ID | Scenario | Expected behaviour | Apps | Sev | Requirements | Sim | Depth |
 |---|---|---|---|---|---|---|---|
 | EDG-020 | Platform not yet assigned | "Platform —" with accessible "to be announced" | PAX, DSP, TRM | Low | REQ-LIVE-014 | — | Registered |
-| EDG-021 | Platform changed after boarding started | Published immediately; "changed from"; urgent push; station view highlighted | all | High | REQ-LIVE-014 | SIM-14 | **Specified** |
+| EDG-021 | Platform changed after boarding started | Published immediately; "changed from"; urgent push; Station Master sees it at once | all | High | REQ-LIVE-014 | SIM-14 | **Specified** |
 | EDG-022 | Two journeys assigned the same platform overlapping | Warning naming the other journey; saved | OPS | Medium | REQ-LIVE-020 | — | Registered |
 | EDG-023 | Vehicle fails inspection at origin | Substitute (delay), or cancel; reason recorded | OPS | Medium | REQ-OPS-004 | — | Registered |
 | EDG-024 | Train ready early | Departure never shown earlier than scheduled | PAX, DSP | Medium | REQ-LIVE-012 | — | Registered |
@@ -127,7 +127,7 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 |---|---|---|---|---|---|---|---|
 | EDG-080 | Display or terminal loses network | Last board with age at 60 s; scheduled-only at 300 s; never live markers | DSP, TRM | High | REQ-DSP-004, REQ-TRM-005 | — | **Specified** |
 | EDG-081 | Display clock wrong | Countdown from server offset; unaffected | DSP | Medium | REQ-DSP-006 | — | Registered |
-| EDG-082 | Display dead and nobody notices | Offline in device health at 90 s, visible to the network controller (station view) | DSP, OPS | High | REQ-DSP-005 | — | Registered |
+| EDG-082 | Display dead and nobody notices | Offline in device health at 90 s, visible to the Station Master and the network controller | DSP, OPS | High | REQ-DSP-005 | — | Registered |
 | EDG-083 | Hundreds of displays reconnect at once | Jittered backoff; snapshot then delta | DSP, BE | Medium | REQ-NFR-007 | — | Registered |
 | EDG-084 | Display token revoked | Rejected on next request | DSP | Medium | REQ-DSP-003 | — | Registered |
 | EDG-085 | Terminal user walks away mid-search | Reset and cleared at 60 s | TRM | Medium | REQ-TRM-003 | — | Registered |
@@ -146,7 +146,7 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 | EDG-094 | Incident outlives the owner's shift | Ownership must be handed over with a note | OPS | Medium | REQ-OPS-007 | — | Registered |
 | EDG-095 | Cancellation attempted without reason | Rejected | OPS | Low | REQ-OPS-004 | — | Registered |
 | EDG-096 | System administrator attempts an operational action | 403 — separation of duties | OPS | High | REQ-OPS-001 | — | Registered |
-| EDG-097 | Passenger reads or refunds another passenger's ticket, or a driver requests another driver's duty | 403 — scoped permission (IDOR) | PAX, DRV, BE | High | REQ-SEC-003 | — | **Specified** |
+| EDG-097 | Passenger reads or refunds another passenger's ticket, a driver requests another driver's duty, or a Station Master edits another station | 403 — scoped permission (IDOR) | PAX, DRV, OPS, BE | High | REQ-SEC-003 | — | **Specified** |
 | EDG-098 | Recorded time later found wrong | Authorised correction; original kept; reports use corrected | OPS | Low | REQ-OPS-014 | — | Registered |
 | EDG-099 | Console loses connection mid-action | Banner; writes disabled; no "it worked" without confirmation | OPS | Medium | REQ-NFR-006 | — | Registered |
 
@@ -163,11 +163,11 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 
 ## L. External catering (EDG-110 – 116)
 
-> **Catering was cut from the MVP on 2026-10-06 (ASM-005).** These cases are kept for the record and are not tested.
+> **Catering is a minimal read-only menu with call-to-order (ASM-005, 2026-10-07).** Only EDG-110 (menu service down) and EDG-160, 161 are tested; the order and webhook cases (EDG-111 to 116) are not built and are kept for the record.
 
 | ID | Scenario | Expected behaviour | Apps | Sev | Requirements | Sim | Depth |
 |---|---|---|---|---|---|---|---|
-| EDG-110 | Provider down | Outbox retains; retry with backoff; DLQ; railway unaffected | BE, EXT | Medium | REQ-INT-004 | — | **Specified** |
+| EDG-110 | Catering menu service down or slow | Passenger app shows 'Menu unavailable right now' and hides the phone number; every railway function unaffected | PAX, BE, EXT | Medium | REQ-INT-004 | — | **Specified** |
 | EDG-111 | Duplicate webhook | No-op | BE | Low | REQ-INT-003 | — | Registered |
 | EDG-112 | Bad signature or outside replay window | Rejected; counted | BE | Medium | REQ-INT-003 | — | Registered |
 | EDG-113 | Train delayed with an order outstanding | ETA change sent; provider adjusts; passenger notified | BE, EXT, PAX | Medium | REQ-INT-002 | SIM-02 | Registered |
@@ -191,7 +191,7 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 | EDG-129 | Refund requested twice (double tap or race) | Exactly one refund and one provider call | PAX, BE | High | REQ-REF-003 | SIM-20 | **Specified** |
 | EDG-130 | Provider refund call fails | Refund FAILED; ticket stays Affected; the system retries automatically | OPS, BE | Medium | REQ-REF-002, REQ-REF-004 | SIM-20 | Registered |
 | EDG-131 | Cancelled, refunded, expired or pending ticket scanned | Rejected as NOT_VALID_STATUS | INS | High | REQ-INS-003 | — | Registered |
-| EDG-132 | Passenger travels beyond the purchased destination | OUTSIDE_SEGMENT_PAST_DESTINATION; recorded; fare adjustment outside the system | INS | Medium | REQ-INS-004 | — | **Specified** |
+| EDG-132 | Passenger travels beyond the purchased destination | OUTSIDE_SEGMENT_PAST_DESTINATION; excess fare shown and logged; collected in person | INS | Medium | REQ-INS-004 | — | **Specified** |
 | EDG-133 | Ticket for a different journey or date presented | WRONG_JOURNEY or WRONG_DATE | INS | Medium | REQ-INS-002 | — | Registered |
 | EDG-134 | QR altered or forged | TAMPERED | INS | High | REQ-TKT-012, REQ-INS-002 | — | Registered |
 | EDG-135 | Inspector has no connection | UNABLE_TO_VERIFY; manual procedure; scan queued and logged on reconnect | INS | Medium | REQ-INS-005 | — | Registered |
@@ -214,6 +214,24 @@ Apps: PAX passenger · DRV driver · DSP display · TRM terminal · OPS console 
 | EDG-147 | Offline at sign-on with no cached duty at all | App says so plainly; driver falls back to radio; no stale or invented duty | DRV | Medium | REQ-DRV-002 | — | Registered |
 | EDG-148 | Two drivers signed on to the same journey at once during handover | The outgoing duty must be closed before the incoming one is active; events stay with their own duty | DRV, BE | Medium | REQ-DRV-009 | — | Registered |
 
+## O. Gates and the station (EDG-149 – 159)
+
+| ID | Scenario | Expected behaviour | Apps | Sev | Requirements | Sim | Depth |
+|---|---|---|---|---|---|---|---|
+| EDG-149 | Same QR scanned twice at boarding | Second scan rejected as ALREADY_BOARDED; first stays Boarded | GATE, BE | High | REQ-GAT-004 | SIM-22 | **Specified** |
+| EDG-150 | Board scan at the wrong station | WRONG_STATION; nothing changes | GATE | Medium | REQ-GAT-002 | SIM-22 | Registered |
+| EDG-151 | Exit past the destination | Screen shows the excess fare (fare difference plus penalty); logged; ticket Completed, flagged; nobody blocked | GATE, BE | High | REQ-GAT-003, REQ-GAT-005 | SIM-22 | **Specified** |
+| EDG-152 | Exit scan with no board scan | NOT_BOARDED | GATE | Medium | REQ-GAT-003 | SIM-22 | Registered |
+| EDG-153 | Passenger never scans out | When the journey completes the Boarded ticket is closed as Completed, flagged 'no exit scan' | BE | Medium | REQ-GAT-006, REQ-TKT-011 | SIM-21 | **Specified** |
+| EDG-154 | Gate cannot reach the server | "Can't verify — see staff"; nothing decided or recorded; Station Master sees it offline within 90 s | GATE, OPS | High | REQ-GAT-008 | SIM-22 | Registered |
+| EDG-155 | Gate scans a ticket for a cancelled or terminated journey | Rejected as Affected with a pointer to the refund | GATE | High | REQ-GAT-002, REQ-TKT-009 | SIM-20 | Registered |
+| EDG-156 | The same scan request is delivered more than once | Idempotent; one log entry, same result | BE | Medium | REQ-GAT-004 | SIM-22 | Registered |
+| EDG-157 | Exit before the destination | Allowed; Completed, flagged early exit; no refund | GATE | Low | REQ-GAT-003 | SIM-21 | Registered |
+| EDG-158 | Journey terminated short while the passenger is on board (ticket Boarded) | Ticket becomes Affected and refundable | BE, PAX | High | REQ-TKT-009 | SIM-20 | Registered |
+| EDG-159 | A Station Master reads or edits another station's scan log, notices, lift status or devices | 403; audited | OPS, BE | High | REQ-OPS-018, REQ-SEC-003 | — | **Specified** |
+| EDG-160 | A station has no catering | No food section is shown for that stop | PAX | Low | REQ-INT-005 | — | Registered |
+| EDG-161 | Menu is stale or slow | Cached menu for up to 5 minutes; beyond a 3 s timeout shows 'Menu unavailable' | PAX, BE | Low | REQ-INT-004 | — | Registered |
+
 ---
 
-**Totals:** 129 edge cases · 22 specified · 0 tested (update as tests land).
+**Totals:** 142 edge cases · 26 specified · 0 tested (update as tests land).

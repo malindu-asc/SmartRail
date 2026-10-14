@@ -1,122 +1,86 @@
 # External catering — use cases
 
-> **CUT from the MVP on 2026-10-06 (ASM-005, ASM-044).** Kept for the record. The boundary design remains a sound pattern if catering is ever revived; nothing here is built or tested.
-
-**Priority decision (ASM-005, user):** catering is low priority. It is built **thin and last**, but kept because
-§23 lists "a working integration with a simulated external catering platform" and §26 scores Integration. The
-point being demonstrated is the **boundary** — a separate system, a real contract, failure isolation — not food
-ordering.
+> **Minimal version (ASM-005, 2026-10-07).** A separate service holds a seeded menu and a phone number per catering station. The
+> passenger app shows the menu and offers **call to order**. Ordering, payment, collection and any exchange of ETAs or webhooks are
+> **not built**: they happen with the provider, by phone. The fuller design is kept below for the record.
 
 **Ownership:**
 
 | RailBite (external) owns | SmartRail owns |
 |---|---|
-| Menu, price, stock | Journeys, stations, timetable |
-| Order lifecycle and payment (test mode) | Live ETA, cancellations, platform |
-| Collection cut-off policy | Notifying the passenger |
-| Confirming collection | Nothing about the order beyond a reference |
+| Menu, categories, prices, station phone numbers | Journeys, stations, timetable, live state |
+| The order, the payment, collection | Showing the menu and the number; nothing about orders |
 
-## Brief §12's eleven questions — answered
+## Brief §12's questions — answered for the minimal version
 
-| Question (§12) | Answer in the MVP |
+| Question (§12) | Answer |
 |---|---|
-| Which stations support catering? | Two seeded stations; eligibility owned by RailBite |
-| When can an order be placed? | Up to RailBite's cut-off before scheduled arrival at the collection stop |
-| How close to arrival can it be modified? | No modification in MVP — cancel and reorder |
-| What if the train is delayed? | SmartRail sends the ETA change; RailBite recalculates its window; passenger notified |
-| What if the passenger misses the collection station? | RailBite's policy (hold / forfeit); SmartRail only reports the skip or termination |
-| Can an order be cancelled? | Yes, before cut-off, via RailBite |
-| Who owns payment? | RailBite, test mode only; SmartRail never sees card data |
-| Who owns the menu? | RailBite |
-| How are availability changes communicated? | Read at browse time; may be rejected at confirm (handled) |
-| How are orders associated with journeys? | Order reference + journey id + collection stop; no passenger identity |
-| How is collection confirmed? | RailBite staff mark collected; webhook to SmartRail |
+| Which stations support catering? | Those in the provider's seeded data |
+| When can an order be placed? | By phone with the provider; not through SmartRail |
+| Can it be modified or cancelled? | With the provider |
+| What if the train is delayed or the passenger misses the stop? | Handled by the provider by phone; SmartRail only shows the live journey |
+| Who owns payment? | The provider |
+| Who owns the menu? | The provider (RailBite) |
+| How are availability changes communicated? | The menu is read from the provider and cached for 5 minutes |
+| How are orders associated with journeys and passengers? | They are not; no orders pass through SmartRail |
+| How is collection confirmed? | By the provider |
 
 ---
 
-### UC-EXT-01 — Provider receives journey and ETA information
+### UC-EXT-01 — Provider receives journey and ETA information *(not built)*
 
-| | |
-|---|---|
-| Actor | RailBite (system) |
-| Priority | Could · MVP Thin |
-
-**Main flow**
-1. SmartRail sends reference data (stations, journeys with orders) and ETA changes, cancellations, terminations
-   and skipped stops for journeys with outstanding orders (REQ-INT-002).
-2. Minimal payload: order reference, journey id, collection stop, scheduled and estimated arrival.
-
-**Edge cases:** EDG-113
+Kept for the record. Would send reference data, ETA changes and cancellations for journeys with orders, with no passenger identity.
+Rejected for the MVP (REQ-INT-002).
 
 ---
 
-### UC-EXT-02 — Passenger orders food for collection
+### UC-EXT-02 — See the food at a stop and call to order
 
 | | |
 |---|---|
-| Actor | PER-01 / PER-02 |
+| Actor | PER-01 / PER-02 passengers |
 | Priority | Could · MVP Thin |
 
 **Main flow**
-1. From a journey, "Order food" → eligible collection stops on this journey.
-2. Menu from RailBite → choose → hosted test-mode payment page (RailBite's).
-3. Order reference stored against the device's follow; passenger automatically follows the journey.
+1. On a journey, a stop with catering shows **Food at Hill Town**.
+2. The menu appears grouped by category (meals, snacks, drinks) with prices.
+3. A **Call to order** button dials the provider's number for that station.
+4. A line states: "Ordering and payment are handled by the catering provider."
+
+**Alternate flows**
+- A1 *A stop with no catering* — no food section (EDG-160).
 
 **Failure flows**
-- F1 *Stock-out or price change at confirm* — clear message, nothing half-done (REQ-INT-005).
-- F2 *RailBite unavailable* — "Food ordering is unavailable right now"; journey features unaffected.
+- F1 *Menu service down or slow* — "Menu unavailable right now"; the phone number is hidden too (EDG-110, EDG-161).
+- F2 *Missing or wrong API key* — 401; nothing shown.
 
-**Requirements:** REQ-INT-005 · **Edge cases:** EDG-115, EDG-110
-
----
-
-### UC-EXT-03 — Provider reports order status
-
-| | |
-|---|---|
-| Actor | RailBite |
-| Priority | Could · MVP Thin |
-
-**Main flow**
-1. RailBite sends `placed`, `confirmed`, `ready`, `collected`, `cancelled`, `refunded` as webhooks.
-2. Each is HMAC-signed, timestamped, carries an idempotency key; rejected outside a 5-minute replay window
-   (REQ-INT-003).
-
-**Failure flows**
-- F1 *Duplicate delivery* — no-op.
-- F2 *Bad signature or stale timestamp* — rejected, counted.
-- F3 *Out of order (`ready` before `confirmed`)* — state machine tolerates and records.
-
-**Requirements:** REQ-INT-003 · **Edge cases:** EDG-111, EDG-112, EDG-116
+**Requirements:** REQ-INT-001, REQ-INT-004, REQ-INT-005
 
 ---
 
-### UC-EXT-04 — Train delayed or cancelled with orders outstanding
+### UC-EXT-03 — Provider reports order status *(not built)*
 
-| | |
-|---|---|
-| Actor | SmartRail, RailBite, passenger |
-| Priority | Could · MVP Thin |
-
-**Main flow**
-1. Journey delayed → ETA change sent → RailBite adjusts its window → passenger notified (CON-10).
-2. Journey cancelled, terminated before the collection stop, or collection stop skipped → event sent →
-   RailBite applies its policy → passenger notified.
-
-**Edge cases:** EDG-113, EDG-114 · **Flows:** CF-01, CF-02
+Signed order webhooks. Rejected for the MVP (REQ-INT-003).
 
 ---
 
-### UC-EXT-05 — Provider is down
+### UC-EXT-04 — Train delayed or cancelled with orders outstanding *(not built)*
+
+Would send ETA changes and cancellations to the provider. Rejected for the MVP; delays and cancellations are visible to passengers
+in the app as usual.
+
+---
+
+### UC-EXT-05 — The menu service is down
 
 | | |
 |---|---|
-| Actor | SmartRail |
+| Actor | SmartRail; passenger |
 | Priority | Could · MVP Thin |
 
 **Main flow**
-1. Outbound events stay in the outbox; retried with backoff; dead-lettered after the limit (REQ-INT-004).
-2. Railway functions — every other use case in this folder set — are unaffected.
-3. Reconciliation on recovery (Could).
+1. The app asks with a 3-second timeout; the cache covers up to 5 minutes.
+2. Past that, the food section shows "Menu unavailable right now".
+3. Every other use case in this folder set is unaffected.
 
-**Edge cases:** EDG-110
+**Requirements:** REQ-INT-004 · **Edge cases:** EDG-110, EDG-161

@@ -170,3 +170,35 @@ state; an unacknowledged message is visually distinct (REQ-DRV-007).
 ## 10. Incident
 
 `Declared → Managed → Resolved → Reviewed`. Severity: Minor, Major, Critical. Only a holder of `incident.declare` (the network controller in the MVP) can declare Critical or move a journey to `TerminatedEmergency`.
+
+## 11. Ticket
+
+```
+PendingPayment ──paid──▶ Valid ──board scan──▶ Boarded ──exit scan──▶ Completed
+      │                    │                      │
+      │                    │                      └──journey ends, no exit scan──▶ Completed (flag)
+      │                    ├── journey cancelled / ended before the destination ──▶ Affected ──refund──▶ Refunded
+      └──15 min / failed──▶ Expired        └── journey completes, never scanned ──▶ Expired
+```
+
+| State | Meaning |
+|---|---|
+| PendingPayment | Order created, not paid |
+| Valid | Paid; not yet scanned in |
+| Boarded | Scanned in at the origin gate |
+| Completed | Exited, or closed when the journey ended without an exit scan (flagged) |
+| Affected | The railway cancelled the journey or ended it before the destination; reachable from Valid or Boarded |
+| Refunded | Money returned (a separate refund record has its own states) |
+| Expired | Unpaid after 15 min, or the journey ended and the ticket was never used |
+
+## 12. Scan result
+
+Board: `VALID_BOARD`, `ALREADY_BOARDED`, `NOT_VALID_STATUS`, `WRONG_JOURNEY`, `WRONG_DATE`, `WRONG_STATION`, `TAMPERED`.
+Exit: `VALID_EXIT`, `NOT_BOARDED`, `OUTSIDE_SEGMENT_PAST_DESTINATION` (with excess fare), `NOT_VALID_STATUS`, `TAMPERED`.
+Inspect: `VALID`, `NOT_VALID_STATUS`, `WRONG_JOURNEY`, `WRONG_DATE`, `OUTSIDE_SEGMENT_PAST_DESTINATION`, `OUTSIDE_SEGMENT_BEFORE_ORIGIN`, `TAMPERED`.
+Any scanner that cannot reach the server shows `UNABLE_TO_VERIFY` and decides nothing.
+
+## 13. Device (extended)
+
+A **gate scanner** is a device of kind `gate`, scoped to one station, with the same lifecycle as a display (Pending, Online, Stale, Offline,
+Revoked). The only action it may take is sending a scan.

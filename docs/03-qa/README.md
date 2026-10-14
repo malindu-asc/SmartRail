@@ -23,7 +23,7 @@ Risk-based, not coverage-based. Heavy where the rules are (domain), selective wh
 | E2E-1 | Passenger follows a delayed train | [CF-01](../00-requirements/08-cross-app-flows/cf-01-delay-propagation.md) | SIM-02 |
 | E2E-2 | Driver offline and reconciliation | [CF-03](../00-requirements/08-cross-app-flows/cf-03-driver-offline.md) | SIM-09 |
 | E2E-3 | Controller cancels; every surface follows | [CF-02](../00-requirements/08-cross-app-flows/cf-02-cancellation.md) | SIM-08 |
-| E2E-4 | Buy a ticket, journey cancelled, ticket Affected, refund completes, inspector rejects it | [CF-09](../00-requirements/08-cross-app-flows/cf-09-purchase.md), [CF-10](../00-requirements/08-cross-app-flows/cf-10-affected-refund.md), [CF-11](../00-requirements/08-cross-app-flows/cf-11-inspection.md); EDG-125, 127, 129 | SIM-19, SIM-20 |
+| E2E-4 | Buy a ticket, board at the gate, journey cancelled, ticket Affected, refund completes, the gate and the inspector reject it | [CF-09](../00-requirements/08-cross-app-flows/cf-09-purchase.md), [CF-10](../00-requirements/08-cross-app-flows/cf-10-affected-refund.md), [CF-11](../00-requirements/08-cross-app-flows/cf-11-inspection.md); EDG-125, 127, 129, 149, 151 | SIM-19, 20, 21, 22 |
 | E2E-5 | Display survives connectivity loss | [CF-06](../00-requirements/08-cross-app-flows/cf-06-degraded-data.md), EDG-080 | — |
 
 Each flow's assertions are already written in its cross-app flow document.
