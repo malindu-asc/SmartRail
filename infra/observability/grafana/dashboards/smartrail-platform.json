@@ -1,0 +1,72 @@
+{
+  "uid": "smartrail-platform",
+  "title": "SmartRail platform",
+  "tags": ["smartrail"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "time": { "from": "now-30m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "API requests per second",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (http_response_status_code) (rate(http_server_request_duration_seconds_count{service_name=\"smartrail-api\"}[1m]))",
+          "legendFormat": "{{http_response_status_code}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "API latency p50 / p95 / p99",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "targets": [
+        { "refId": "A", "legendFormat": "p50", "expr": "histogram_quantile(0.50, sum by (le) (rate(http_server_request_duration_seconds_bucket{service_name=\"smartrail-api\"}[5m])))" },
+        { "refId": "B", "legendFormat": "p95", "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{service_name=\"smartrail-api\"}[5m])))" },
+        { "refId": "C", "legendFormat": "p99", "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{service_name=\"smartrail-api\"}[5m])))" }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Outbox dead-lettered (1h)",
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 1 } ] }
+        },
+        "overrides": []
+      },
+      "targets": [ { "refId": "A", "expr": "sum(increase(smartrail_outbox_dead_lettered_total[1h])) or vector(0)" } ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Outbox processed vs failed",
+      "gridPos": { "h": 5, "w": 18, "x": 6, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "legendFormat": "processed", "expr": "sum(rate(smartrail_outbox_processed_total[1m]))" },
+        { "refId": "B", "legendFormat": "failed", "expr": "sum(rate(smartrail_outbox_failed_total[1m]))" }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "logs",
+      "title": "Recent errors and warnings",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 13 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [ { "refId": "A", "expr": "{service_name=~\"smartrail.*\"} | severity_text =~ \"(?i)(warn|warning|error|fatal|critical)\"" } ],
+      "options": { "showTime": true, "wrapLogMessage": true, "sortOrder": "Descending" }
+    }
+  ]
+}

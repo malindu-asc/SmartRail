@@ -1,0 +1,58 @@
+name: Bug report
+description: Something is not working as expected
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Backend API
+        - Passenger app
+        - Driver app
+        - Console (controller / admin)
+        - Kiosk (display / terminal)
+        - Catering service
+        - Simulator
+        - Infrastructure / CI
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you see, and what did you expect to see?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Paste relevant log lines or attach screenshots. Remove anything sensitive.
+      render: shell
+  - type: input
+    id: version
+    attributes:
+      label: Commit or version
+      placeholder: e.g. 3f9a1c2
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Blocks work or shows wrong live data
+        - Wrong behaviour, workaround exists
+        - Minor / cosmetic
+    validations:
+      required: true
