@@ -1,0 +1,14 @@
+title = "SmartRail gitleaks config"
+
+[extend]
+useDefault = true
+
+# Development-only values that are committed on purpose. Real secrets never go here.
+[allowlist]
+description = "Development seed data and examples"
+paths = [
+  '''infra/keycloak/smartrail-realm\.json''',
+  '''\.env\.example''',
+  '''docker-compose\.yml''',
+  '''tests/.*''',
+]

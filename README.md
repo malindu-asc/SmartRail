@@ -157,6 +157,16 @@ CI runs all of the above plus a Docker build of every image on each push and pul
 
 Keycloak seeds one user per role: `passenger`, `driver`, `controller` and `admin`. Their development passwords are in `infra/keycloak/smartrail-realm.json`. They are for local use only.
 
+### Getting a token (development)
+
+```bash
+scripts/get-token.sh controller
+curl -H "Authorization: Bearer $(scripts/get-token.sh controller)" http://localhost:5080/api/identity/whoami
+```
+
+Every endpoint requires a signed-in user unless it is explicitly marked anonymous; a test fails the build if an
+unexpected endpoint becomes public. Roles map to the `Driver`, `Controller` and `Admin` policies.
+
 ## Database migrations
 
 Each module has its own DbContext and schema. From the repository root:
@@ -181,6 +191,17 @@ Services export OpenTelemetry to a collector, which sends traces to Tempo, logs 
 | `ci.yml` | Backend build and tests, web build, catering typecheck, Flutter analyze and test, Docker image builds |
 | `cd.yml` | Publishes images to GitHub Container Registry from `main` |
 | `deploy-azure.yml` | Manual `azd` deployment to Azure Container Apps |
+
+## Security checks
+
+| Check | Where |
+|---|---|
+| Secret scanning (Gitleaks) | `security.yml` |
+| Static analysis (CodeQL, C# and TypeScript) | `security.yml` |
+| Vulnerable NuGet and npm packages | `security.yml` |
+| Repository and Dockerfile scan (Trivy) | `security.yml` |
+| Image scan (Trivy) | `ci.yml`, per image |
+| Dependency updates | `dependabot.yml`, weekly |
 
 ## Troubleshooting
 
