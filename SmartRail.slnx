@@ -48,6 +48,7 @@
     <Project Path="src/Modules/Operations/SmartRail.Modules.Operations.Infrastructure/SmartRail.Modules.Operations.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/SmartRail.Api.IntegrationTests/SmartRail.Api.IntegrationTests.csproj" />
     <Project Path="tests/SmartRail.ArchitectureTests/SmartRail.ArchitectureTests.csproj" />
   </Folder>
   <Folder Name="/tools/" />

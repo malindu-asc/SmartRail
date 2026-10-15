@@ -8,10 +8,22 @@
   "accessTokenLifespan": 900,
   "roles": {
     "realm": [
-      { "name": "passenger", "description": "Public traveller using the passenger app" },
-      { "name": "driver", "description": "Train driver using the driver app" },
-      { "name": "controller", "description": "Network controller operating the service" },
-      { "name": "admin", "description": "System administrator managing users, roles and devices" }
+      {
+        "name": "passenger",
+        "description": "Public traveller using the passenger app"
+      },
+      {
+        "name": "driver",
+        "description": "Train driver using the driver app"
+      },
+      {
+        "name": "controller",
+        "description": "Network controller operating the service"
+      },
+      {
+        "name": "admin",
+        "description": "System administrator managing users, roles and devices"
+      }
     ]
   },
   "clients": [
@@ -26,9 +38,16 @@
       "publicClient": true,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
-      "redirectUris": ["http://localhost:*", "https://localhost:*"],
-      "webOrigins": ["+"],
-      "attributes": { "pkce.code.challenge.method": "S256" },
+      "redirectUris": [
+        "http://localhost:*",
+        "https://localhost:*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
       "protocolMappers": [
         {
           "name": "realm-roles",
@@ -59,8 +78,110 @@
       "publicClient": true,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
-      "redirectUris": ["lk.smartrail.passenger:/*", "lk.smartrail.driver:/*"],
-      "attributes": { "pkce.code.challenge.method": "S256" },
+      "redirectUris": [
+        "lk.smartrail.passenger:/*",
+        "lk.smartrail.driver:/*"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        },
+        {
+          "name": "api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "smartrail-api",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "smartrail-dev-token",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "description": "DEVELOPMENT ONLY. Lets scripts/get-token.sh fetch tokens. Remove from any non-development realm.",
+      "protocolMappers": [
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        },
+        {
+          "name": "api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "smartrail-api",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "smartrail-simulator",
+      "enabled": true,
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "secret": "dev-only-change-me",
+      "description": "Train event simulator (service account). DEVELOPMENT secret; replace outside development.",
+      "protocolMappers": [
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        },
+        {
+          "name": "api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "smartrail-api",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "smartrail-catering",
+      "enabled": true,
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "secret": "dev-only-change-me",
+      "description": "External catering service (service account). DEVELOPMENT secret; replace outside development.",
       "protocolMappers": [
         {
           "name": "realm-roles",
@@ -94,8 +215,17 @@
       "lastName": "Passenger",
       "enabled": true,
       "emailVerified": true,
-      "credentials": [{ "type": "password", "value": "Passenger#123", "temporary": false }],
-      "realmRoles": ["passenger"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Passenger#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "passenger"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000001"
     },
     {
       "username": "driver",
@@ -104,8 +234,17 @@
       "lastName": "Driver",
       "enabled": true,
       "emailVerified": true,
-      "credentials": [{ "type": "password", "value": "Driver#123", "temporary": false }],
-      "realmRoles": ["driver"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Driver#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "driver"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000002"
     },
     {
       "username": "controller",
@@ -114,8 +253,17 @@
       "lastName": "Perera",
       "enabled": true,
       "emailVerified": true,
-      "credentials": [{ "type": "password", "value": "Controller#123", "temporary": false }],
-      "realmRoles": ["controller"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Controller#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "controller"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000003"
     },
     {
       "username": "admin",
@@ -124,8 +272,21 @@
       "lastName": "Silva",
       "enabled": true,
       "emailVerified": true,
-      "credentials": [{ "type": "password", "value": "Admin#123", "temporary": false }],
-      "realmRoles": ["admin"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Admin#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "admin"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000004"
     }
-  ]
+  ],
+  "ssoSessionMaxLifespan": 28800,
+  "ssoSessionIdleTimeout": 28800,
+  "bruteForceProtected": true,
+  "failureFactor": 5
 }

@@ -1,4 +1,6 @@
+using Microsoft.OpenApi;
 using Scalar.AspNetCore;
+using SmartRail.Api.Authentication;
 using SmartRail.Api.Core;
 using SmartRail.Api.Extensions;
 using SmartRail.Application.Core;
@@ -30,19 +32,36 @@ builder.Services.AddApplicationCore(
 
 builder.Services.AddInfrastructureCore(builder.Configuration);
 builder.Services.AddApiCore();
-builder.Services
-    .AddAuthentication()
-    .AddKeycloakJwtBearer("keycloak", realm: "smartrail", options =>
-    {
-        options.Audience = "smartrail-api";
-        options.RequireHttpsMetadata = false; // development container only
-        options.TokenValidationParameters.RoleClaimType = "roles";
-        options.TokenValidationParameters.NameClaimType = "preferred_username";
-    });
-builder.Services.AddAuthorization();
+builder.Services.AddSmartRailAuthentication();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    // Lets the API docs sign in through Keycloak (authorization code with PKCE) and call endpoints.
+    options.AddDocumentTransformer((document, context, _) =>
+    {
+        var authority = context.ApplicationServices.GetRequiredService<IConfiguration>()["Authentication:Authority"];
+        if (string.IsNullOrWhiteSpace(authority))
+            return Task.CompletedTask;
+
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+        document.Components.SecuritySchemes["OAuth2"] = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.OAuth2,
+            Flows = new OpenApiOAuthFlows
+            {
+                AuthorizationCode = new OpenApiOAuthFlow
+                {
+                    AuthorizationUrl = new Uri($"{authority.TrimEnd('/')}/protocol/openid-connect/auth"),
+                    TokenUrl = new Uri($"{authority.TrimEnd('/')}/protocol/openid-connect/token"),
+                    Scopes = new Dictionary<string, string> { ["openid"] = "OpenID Connect" }
+                }
+            }
+        };
+        return Task.CompletedTask;
+    });
+});
 
 var app = builder.Build();
 
@@ -50,8 +69,20 @@ app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapOpenApi().AllowAnonymous();
+    app.MapScalarApiReference(options => options
+        .AddPreferredSecuritySchemes("OAuth2")
+        .AddAuthorizationCodeFlow("OAuth2", flow =>
+        {
+            flow.ClientId = "smartrail-web";
+            flow.Pkce = Pkce.Sha256;
+            flow.SelectedScopes = ["openid"];
+        })).AllowAnonymous();
+}
+
+// Off by default. Aspire and Docker Compose turn it on; other environments migrate as an explicit step.
+if (app.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup"))
+{
     await app.ApplyMigrationsAsync();
 }
 
@@ -62,3 +93,6 @@ app.MapDefaultEndpoints();
 app.MapEndpoints();
 
 app.Run();
+
+// Lets the integration test project host the API in memory.
+public partial class Program;
