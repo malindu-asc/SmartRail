@@ -18,6 +18,10 @@ jobs:
   secrets:
     name: Secret scan (Gitleaks)
     runs-on: ubuntu-latest
+    # The action lists the pull request's commits, which needs this read permission.
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -100,7 +104,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Scan lockfiles and infrastructure files
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
           scan-ref: .
