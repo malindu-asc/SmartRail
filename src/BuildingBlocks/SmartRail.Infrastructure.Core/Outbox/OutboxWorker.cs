@@ -13,6 +13,12 @@ public sealed class OutboxWorker(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        if (!options.Value.Enabled)
+        {
+            logger.LogInformation("Outbox worker disabled by configuration");
+            return;
+        }
+
         using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(options.Value.IntervalMilliseconds));
 
         while (await timer.WaitForNextTickAsync(stoppingToken))
