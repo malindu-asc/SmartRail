@@ -54,7 +54,13 @@ services:
       OTEL_SERVICE_NAME: smartrail-api
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
       ConnectionStrings__smartraildb: Host=postgres;Port=5432;Database=smartraildb;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-      ConnectionStrings__keycloak: http://keycloak:8080
+      # Tokens carry the issuer Keycloak was reached at (localhost:8080); keys are fetched over the network.
+      Authentication__Authority: http://localhost:8080/realms/smartrail
+      Authentication__MetadataAddress: http://keycloak:8080/realms/smartrail/.well-known/openid-configuration
+      Authentication__Audience: smartrail-api
+      Authentication__RequireHttpsMetadata: "false"
+      Diagnostics__Identity: "true"
+      Database__ApplyMigrationsOnStartup: "true"
     ports:
       - "5080:8080"
     depends_on:
