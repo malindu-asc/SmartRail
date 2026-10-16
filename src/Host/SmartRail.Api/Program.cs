@@ -86,6 +86,12 @@ if (app.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup"))
     await app.ApplyMigrationsAsync();
 }
 
+// Off by default. Inserts the fictional demo network only where it is missing; never updates existing rows.
+if (app.Configuration.GetValue<bool>("Network:Seed:ReferenceData"))
+{
+    await app.Services.SeedNetworkReferenceDataAsync();
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 
