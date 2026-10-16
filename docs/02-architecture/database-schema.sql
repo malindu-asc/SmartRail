@@ -302,7 +302,6 @@ CREATE TABLE journeys.journeys (
     ended_at                   timestamptz,
     ended_at_stop_sequence     int,                               -- TerminatedShort
     cancel_reason_code         varchar(30),
-    sales_closed_at            timestamptz,                       -- departed the origin stop (REQ-TKT-002 uses the stop state)
     version                    int          NOT NULL DEFAULT 0,   -- optimistic concurrency (REQ-OPS-010)
     created_at_utc                 timestamptz  NOT NULL DEFAULT now(),
     updated_at_utc                 timestamptz,
