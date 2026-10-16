@@ -21,6 +21,7 @@ freedom. **Status:** Simulator design seeded; the rest is planned for D4 per the
 | Document | Contents | Status |
 |---|---|---|
 | [simulator-design.md](simulator-design.md) | The train detection feed stand-in; scenario library SIM-01 … 22 | Seeded |
+| [database-schema.md](database-schema.md) | The whole database: 59 tables in 6 schemas, ownership, retention, indexes. DDL in [database-schema.sql](database-schema.sql), checked on PostgreSQL 16 | Agreed |
 | architecture.md | C4 context and container diagrams; module boundaries | Planned (D4) |
 | data-ownership.md | Which module owns which data; no cross-module writes | Planned (D4) |
 | integration.md | Feed contract, catering contract (OpenAPI), webhook signing | Planned (D4) |
