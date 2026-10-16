@@ -17,7 +17,8 @@ public sealed class SecureByDefaultTests(ApiFactory factory) : IClassFixture<Api
         "/scalar",
         // Network reference data (SPEC-002): public, read-only.
         "/api/network/stations",
-        "/api/network/routes"
+        "/api/network/routes",
+        "/api/network/services"
     ];
 
     [Fact]

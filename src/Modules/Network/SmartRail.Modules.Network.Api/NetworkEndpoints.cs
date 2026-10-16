@@ -7,6 +7,8 @@ using SmartRail.Modules.Network.Application.Routes.GetRoute;
 using SmartRail.Modules.Network.Application.Routes.GetRoutes;
 using SmartRail.Modules.Network.Application.Stations.GetStation;
 using SmartRail.Modules.Network.Application.Stations.GetStations;
+using SmartRail.Modules.Network.Application.Timetables.GetService;
+using SmartRail.Modules.Network.Application.Timetables.GetStationTimetable;
 
 namespace SmartRail.Modules.Network.Api;
 
@@ -44,6 +46,20 @@ public static class NetworkEndpoints
                 return result.IsSuccess ? PublicCaching.Ok(http, result.Value) : ApiResults.Problem(result);
             })
             .WithSummary("A route with its public stops");
+
+        group.MapGet("/stations/{code}/timetable", async (HttpContext http, string code, string? date, string? kind, string? lang, ISender sender, CancellationToken ct) =>
+            {
+                var result = await sender.Send(new GetStationTimetableQuery(code, date, kind, RequestedLanguage(http, lang)), ct);
+                return result.IsSuccess ? PublicCaching.Ok(http, result.Value) : ApiResults.Problem(result);
+            })
+            .WithSummary("Scheduled departures or arrivals at a station on a date");
+
+        group.MapGet("/services/{serviceId:guid}", async (HttpContext http, Guid serviceId, string? date, string? lang, ISender sender, CancellationToken ct) =>
+            {
+                var result = await sender.Send(new GetServiceQuery(serviceId, date, RequestedLanguage(http, lang)), ct);
+                return result.IsSuccess ? PublicCaching.Ok(http, result.Value) : ApiResults.Problem(result);
+            })
+            .WithSummary("The public stops and scheduled times of a service on a date");
 
         return app;
     }

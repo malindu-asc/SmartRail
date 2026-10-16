@@ -281,6 +281,275 @@ namespace SmartRail.Modules.Network.Infrastructure.Persistence.Migrations
                     b.ToTable("station_translations", "network");
                 });
 
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.CalendarException", b =>
+                {
+                    b.Property<Guid>("CalendarId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("calendar_id");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date")
+                        .HasColumnName("date");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("kind");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("reason");
+
+                    b.HasKey("CalendarId", "Date");
+
+                    b.ToTable("calendar_exceptions", "network", t =>
+                        {
+                            t.HasCheckConstraint("ck_calendar_exceptions_kind", "kind in ('Removed', 'Added')");
+                        });
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.Service", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CalendarId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("calendar_id");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)")
+                        .HasColumnName("service_category");
+
+                    b.Property<string>("Direction")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)")
+                        .HasColumnName("direction");
+
+                    b.Property<Guid>("RouteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("route_id");
+
+                    b.Property<Guid>("TimetableVersionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("timetable_version_id");
+
+                    b.Property<string>("TrainNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("train_number");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CalendarId");
+
+                    b.HasIndex("RouteId");
+
+                    b.HasIndex("TimetableVersionId", "TrainNumber")
+                        .IsUnique();
+
+                    b.ToTable("services", "network", t =>
+                        {
+                            t.HasCheckConstraint("ck_services_category", "service_category in ('Regional', 'Intercity', 'HighSpeed')");
+
+                            t.HasCheckConstraint("ck_services_direction", "direction in ('Forward', 'Reverse')");
+                        });
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.ServiceCalendar", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("code");
+
+                    b.Property<bool>("Friday")
+                        .HasColumnType("boolean")
+                        .HasColumnName("friday");
+
+                    b.Property<bool>("Monday")
+                        .HasColumnType("boolean")
+                        .HasColumnName("monday");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<bool>("Saturday")
+                        .HasColumnType("boolean")
+                        .HasColumnName("saturday");
+
+                    b.Property<bool>("Sunday")
+                        .HasColumnType("boolean")
+                        .HasColumnName("sunday");
+
+                    b.Property<bool>("Thursday")
+                        .HasColumnType("boolean")
+                        .HasColumnName("thursday");
+
+                    b.Property<bool>("Tuesday")
+                        .HasColumnType("boolean")
+                        .HasColumnName("tuesday");
+
+                    b.Property<DateOnly>("ValidFrom")
+                        .HasColumnType("date")
+                        .HasColumnName("valid_from");
+
+                    b.Property<DateOnly?>("ValidTo")
+                        .HasColumnType("date")
+                        .HasColumnName("valid_to");
+
+                    b.Property<bool>("Wednesday")
+                        .HasColumnType("boolean")
+                        .HasColumnName("wednesday");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("service_calendars", "network", t =>
+                        {
+                            t.HasCheckConstraint("ck_service_calendars_range", "valid_to is null or valid_to >= valid_from");
+                        });
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.ServiceStop", b =>
+                {
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("service_id");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("integer")
+                        .HasColumnName("sequence");
+
+                    b.Property<int?>("ArrivalMinutes")
+                        .HasColumnType("integer")
+                        .HasColumnName("arrival_minutes");
+
+                    b.Property<Guid?>("DefaultPlatformId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("default_platform_id");
+
+                    b.Property<int?>("DepartureMinutes")
+                        .HasColumnType("integer")
+                        .HasColumnName("departure_minutes");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("kind");
+
+                    b.Property<Guid>("StationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("station_id");
+
+                    b.HasKey("ServiceId", "Sequence");
+
+                    b.HasIndex("DefaultPlatformId", "StationId");
+
+                    b.HasIndex("ServiceId", "StationId")
+                        .IsUnique();
+
+                    b.HasIndex("StationId", "DepartureMinutes");
+
+                    b.ToTable("service_stops", "network", t =>
+                        {
+                            t.HasCheckConstraint("ck_service_stops_arrival", "arrival_minutes between 0 and 2879");
+
+                            t.HasCheckConstraint("ck_service_stops_departure", "departure_minutes between 0 and 2879");
+
+                            t.HasCheckConstraint("ck_service_stops_has_time", "arrival_minutes is not null or departure_minutes is not null");
+
+                            t.HasCheckConstraint("ck_service_stops_kind", "kind in ('Stop', 'PickUpOnly', 'SetDownOnly', 'Passing')");
+
+                            t.HasCheckConstraint("ck_service_stops_order", "arrival_minutes is null or departure_minutes is null or arrival_minutes <= departure_minutes");
+
+                            t.HasCheckConstraint("ck_service_stops_sequence", "sequence >= 1");
+                        });
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.TimetableVersion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ApprovedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("approved_by");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("author");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<DateOnly?>("EffectiveFrom")
+                        .HasColumnType("date")
+                        .HasColumnName("effective_from");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("label");
+
+                    b.Property<DateTimeOffset?>("PublishedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("published_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EffectiveFrom")
+                        .IsUnique()
+                        .HasDatabaseName("ux_timetable_effective")
+                        .HasFilter("status in ('Published', 'Superseded')");
+
+                    b.ToTable("timetable_versions", "network", t =>
+                        {
+                            t.HasCheckConstraint("ck_timetable_versions_approver", "status not in ('Published', 'Superseded') or (approved_by is not null and approved_by <> author)");
+
+                            t.HasCheckConstraint("ck_timetable_versions_effective", "status in ('Draft', 'InReview') or effective_from is not null");
+
+                            t.HasCheckConstraint("ck_timetable_versions_status", "status in ('Draft', 'InReview', 'Published', 'Superseded')");
+                        });
+                });
+
             modelBuilder.Entity("SmartRail.Modules.Network.Domain.Routes.RouteStop", b =>
                 {
                     b.HasOne("SmartRail.Modules.Network.Domain.Routes.Route", null)
@@ -326,6 +595,57 @@ namespace SmartRail.Modules.Network.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.CalendarException", b =>
+                {
+                    b.HasOne("SmartRail.Modules.Network.Domain.Timetables.ServiceCalendar", null)
+                        .WithMany("Exceptions")
+                        .HasForeignKey("CalendarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.Service", b =>
+                {
+                    b.HasOne("SmartRail.Modules.Network.Domain.Timetables.ServiceCalendar", null)
+                        .WithMany()
+                        .HasForeignKey("CalendarId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SmartRail.Modules.Network.Domain.Routes.Route", null)
+                        .WithMany()
+                        .HasForeignKey("RouteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SmartRail.Modules.Network.Domain.Timetables.TimetableVersion", null)
+                        .WithMany("Services")
+                        .HasForeignKey("TimetableVersionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.ServiceStop", b =>
+                {
+                    b.HasOne("SmartRail.Modules.Network.Domain.Timetables.Service", null)
+                        .WithMany("Stops")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartRail.Modules.Network.Domain.Stations.Station", null)
+                        .WithMany()
+                        .HasForeignKey("StationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SmartRail.Modules.Network.Domain.Stations.Platform", null)
+                        .WithMany()
+                        .HasForeignKey("DefaultPlatformId", "StationId")
+                        .HasPrincipalKey("Id", "StationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("SmartRail.Modules.Network.Domain.Routes.Route", b =>
                 {
                     b.Navigation("Stops");
@@ -336,6 +656,21 @@ namespace SmartRail.Modules.Network.Infrastructure.Persistence.Migrations
                     b.Navigation("Platforms");
 
                     b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.Service", b =>
+                {
+                    b.Navigation("Stops");
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.ServiceCalendar", b =>
+                {
+                    b.Navigation("Exceptions");
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Network.Domain.Timetables.TimetableVersion", b =>
+                {
+                    b.Navigation("Services");
                 });
 #pragma warning restore 612, 618
         }

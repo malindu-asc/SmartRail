@@ -179,6 +179,15 @@ curl  http://localhost:5080/api/network/routes
 curl  http://localhost:5080/api/network/routes/HILL
 ```
 
+Scheduled timetable (public, read-only). `date` is `yyyy-MM-dd` and defaults to today in the network time zone
+(`Network__TimeZone`, default `Asia/Colombo`). Times after midnight continue past 24 (`24:24`).
+
+```bash
+curl "http://localhost:5080/api/network/stations/CEN/timetable?date=2026-10-14"
+curl "http://localhost:5080/api/network/stations/CEN/timetable?date=2026-10-14&kind=arrivals"
+curl "http://localhost:5080/api/network/services/<serviceId>?date=2026-10-14"
+```
+
 The demo network is inserted at startup when `Network__Seed__ReferenceData=true` (set by the Aspire AppHost and
 Docker Compose). It only adds missing rows and never changes existing ones.
 

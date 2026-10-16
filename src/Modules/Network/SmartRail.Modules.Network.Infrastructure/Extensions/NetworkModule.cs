@@ -4,7 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartRail.Modules.Network.Application.Abstractions;
 using SmartRail.Modules.Network.Infrastructure.Persistence;
+using SmartRail.Modules.Network.Contracts;
 using SmartRail.Modules.Network.Infrastructure.Seeding;
+using SmartRail.Modules.Network.Infrastructure.Settings;
+using Microsoft.Extensions.Options;
 using SmartRail.Infrastructure.Core.Outbox;
 using SmartRail.Infrastructure.Core.Persistence;
 
@@ -28,6 +31,14 @@ public static class NetworkModule
         services.AddScoped<IOutboxMessageProcessor, OutboxMessageProcessor<NetworkDbContext>>();
         services.AddScoped<INetworkReader, NetworkReader>();
         services.AddScoped<NetworkReferenceSeeder>();
+        services.AddScoped<NetworkTimetableSeeder>();
+
+        services.AddScoped<ITimetableReader, TimetableReader>();
+        services.AddScoped<INetworkTimetable, NetworkTimetable>();
+
+        services.AddOptions<NetworkOptions>().Bind(configuration.GetSection(NetworkOptions.SectionName)).ValidateOnStart();
+        services.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
+        services.AddSingleton<INetworkSettings, NetworkSettings>();
 
         return services;
     }
@@ -37,5 +48,6 @@ public static class NetworkModule
     {
         await using var scope = services.CreateAsyncScope();
         await scope.ServiceProvider.GetRequiredService<NetworkReferenceSeeder>().SeedAsync(cancellationToken);
+        await scope.ServiceProvider.GetRequiredService<NetworkTimetableSeeder>().SeedAsync(cancellationToken);
     }
 }
