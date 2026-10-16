@@ -53,4 +53,68 @@ public static class NetworkErrors
 
     public static Error SearchTooShort =>
         Error.Validation("Network.SearchTooShort", "A search needs at least 2 characters.");
+
+    // Timetable
+    public static Error NoTimetableForDate(DateOnly date) =>
+        Error.NotFound("Network.NoTimetableForDate", $"There is no timetable for {date:yyyy-MM-dd}.");
+
+    public static Error ServiceNotFound(Guid id) =>
+        Error.NotFound("Network.ServiceNotFound", $"Service '{id}' was not found.");
+
+    public static Error ServiceNotRunning(Guid id, DateOnly date) =>
+        Error.NotFound("Network.ServiceNotRunning", $"Service '{id}' does not run on {date:yyyy-MM-dd}.");
+
+    public static Error InvalidDate =>
+        Error.Validation("Network.InvalidDate", "The date must be written yyyy-MM-dd.");
+
+    public static Error InvalidTimetableKind =>
+        Error.Validation("Network.InvalidTimetableKind", "The kind must be 'departures' or 'arrivals'.");
+
+    public static Error InvalidTrainNumber =>
+        Error.Validation("Network.InvalidTrainNumber", "A train number is 1 to 10 letters or digits.");
+
+    public static Error InvalidCalendarCode =>
+        Error.Validation("Network.InvalidCalendarCode", "A calendar code is 2 to 20 upper-case letters.");
+
+    public static Error CalendarRangeInvalid =>
+        Error.Validation("Network.CalendarRangeInvalid", "A calendar must run on at least one weekday and its end date cannot be before its start date.");
+
+    public static Error DuplicateCalendarException(DateOnly date) =>
+        Error.Conflict("Network.DuplicateCalendarException", $"The calendar already has an exception on {date:yyyy-MM-dd}.");
+
+    public static Error ServiceNeedsTwoStops =>
+        Error.Validation("Network.ServiceNeedsTwoStops", "A service needs at least two stops.");
+
+    public static Error ServiceSequenceInvalid =>
+        Error.Validation("Network.ServiceSequenceInvalid", "Service stops must be numbered 1, 2, 3 ... with no gaps.");
+
+    public static Error ServiceStationRepeated =>
+        Error.Validation("Network.ServiceStationRepeated", "A station can appear only once in a service.");
+
+    public static Error ServiceStopsNotOnRoute =>
+        Error.Validation("Network.ServiceStopsNotOnRoute", "The stops must follow the route in order, forward or reverse.");
+
+    public static Error ServiceTimeOutOfRange =>
+        Error.Validation("Network.ServiceTimeOutOfRange", "Stop times are 0 to 2879 minutes after midnight of the service date.");
+
+    public static Error ServiceTimesInvalid =>
+        Error.Validation("Network.ServiceTimesInvalid", "Times cannot go backwards, the first stop has no arrival and the last has no departure.");
+
+    public static Error ServiceEndpointPassing =>
+        Error.Validation("Network.ServiceEndpointPassing", "The first and last stop of a service cannot be a passing point.");
+
+    public static Error VersionNotEditable(string status) =>
+        Error.Conflict("Network.VersionNotEditable", $"A {status} timetable version cannot be changed. Create a new draft.");
+
+    public static Error VersionWrongState(string expected, string actual) =>
+        Error.Conflict("Network.VersionWrongState", $"The version must be {expected} but is {actual}.");
+
+    public static Error AuthorCannotApprove =>
+        Error.Forbidden("Network.AuthorCannotApprove", "The author of a timetable version cannot approve it.");
+
+    public static Error VersionHasNoServices =>
+        Error.Validation("Network.VersionHasNoServices", "A version with no services cannot be published.");
+
+    public static Error EffectiveDateTaken(DateOnly date) =>
+        Error.Conflict("Network.EffectiveDateTaken", $"Another version already takes effect on {date:yyyy-MM-dd}.");
 }
