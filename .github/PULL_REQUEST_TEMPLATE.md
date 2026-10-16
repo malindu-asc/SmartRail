@@ -19,15 +19,30 @@
 - [ ] Simulator
 - [ ] Infra (Docker, observability, Keycloak)
 
+## Spec
+
+<!-- SPEC-NNN (specs/SPEC-NNN-title.md). Write "none: trivial" or "none: hotfix" if no spec applies. -->
+
+Spec:
+
 ## Related
 
-<!-- Closes #123, requirement or spec reference -->
+<!-- Closes #123, requirement references -->
 
 ## How was this tested?
 
 <!-- Commands run, scenarios checked, screenshots for UI changes. -->
 
+## Acceptance criteria
+
+<!-- Copy the spec's AC list and tick each one that has a passing test. -->
+
+- [ ] AC-1
+
 ## Checklist
+
+- [ ] Change matches the approved spec (no scope creep)
+- [ ] Spec verification and sync sections filled in, register updated
 
 - [ ] Builds locally and tests pass (`dotnet test`, web build, Flutter analyze as relevant)
 - [ ] No module reaches into another module's internals (architecture tests pass)
