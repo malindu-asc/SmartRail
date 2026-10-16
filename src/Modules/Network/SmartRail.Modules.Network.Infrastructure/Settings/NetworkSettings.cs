@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using SmartRail.Modules.Network.Application.Abstractions;
+using SmartRail.Modules.Network.Contracts;
 
 namespace SmartRail.Modules.Network.Infrastructure.Settings;
 
@@ -28,11 +29,23 @@ public sealed class NetworkOptionsValidator : IValidateOptions<NetworkOptions>
     }
 }
 
-internal sealed class NetworkSettings(IOptions<NetworkOptions> options, TimeProvider clock) : INetworkSettings
+internal sealed class NetworkSettings(IOptions<NetworkOptions> options, TimeProvider clock) : INetworkSettings, INetworkTimeZone
 {
     private readonly TimeZoneInfo _zone = TimeZoneInfo.FindSystemTimeZoneById(options.Value.TimeZone);
 
     public string TimeZoneId => options.Value.TimeZone;
+
+    public TimeZoneInfo Zone => _zone;
+
+    // A service date plus minutes after its midnight (may pass 1440), as a UTC instant.
+    public DateTimeOffset ToUtc(DateOnly serviceDate, int minutesAfterMidnight)
+    {
+        var local = serviceDate.ToDateTime(TimeOnly.MinValue).AddMinutes(minutesAfterMidnight);
+        return new DateTimeOffset(TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(local, DateTimeKind.Unspecified), _zone), TimeSpan.Zero);
+    }
+
+    public DateOnly LocalDate(DateTimeOffset instant) =>
+        DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(instant, _zone).DateTime);
 
     public DateOnly Today() =>
         DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(clock.GetUtcNow(), _zone).DateTime);

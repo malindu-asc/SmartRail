@@ -38,7 +38,11 @@ public static class NetworkModule
 
         services.AddOptions<NetworkOptions>().Bind(configuration.GetSection(NetworkOptions.SectionName)).ValidateOnStart();
         services.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
-        services.AddSingleton<INetworkSettings, NetworkSettings>();
+        services.AddSingleton<NetworkSettings>();
+        services.AddSingleton<INetworkSettings>(sp => sp.GetRequiredService<NetworkSettings>());
+        services.AddSingleton<INetworkTimeZone>(sp => sp.GetRequiredService<NetworkSettings>());
+        services.AddScoped<INetworkStations, NetworkStations>();
+        services.AddScoped<INetworkRoutes, NetworkRoutes>();
 
         return services;
     }
