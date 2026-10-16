@@ -45,7 +45,7 @@ tests/
   SmartRail.Modules.<Name>.Tests
 ```
 
-Modules: **Identity** (users, roles, permissions, audit), **Network** (stations, routes, timetable versions, driver and unit assignments), **Journeys** (live state, confidence, ingestion, departure board), **Operations** (cancel, terminate, platform change, disruptions, driver messages, incidents), **Notifications** (realtime push, follows), **Ticketing** (stretch only).
+Modules: **Identity** (staff profiles, passenger accounts, devices, feed sources, audit access), **Network** (stations, routes, timetable versions, calendars, services), **Journeys** (live state, confidence, ingestion, departure board, plus fleet, crew duties and time-ranged assignments, i.e. the identity model's "Live Operations"), **Operations** (cancel, terminate, platform change, disruptions, incidents, driver messages), **Notifications** (realtime push, follows, inbox), **Ticketing** (tickets, payments, refunds, scans; MVP, module added with its first spec). The full table design is `docs/02-architecture/database-schema.md`.
 
 ---
 
