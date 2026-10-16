@@ -145,7 +145,7 @@ cd apps/passenger && flutter run      # or apps/driver
 ## Testing
 
 ```bash
-dotnet test                                                  # architecture tests
+dotnet test                                                  # unit, architecture and API tests (API tests need Docker)
 npm run build --workspace=console --prefix apps/web          # web build
 npm run typecheck --prefix services/catering                 # catering typecheck
 cd apps/mobile/apps/passenger && flutter test                # mobile tests
@@ -166,6 +166,21 @@ curl -H "Authorization: Bearer $(scripts/get-token.sh controller)" http://localh
 
 Every endpoint requires a signed-in user unless it is explicitly marked anonymous; a test fails the build if an
 unexpected endpoint becomes public. Roles map to the `Driver`, `Controller` and `Admin` policies.
+
+## Network data (public API)
+
+Stations and routes are public, read-only and need no token. Names follow `?lang=` or `Accept-Language`
+(`en` default, `si`).
+
+```bash
+curl "http://localhost:5080/api/network/stations?q=oak&lang=si"
+curl  http://localhost:5080/api/network/stations/CEN
+curl  http://localhost:5080/api/network/routes
+curl  http://localhost:5080/api/network/routes/HILL
+```
+
+The demo network is inserted at startup when `Network__Seed__ReferenceData=true` (set by the Aspire AppHost and
+Docker Compose). It only adds missing rows and never changes existing ones.
 
 ## Database migrations
 
