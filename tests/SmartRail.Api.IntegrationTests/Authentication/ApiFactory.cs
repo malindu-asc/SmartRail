@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace SmartRail.Api.IntegrationTests.Authentication;
 
-public sealed class ApiFactory : WebApplicationFactory<Program>
+public class ApiFactory : WebApplicationFactory<Program>
 {
     public TestTokenIssuer Tokens { get; } = new();
 

@@ -50,6 +50,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/SmartRail.Api.IntegrationTests/SmartRail.Api.IntegrationTests.csproj" />
     <Project Path="tests/SmartRail.ArchitectureTests/SmartRail.ArchitectureTests.csproj" />
+    <Project Path="tests/SmartRail.Modules.Network.Tests/SmartRail.Modules.Network.Tests.csproj" />
   </Folder>
   <Folder Name="/tools/" />
   <Folder Name="/tools/Simulator/">
