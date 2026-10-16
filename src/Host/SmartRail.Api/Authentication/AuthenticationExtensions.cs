@@ -80,6 +80,7 @@ public static class AuthenticationExtensions
             .SetFallbackPolicy(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build())
             .AddPolicy(Policies.Driver, policy => policy.RequireRole(Roles.Driver))
             .AddPolicy(Policies.Controller, policy => policy.RequireRole(Roles.Controller))
+            .AddPolicy(Policies.Scheduler, policy => policy.RequireRole(Roles.Scheduler))
             .AddPolicy(Policies.Admin, policy => policy.RequireRole(Roles.Admin));
 
         return services;

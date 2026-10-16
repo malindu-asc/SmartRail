@@ -9,7 +9,7 @@ set -euo pipefail
 PYTHON=python3
 python3 -c 'pass' >/dev/null 2>&1 || PYTHON=python
 
-user="${1:?usage: get-token.sh <passenger|driver|controller|admin>}"
+user="${1:?usage: get-token.sh <passenger|driver|controller|scheduler|admin>}"
 password="${SMARTRAIL_DEV_PASSWORD:-}"
 if [ -z "$password" ]; then
   password="$("$PYTHON" - "$user" <<'PY'

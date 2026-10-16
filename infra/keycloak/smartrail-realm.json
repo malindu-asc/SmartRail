@@ -21,6 +21,10 @@
         "description": "Network controller operating the service"
       },
       {
+        "name": "scheduler",
+        "description": "Scheduler maintaining timetables, assignments and special services"
+      },
+      {
         "name": "admin",
         "description": "System administrator managing users, roles and devices"
       }
@@ -264,6 +268,25 @@
         "controller"
       ],
       "id": "a1000000-0000-4000-8000-000000000003"
+    },
+    {
+      "username": "scheduler",
+      "email": "scheduler@smartrail.test",
+      "firstName": "Nimali",
+      "lastName": "Perera",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Scheduler#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "scheduler"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000005"
     },
     {
       "username": "admin",
