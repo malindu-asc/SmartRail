@@ -3,17 +3,17 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 
-namespace SmartRail.Modules.Network.Api;
+namespace SmartRail.Api.Core;
 
-// Public reads are cacheable for five minutes and revalidated with an ETag.
-internal static class PublicCaching
+// Public reads are cacheable for a short time and revalidated with an ETag.
+public static class PublicCaching
 {
-    internal static IResult Ok<T>(HttpContext http, T value)
+    public static IResult Ok<T>(HttpContext http, T value, int maxAgeSeconds = 300)
     {
         var bytes = JsonSerializer.SerializeToUtf8Bytes(value, JsonSerializerOptions.Web);
         var etag = $"\"{Convert.ToHexString(SHA256.HashData(bytes))[..16]}\"";
 
-        http.Response.Headers[HeaderNames.CacheControl] = "public, max-age=300";
+        http.Response.Headers[HeaderNames.CacheControl] = $"public, max-age={maxAgeSeconds}";
         http.Response.Headers[HeaderNames.Vary] = HeaderNames.AcceptLanguage;
         http.Response.Headers[HeaderNames.ETag] = etag;
 
