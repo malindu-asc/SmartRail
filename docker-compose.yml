@@ -62,6 +62,8 @@ services:
       Diagnostics__Identity: "true"
       Database__ApplyMigrationsOnStartup: "true"
       Network__Seed__ReferenceData: "true"
+      Journeys__Generation__RunOnStartup: "true"
+      Journeys__Seed__DemoFleet: "true"
     ports:
       - "5080:8080"
     depends_on:
