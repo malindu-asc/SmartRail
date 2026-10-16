@@ -155,7 +155,7 @@ CI runs all of the above plus a Docker build of every image on each push and pul
 
 ## Signing in (development)
 
-Keycloak seeds one user per role: `passenger`, `driver`, `controller` and `admin`. Their development passwords are in `infra/keycloak/smartrail-realm.json`. They are for local use only.
+Keycloak seeds one user per role: `passenger`, `driver`, `controller`, `scheduler` and `admin`. Their development passwords are in `infra/keycloak/smartrail-realm.json`. They are for local use only.
 
 ### Getting a token (development)
 
@@ -165,7 +165,7 @@ curl -H "Authorization: Bearer $(scripts/get-token.sh controller)" http://localh
 ```
 
 Every endpoint requires a signed-in user unless it is explicitly marked anonymous; a test fails the build if an
-unexpected endpoint becomes public. Roles map to the `Driver`, `Controller` and `Admin` policies.
+unexpected endpoint becomes public. Roles map to the `Driver`, `Controller`, `Scheduler` and `Admin` policies.
 
 ## Network data (public API)
 
@@ -186,6 +186,19 @@ Scheduled timetable (public, read-only). `date` is `yyyy-MM-dd` and defaults to 
 curl "http://localhost:5080/api/network/stations/CEN/timetable?date=2026-10-14"
 curl "http://localhost:5080/api/network/stations/CEN/timetable?date=2026-10-14&kind=arrivals"
 curl "http://localhost:5080/api/network/services/<serviceId>?date=2026-10-14"
+```
+
+### Journeys
+
+Journeys are generated from the timetable for the next 7 days at 01:00 network time, and once at startup when
+`Journeys__Generation__RunOnStartup=true`. `Journeys__Seed__DemoFleet=true` adds 8 demo trainsets, a roster and
+assignments so every generated journey is Ready (Aspire and Docker Compose set both). Reads are public and cached for 5 seconds.
+
+```bash
+curl "http://localhost:5080/api/journeys/boards/CEN?count=10"
+curl  http://localhost:5080/api/journeys/<journeyId>
+# manual journey: needs a token with the scheduler role (scripts/get-token.sh)
+curl -X POST http://localhost:5080/api/journeys/manual -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json"   -d '{"routeCode":"MAIN","trainNumber":"SP1","serviceDate":"2026-10-14","reason":"Festival special","stops":[{"stationCode":"CEN","departure":"22:00"},{"stationCode":"OAK","arrival":"22:20"}]}'
 ```
 
 The demo network is inserted at startup when `Network__Seed__ReferenceData=true` (set by the Aspire AppHost and
