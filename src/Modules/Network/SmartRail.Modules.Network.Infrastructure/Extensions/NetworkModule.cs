@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartRail.Modules.Network.Application.Abstractions;
 using SmartRail.Modules.Network.Infrastructure.Persistence;
+using SmartRail.Modules.Network.Infrastructure.Seeding;
 using SmartRail.Infrastructure.Core.Outbox;
 using SmartRail.Infrastructure.Core.Persistence;
 
@@ -25,9 +26,16 @@ public static class NetworkModule
 
         services.AddScoped<INetworkUnitOfWork>(sp => sp.GetRequiredService<NetworkDbContext>());
         services.AddScoped<IOutboxMessageProcessor, OutboxMessageProcessor<NetworkDbContext>>();
-
-        // Register repositories here.
+        services.AddScoped<INetworkReader, NetworkReader>();
+        services.AddScoped<NetworkReferenceSeeder>();
 
         return services;
+    }
+
+    // Inserts the demo network when it is missing. Never updates existing rows.
+    public static async Task SeedNetworkReferenceDataAsync(this IServiceProvider services, CancellationToken cancellationToken = default)
+    {
+        await using var scope = services.CreateAsyncScope();
+        await scope.ServiceProvider.GetRequiredService<NetworkReferenceSeeder>().SeedAsync(cancellationToken);
     }
 }
