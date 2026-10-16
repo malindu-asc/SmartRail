@@ -83,7 +83,7 @@ Dependency order. Each spec is about three days or less; split anything bigger.
 | SPEC-001 | Identity foundation (Keycloak, roles, secure by default) | Built; spec to be written retrospectively | Identity, API | `feature/authentication` |
 | SPEC-002 | Network reference data and seed | Verifying | Network | `feature/network-reference-data` |
 | SPEC-003 | Timetable: versions, calendars, services, public timetable | Verifying | Network | `feature/timetable` |
-| SPEC-004 | Journey generation and the journey model (lifecycle, per-stop state) | Planned | Journeys | — |
+| SPEC-004 | Journey generation and the journey model (lifecycle, per-stop state, assignments, scheduled board) | In progress | Journeys | `feature/journeys` |
 | SPEC-005 | Live feed ingest, delay, confidence (Live, Stale, Unknown), source precedence | Planned | Journeys | — |
 | SPEC-006 | Simulator scenarios through the real ingest endpoint | Planned | Simulator | — |
 | SPEC-007 | Departure board and journey timeline API, realtime push | Planned | Journeys, Notifications | — |
@@ -97,7 +97,24 @@ Dependency order. Each spec is about three days or less; split anything bigger.
 | SPEC-015 | Timetable versioning workflow: draft, review, approve, publish (API and console) | Planned | Network, console | — |
 | SPEC-016 | Journey search A to B with one transfer (REQ-PAX-006) | Planned | Network, Journeys, passenger app | — |
 | SPEC-017 | Public rate limiting (REQ-SEC-002) and permission-matrix tests (REQ-SEC-003) | Planned | API, all modules | — |
+| SPEC-018 | Web foundation: shared packages, design tokens, auth, routing, data layer (console and kiosk) | Planned | console, kiosk | — |
+| SPEC-019 | Station terminal: destination search, station information, idle reset, lockdown, offline mode | Planned | kiosk | — |
 
 Stretch, only after the core works: tickets, payment, gate scan.
+
+## When each app starts
+
+Apps start as soon as the data they show exists. The foundations do not depend on the backend and start now.
+
+| Phase | Backend | Mobile (Flutter) | Web (React) | Kiosk and displays |
+|---|---|---|---|---|
+| **A. Now** | SPEC-003 timetable (done), SPEC-004 journeys | **SPEC-008 Flutter foundation** (packages, theme from Figma, router, localization) | **SPEC-018 Web foundation** (tokens, auth, routing, data layer) | Uses the web foundation |
+| **B. First screens** | SPEC-004 gives scheduled journeys and a station board | **SPEC-009 passenger app: departures board and journey timeline** (scheduled first) | | |
+| **C. Live core** | SPEC-005 ingest and confidence, SPEC-006 simulator, SPEC-007 realtime and live board | SPEC-009 turns live: delay, Stale, Unknown | **SPEC-010 controller actions and live board** (first console screens) | **SPEC-013 platform display** (first kiosk screen) |
+| **D. Drivers and operations** | SPEC-011 duty and stop events, SPEC-012 assignments and roles | **SPEC-011 driver app**: duty, one-tap events, offline queue | Console: assignments, roles, devices | Concourse display, **SPEC-019 station terminal** |
+| **E. Passenger depth** | SPEC-014 station search, SPEC-016 journey search, notifications | SPEC-014, SPEC-016, follow and notifications | | |
+| **F. Tickets and gates (MVP)** | Ticketing specs, SPEC-015 timetable workflow, SPEC-017 hardening | Tickets, QR wallet, inspector mode | Timetable versioning screens | Gate mode |
+
+The first UI to be built is the **Flutter foundation**, in parallel with SPEC-004, and the first real screen is the **passenger departures board**, because SPEC-004 already serves it scheduled data.
 
 Update this table whenever a spec changes status.

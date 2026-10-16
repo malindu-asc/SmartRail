@@ -30,6 +30,8 @@ var api = builder.AddProject<Projects.SmartRail_Api>("api")
     .WithEnvironment("Diagnostics__Identity", "true")
     .WithEnvironment("Database__ApplyMigrationsOnStartup", "true")
     .WithEnvironment("Network__Seed__ReferenceData", "true")
+    .WithEnvironment("Journeys__Generation__RunOnStartup", "true")
+    .WithEnvironment("Journeys__Seed__DemoFleet", "true")
     .WaitFor(database)
     .WaitFor(keycloak);
 

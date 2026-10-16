@@ -18,7 +18,10 @@ public sealed class SecureByDefaultTests(ApiFactory factory) : IClassFixture<Api
         // Network reference data (SPEC-002): public, read-only.
         "/api/network/stations",
         "/api/network/routes",
-        "/api/network/services"
+        "/api/network/services",
+        // Journeys (SPEC-004): the journey by id and station boards are public. Manual journeys need the Scheduler role.
+        "/api/journeys/{journeyId:guid}",
+        "/api/journeys/boards"
     ];
 
     [Fact]

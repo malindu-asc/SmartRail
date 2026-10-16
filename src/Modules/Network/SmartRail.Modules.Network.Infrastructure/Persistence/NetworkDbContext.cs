@@ -27,30 +27,6 @@ public sealed class NetworkDbContext(DbContextOptions<NetworkDbContext> options)
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(NetworkDbContext).Assembly);
 
         // Network tables use snake_case column names (the outbox table owned by the base context is left alone).
-        foreach (var entity in modelBuilder.Model.GetEntityTypes())
-        {
-            if (entity.ClrType.Namespace?.StartsWith("SmartRail.Modules.Network", StringComparison.Ordinal) != true)
-                continue;
-
-            foreach (var property in entity.GetProperties())
-            {
-                if (property.GetColumnName() is { } name && name == property.Name)
-                    property.SetColumnName(ToSnakeCase(name));
-            }
-        }
-    }
-
-    private static string ToSnakeCase(string name)
-    {
-        var builder = new System.Text.StringBuilder(name.Length + 4);
-        for (var i = 0; i < name.Length; i++)
-        {
-            var c = name[i];
-            if (char.IsUpper(c) && i > 0 && (char.IsLower(name[i - 1]) || (i + 1 < name.Length && char.IsLower(name[i + 1]))))
-                builder.Append('_');
-            builder.Append(char.ToLowerInvariant(c));
-        }
-
-        return builder.ToString();
+        modelBuilder.UseSnakeCaseColumns("SmartRail.Modules.Network");
     }
 }

@@ -26,6 +26,7 @@ public class ApiFactory : WebApplicationFactory<Program>
                 ["Authentication:ClockSkewSeconds"] = "30",
                 ["Diagnostics:Identity"] = "true",
                 ["Outbox:Enabled"] = "false",
+                ["Journeys:Generation:Enabled"] = "false",
                 ["Database:ApplyMigrationsOnStartup"] = "false",
                 // Never opened by these tests; present so the DbContexts can be constructed.
                 ["ConnectionStrings:smartraildb"] = "Host=localhost;Port=1;Database=unused;Username=unused;Password=unused"
