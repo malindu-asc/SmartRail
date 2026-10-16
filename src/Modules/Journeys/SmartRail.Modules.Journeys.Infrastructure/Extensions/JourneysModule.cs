@@ -2,10 +2,14 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SmartRail.Modules.Journeys.Application.Abstractions;
-using SmartRail.Modules.Journeys.Infrastructure.Persistence;
 using SmartRail.Infrastructure.Core.Outbox;
 using SmartRail.Infrastructure.Core.Persistence;
+using SmartRail.Modules.Journeys.Application.Abstractions;
+using SmartRail.Modules.Journeys.Contracts;
+using SmartRail.Modules.Journeys.Domain.Journeys;
+using SmartRail.Modules.Journeys.Infrastructure.Generation;
+using SmartRail.Modules.Journeys.Infrastructure.Persistence;
+using SmartRail.Modules.Journeys.Infrastructure.Seeding;
 
 namespace SmartRail.Modules.Journeys.Infrastructure.Extensions;
 
@@ -26,7 +30,16 @@ public static class JourneysModule
         services.AddScoped<IJourneysUnitOfWork>(sp => sp.GetRequiredService<JourneysDbContext>());
         services.AddScoped<IOutboxMessageProcessor, OutboxMessageProcessor<JourneysDbContext>>();
 
-        // Register repositories here.
+        services.AddScoped<IJourneyRepository, JourneyRepository>();
+        services.AddScoped<JourneyReader>();
+        services.AddScoped<IJourneyReader>(sp => sp.GetRequiredService<JourneyReader>());
+        services.AddScoped<IJourneyLookup>(sp => sp.GetRequiredService<JourneyReader>());
+        services.AddScoped<IJourneysAuditLog, JourneysAuditLog>();
+
+        services.Configure<JourneyGenerationOptions>(configuration.GetSection(JourneyGenerationOptions.SectionName));
+        services.AddScoped<JourneyGenerationRunner>();
+        services.AddScoped<DemoFleetSeeder>();
+        services.AddHostedService<JourneyGenerationWorker>();
 
         return services;
     }
