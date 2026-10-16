@@ -76,16 +76,28 @@ python tools/docs/build_traceability.py
 
 ## Register
 
+Dependency order. Each spec is about three days or less; split anything bigger.
+
 | ID | Title | Status | Modules / apps | Branch |
 |---|---|---|---|---|
-| SPEC-001 | Identity foundation (Keycloak, roles, secure by default) | Planned (built before SDD; spec to be written retrospectively) | Identity, API | `feature/authentication` |
+| SPEC-001 | Identity foundation (Keycloak, roles, secure by default) | Built; spec to be written retrospectively | Identity, API | `feature/authentication` |
 | SPEC-002 | Network reference data and seed | Verifying | Network | `feature/network-reference-data` |
-| SPEC-003 | Ingest stop events and journey state with confidence | Planned | Journeys, simulator | — |
-| SPEC-004 | Live departure board and realtime push | Planned | Journeys, Notifications, passenger app, kiosk | — |
-| SPEC-005 | Driver duty, stop reporting and offline queue | Planned | Journeys, driver app | — |
-| SPEC-006 | Controller actions with audit (cancel, terminate, platform change) | Planned | Operations, console | — |
-| SPEC-007 | Routes, rosters and driver and unit assignment | Planned | Network, console | — |
-| SPEC-008 | Admin: users, roles and devices | Planned | Identity, console | — |
-| SPEC-009 | Station displays and terminal | Planned | kiosk | — |
+| SPEC-003 | Timetable: versions, calendars, services, public timetable | Verifying | Network | `feature/timetable` |
+| SPEC-004 | Journey generation and the journey model (lifecycle, per-stop state) | Planned | Journeys | — |
+| SPEC-005 | Live feed ingest, delay, confidence (Live, Stale, Unknown), source precedence | Planned | Journeys | — |
+| SPEC-006 | Simulator scenarios through the real ingest endpoint | Planned | Simulator | — |
+| SPEC-007 | Departure board and journey timeline API, realtime push | Planned | Journeys, Notifications | — |
+| SPEC-008 | Flutter foundation: shared packages, app shell, router, localization | Planned | passenger app, driver app | — |
+| SPEC-009 | Passenger app: departures board and journey timeline with staleness | Planned | passenger app | — |
+| SPEC-010 | Controller actions with audit (cancel, terminate, platform change) and live board | Planned | Operations, console | — |
+| SPEC-011 | Driver app: duty, stop events, offline queue and replay | Planned | Journeys, driver app | — |
+| SPEC-012 | Assignments (vehicle, driver), vehicle unavailability and roles administration | Planned | Journeys, Identity, console | — |
+| SPEC-013 | Platform display (kiosk) | Planned | kiosk | — |
+| SPEC-014 | Station search and route stops in the passenger app | Planned | passenger app | — |
+| SPEC-015 | Timetable versioning workflow: draft, review, approve, publish (API and console) | Planned | Network, console | — |
+| SPEC-016 | Journey search A to B with one transfer (REQ-PAX-006) | Planned | Network, Journeys, passenger app | — |
+| SPEC-017 | Public rate limiting (REQ-SEC-002) and permission-matrix tests (REQ-SEC-003) | Planned | API, all modules | — |
+
+Stretch, only after the core works: tickets, payment, gate scan.
 
 Update this table whenever a spec changes status.
