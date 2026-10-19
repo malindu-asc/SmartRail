@@ -27,6 +27,14 @@
       {
         "name": "admin",
         "description": "System administrator managing users, roles and devices"
+      },
+      {
+        "name": "inspector",
+        "description": "Ticket inspector spot-checking tickets in the staff app"
+      },
+      {
+        "name": "station_master",
+        "description": "Station master working on their own station only"
       }
     ]
   },
@@ -73,6 +81,19 @@
             "included.client.audience": "smartrail-api",
             "access.token.claim": "true"
           }
+        },
+        {
+          "name": "stations",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "station_codes",
+            "claim.name": "stations",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
         }
       ]
     },
@@ -110,6 +131,19 @@
             "included.client.audience": "smartrail-api",
             "access.token.claim": "true"
           }
+        },
+        {
+          "name": "stations",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "station_codes",
+            "claim.name": "stations",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
         }
       ]
     },
@@ -140,6 +174,19 @@
           "config": {
             "included.client.audience": "smartrail-api",
             "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "stations",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "station_codes",
+            "claim.name": "stations",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
           }
         }
       ]
@@ -174,6 +221,19 @@
             "included.client.audience": "smartrail-api",
             "access.token.claim": "true"
           }
+        },
+        {
+          "name": "stations",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "station_codes",
+            "claim.name": "stations",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
         }
       ]
     },
@@ -206,6 +266,19 @@
           "config": {
             "included.client.audience": "smartrail-api",
             "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "stations",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "station_codes",
+            "claim.name": "stations",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
           }
         }
       ]
@@ -318,6 +391,192 @@
       "id": "a1000000-0000-4000-8000-000000000004"
     },
     {
+      "username": "controller2",
+      "email": "controller2@smartrail.test",
+      "firstName": "Kamal",
+      "lastName": "Rajapaksa",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Staff#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "controller"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000006"
+    },
+    {
+      "username": "stationmaster1",
+      "email": "stationmaster1@smartrail.test",
+      "firstName": "Oshadi",
+      "lastName": "Wijesinghe",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Staff#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "station_master"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000007",
+      "attributes": {
+        "station_codes": [
+          "OAK"
+        ]
+      }
+    },
+    {
+      "username": "stationmaster2",
+      "email": "stationmaster2@smartrail.test",
+      "firstName": "Tharindu",
+      "lastName": "Bandara",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Staff#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "station_master"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000008",
+      "attributes": {
+        "station_codes": [
+          "CEN"
+        ]
+      }
+    },
+    {
+      "username": "inspector",
+      "email": "inspector@smartrail.test",
+      "firstName": "Ishara",
+      "lastName": "Inspector",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Staff#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "inspector"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000009"
+    },
+    {
+      "username": "michael",
+      "email": "michael@smartrail.test",
+      "firstName": "Michael",
+      "lastName": "Fernando",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Staff#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "driver"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000010"
+    },
+    {
+      "username": "anil",
+      "email": "anil@smartrail.test",
+      "firstName": "Anil",
+      "lastName": "Silva",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Staff#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "driver"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000011"
+    },
+    {
+      "username": "jayasuriya",
+      "email": "jayasuriya@smartrail.test",
+      "firstName": "R.",
+      "lastName": "Jayasuriya",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Staff#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "driver"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000012"
+    },
+    {
+      "username": "gunasekara",
+      "email": "gunasekara@smartrail.test",
+      "firstName": "T.",
+      "lastName": "Gunasekara",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Staff#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "driver"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000013",
+      "attributes": {
+        "employment_end": [
+          "2026-10-10"
+        ]
+      }
+    },
+    {
+      "username": "nperera",
+      "email": "nperera@smartrail.test",
+      "firstName": "N.",
+      "lastName": "Perera",
+      "enabled": false,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Staff#123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "driver"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000014"
+    },
+    {
       "username": "service-account-smartrail-identity-admin",
       "enabled": true,
       "serviceAccountClientId": "smartrail-identity-admin",
@@ -325,7 +584,11 @@
         "realm-management": [
           "manage-users",
           "view-users",
-          "query-users"
+          "query-users",
+          "view-events",
+          "view-realm",
+          "manage-realm",
+          "view-clients"
         ]
       }
     }
@@ -333,5 +596,20 @@
   "ssoSessionMaxLifespan": 28800,
   "ssoSessionIdleTimeout": 28800,
   "bruteForceProtected": true,
-  "failureFactor": 5
+  "failureFactor": 5,
+  "maxFailureWaitSeconds": 900,
+  "waitIncrementSeconds": 900,
+  "permanentLockout": false,
+  "eventsEnabled": true,
+  "eventsExpiration": 604800,
+  "enabledEventTypes": [
+    "LOGIN",
+    "LOGIN_ERROR",
+    "LOGOUT",
+    "REGISTER",
+    "UPDATE_PASSWORD",
+    "USER_DISABLED_BY_TEMPORARY_LOCKOUT"
+  ],
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": false
 }
