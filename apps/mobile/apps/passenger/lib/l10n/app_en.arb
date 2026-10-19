@@ -1,0 +1,29 @@
+{
+  "@@locale": "en",
+  "appTitle": "SmartRail",
+  "tabHome": "Home",
+  "tabTrips": "Trips",
+  "tabAccount": "Account",
+  "homeTitle": "Departures",
+  "homeBody": "Live departures and journey status will appear here.",
+  "tripsTitle": "My trips",
+  "tripsBody": "Journeys you follow will appear here.",
+  "accountTitle": "Account",
+  "accountBody": "Sign in to buy and show tickets.",
+  "language": "Language",
+  "languageEnglish": "English",
+  "languageSinhala": "සිංහල",
+  "notFoundTitle": "Page not found",
+  "notFoundBody": "That page does not exist.",
+  "notFoundAction": "Go to departures",
+  "offlineTitle": "No connection",
+  "offlineDetail": "Showing the last information from {time}",
+  "@offlineDetail": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineNever": "No information has been received yet."
+}

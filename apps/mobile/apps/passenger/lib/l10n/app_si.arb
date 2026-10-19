@@ -1,0 +1,29 @@
+{
+  "@@locale": "si",
+  "appTitle": "SmartRail",
+  "tabHome": "මුල් පිටුව",
+  "tabTrips": "ගමන්",
+  "tabAccount": "ගිණුම",
+  "homeTitle": "පිටත්වීම්",
+  "homeBody": "සජීවී පිටත්වීම් සහ ගමන් තත්ත්වය මෙහි පෙන්වනු ඇත.",
+  "tripsTitle": "මගේ ගමන්",
+  "tripsBody": "ඔබ අනුගමනය කරන ගමන් මෙහි පෙන්වනු ඇත.",
+  "accountTitle": "ගිණුම",
+  "accountBody": "ටිකට්පත් මිලදී ගැනීමට සහ පෙන්වීමට පිවිසෙන්න.",
+  "language": "භාෂාව",
+  "languageEnglish": "English",
+  "languageSinhala": "සිංහල",
+  "notFoundTitle": "පිටුව හමු නොවීය",
+  "notFoundBody": "එම පිටුව නොපවතී.",
+  "notFoundAction": "පිටත්වීම් වෙත යන්න",
+  "offlineTitle": "සම්බන්ධතාවයක් නැත",
+  "offlineDetail": "{time} ට ලැබුණු අවසාන තොරතුරු පෙන්වමින්",
+  "@offlineDetail": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineNever": "තවමත් තොරතුරු ලැබී නැත."
+}
