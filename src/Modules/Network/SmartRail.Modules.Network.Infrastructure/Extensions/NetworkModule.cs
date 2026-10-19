@@ -42,6 +42,12 @@ public static class NetworkModule
         services.AddSingleton<INetworkSettings>(sp => sp.GetRequiredService<NetworkSettings>());
         services.AddSingleton<INetworkTimeZone>(sp => sp.GetRequiredService<NetworkSettings>());
         services.AddScoped<INetworkStations, NetworkStations>();
+
+        // The catering provider (RailBite) is external: its address and key come from the Catering section, and a quick timeout
+        // keeps a slow kitchen from slowing anything else down.
+        services.Configure<SmartRail.Modules.Network.Infrastructure.Catering.CateringOptions>(configuration.GetSection(SmartRail.Modules.Network.Infrastructure.Catering.CateringOptions.Section));
+        services.AddHttpClient<SmartRail.Modules.Network.Application.Stations.GetStationMenu.ICateringProvider, SmartRail.Modules.Network.Infrastructure.Catering.RailBiteClient>(
+            client => client.Timeout = TimeSpan.FromSeconds(3));
         services.AddScoped<INetworkRoutes, NetworkRoutes>();
 
         return services;
