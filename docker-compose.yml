@@ -72,6 +72,8 @@ services:
       Network__Seed__ReferenceData: "true"
       Journeys__Generation__RunOnStartup: "true"
       Journeys__Seed__DemoFleet: "true"
+      # Development only: late, cancelled and silent trains, tickets and notices for trying every screen.
+      Demo__Scenarios__Enabled: "true"
       # Development feed sources for the simulator (SPEC-005). Never use these keys outside development.
       Identity__FeedSources__Seed__0__Code: "SIM"
       Identity__FeedSources__Seed__0__Name: "Development feed"

@@ -1,6 +1,7 @@
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 using SmartRail.Api.Authentication;
+using SmartRail.Api.Development;
 using SmartRail.Api.Core;
 using SmartRail.Api.Extensions;
 using SmartRail.Application.Core;
@@ -66,6 +67,14 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
+// Off by default. Development scenarios: trains that are late, cancelled or silent, tickets and notices to match (see DemoScenarios.cs).
+var demoScenarios = builder.Configuration.GetValue<bool>("Demo:Scenarios:Enabled");
+if (demoScenarios)
+{
+    builder.Services.AddScoped<DemoScenarioSeeder>();
+    builder.Services.AddHostedService<DemoScenarioWorker>();
+}
+
 var app = builder.Build();
 
 app.UseExceptionHandler();
@@ -99,6 +108,13 @@ if (app.Configuration.GetValue<bool>("Network:Seed:ReferenceData"))
 if (app.Configuration.GetSection("Identity:FeedSources:Seed").GetChildren().Any())
 {
     await app.SeedFeedSourcesAsync();
+}
+
+// Applies the scenarios again, for example after a new day's trains were generated.
+if (demoScenarios)
+{
+    app.MapPost("/api/dev/scenarios/apply", async (DemoScenarioSeeder seeder, CancellationToken ct) =>
+        Results.Ok(await seeder.ApplyAsync(ct))).AllowAnonymous();
 }
 
 app.UseAuthentication();
