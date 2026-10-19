@@ -1136,4 +1136,19 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get resultsDirectOnly => 'සෘජු දුම්රිය පමණි';
+
+  @override
+  String get ticketsMoreActions => 'තවත් ක්‍රියා';
+
+  @override
+  String get ticketsAddWithCode => 'වෙන් කිරීමේ කේතයෙන් ටිකට් එකතු කරන්න';
+
+  @override
+  String get ticketsNonePast => 'ඔබ භාවිත කළ ටිකට් මෙහි පෙනේ.';
+
+  @override
+  String get ticketReference => 'ටිකට්';
+
+  @override
+  String get seatHoldNote => 'ඔබ තහවුරු කළ පසු ආසන මිනිත්තු 10ක් රඳවා ගනී.';
 }

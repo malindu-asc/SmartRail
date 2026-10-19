@@ -10,8 +10,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/tickets_domain.dart';
 import '../providers/tickets_providers.dart';
 
-/// Choose a seat (design 28), only for a train that needs one. One seat for each traveller; the seats are held for a few minutes while
-/// the booking is finished, so nobody else can take them.
+/// Choose a seat (design 31), only for a train that needs one: a note about holding the seats, Coach A / B / C, the legend, and the
+/// seats in rows of two, an aisle and two. One seat for each traveller; they are held for a few minutes while the booking is finished.
 class SeatScreen extends ConsumerStatefulWidget {
   const SeatScreen({super.key});
 
@@ -75,22 +75,82 @@ class _SeatScreenState extends ConsumerState<SeatScreen> {
             children: [
               Expanded(
                 child: ListView(
-                  padding: const EdgeInsets.all(SmartRailSpacing.lg),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                   children: [
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: SmartRailColors.primarySubtle,
+                        borderRadius: BorderRadius.circular(SmartRailRadius.md),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            const SvgIcon(
+                              AppIcons.clockHold,
+                              size: 18,
+                              color: SmartRailColors.primaryPressed,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                l10n.seatHoldNote,
+                                style: SmartRailType.label14.copyWith(
+                                  color: SmartRailColors.primaryPressed,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
                     Wrap(
-                      spacing: SmartRailSpacing.sm,
+                      spacing: 8,
                       children: [
                         for (final c in seats.coaches)
-                          ChoiceChip(
-                            label: Text(l10n.seatCoach(c)),
+                          Semantics(
+                            button: true,
                             selected: _coach == c,
-                            onSelected: (_) => setState(() => _coach = c),
+                            label: l10n.seatCoach(c),
+                            child: ExcludeSemantics(
+                              child: GestureDetector(
+                                onTap: () => setState(() => _coach = c),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 18,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _coach == c
+                                        ? SmartRailColors.textPrimary
+                                        : SmartRailColors.surface,
+                                    border: Border.all(
+                                      color: _coach == c
+                                          ? SmartRailColors.textPrimary
+                                          : SmartRailColors.borderStrong,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                      SmartRailRadius.pill,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    l10n.seatCoach(c),
+                                    style: SmartRailType.label14.copyWith(
+                                      color: _coach == c
+                                          ? SmartRailColors.surface
+                                          : SmartRailColors.textPrimary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                       ],
                     ),
-                    const SizedBox(height: SmartRailSpacing.md),
+                    const SizedBox(height: 14),
                     const _Legend(),
-                    const SizedBox(height: SmartRailSpacing.md),
+                    const SizedBox(height: 14),
                     _Grid(
                       coach: _coach,
                       map: seats,
@@ -100,20 +160,46 @@ class _SeatScreenState extends ConsumerState<SeatScreen> {
                   ],
                 ),
               ),
-              _Bar(
-                label: _chosen.isEmpty
-                    ? l10n.seatSelected(0, needed)
-                    : (needed == 1
-                          ? l10n.ticketsCoachSeat(
-                              _chosen.first.coach,
-                              '${_chosen.first.number}',
-                            )
-                          : l10n.seatSelected(_chosen.length, needed)),
-                fare: offer.fare.label,
-                button: needed == 1 ? l10n.seatConfirm : l10n.seatConfirmMany,
-                onPressed: _chosen.length == needed && !_busy
-                    ? () => _confirm(offer)
-                    : null,
+              StickyActionBar(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _chosen.isEmpty
+                              ? l10n.seatSelected(0, needed)
+                              : (needed == 1
+                                    ? l10n.ticketsCoachSeat(
+                                        _chosen.first.coach,
+                                        '${_chosen.first.number}',
+                                      )
+                                    : l10n.seatSelected(
+                                        _chosen.length,
+                                        needed,
+                                      )),
+                          style: SmartRailType.body14.copyWith(
+                            color: SmartRailColors.textSecondary,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        offer.fare.label,
+                        style: SmartRailType.title.copyWith(
+                          color: SmartRailColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  SmartRailButton(
+                    label: needed == 1
+                        ? l10n.seatConfirm
+                        : l10n.seatConfirmMany,
+                    onPressed: _chosen.length == needed && !_busy
+                        ? () => _confirm(offer)
+                        : null,
+                  ),
+                ],
               ),
             ],
           );
@@ -192,29 +278,36 @@ class _Legend extends StatelessWidget {
           decoration: BoxDecoration(
             color: fill,
             border: Border.all(color: border),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(SmartRailRadius.sm),
           ),
         ),
-        const SizedBox(width: SmartRailSpacing.xs),
-        Text(text, style: Theme.of(context).textTheme.labelSmall),
+        const SizedBox(width: 6),
+        Text(
+          text,
+          style: SmartRailType.caption.copyWith(
+            color: SmartRailColors.textSecondary,
+          ),
+        ),
       ],
     );
 
     return Wrap(
-      spacing: SmartRailSpacing.lg,
+      spacing: 14,
+      runSpacing: 8,
       children: [
         item(
           SmartRailColors.surface,
           SmartRailColors.borderStrong,
           l10n.seatFree,
         ),
-        item(SmartRailColors.bgSoft, SmartRailColors.border, l10n.seatTaken),
+        item(SmartRailColors.bgSoft, SmartRailColors.bgSoft, l10n.seatTaken),
         item(SmartRailColors.primary, SmartRailColors.primary, l10n.seatYours),
       ],
     );
   }
 }
 
+/// The seats: cells of 56 by 44 with 8 between, two seats, a 24 aisle and two seats, in a hairline card with 14 padding.
 class _Grid extends StatelessWidget {
   const _Grid({
     required this.coach,
@@ -235,7 +328,7 @@ class _Grid extends StatelessWidget {
 
     Widget cell(int number) {
       if (number > map.seatsPerCoach) {
-        return const SizedBox(width: 56, height: 52);
+        return const SizedBox(width: 56, height: 44);
       }
 
       final seat = Seat(coach, number);
@@ -254,7 +347,7 @@ class _Grid extends StatelessWidget {
             child: AnimatedContainer(
               duration: SmartRailMotion.of(context, SmartRailMotion.fast),
               width: 56,
-              height: 52,
+              height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: mine
@@ -266,20 +359,20 @@ class _Grid extends StatelessWidget {
                   color: mine
                       ? SmartRailColors.primary
                       : (taken
-                            ? SmartRailColors.border
+                            ? SmartRailColors.bgSoft
                             : SmartRailColors.borderStrong),
+                  width: 1.5,
                 ),
-                borderRadius: BorderRadius.circular(SmartRailRadius.md),
+                borderRadius: BorderRadius.circular(SmartRailRadius.sm),
               ),
               child: Text(
                 '$number',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
+                style: SmartRailType.label14.copyWith(
                   color: mine
                       ? SmartRailColors.onPrimary
                       : (taken
-                            ? SmartRailColors.textTertiary
-                            : SmartRailColors.textPrimary),
+                            ? SmartRailColors.borderStrong
+                            : SmartRailColors.textSecondary),
                 ),
               ),
             ),
@@ -288,69 +381,30 @@ class _Grid extends StatelessWidget {
       );
     }
 
-    return Card(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: SmartRailColors.border),
+        borderRadius: BorderRadius.circular(SmartRailRadius.lg),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(SmartRailSpacing.lg),
+        padding: const EdgeInsets.all(14),
         child: Column(
           children: [
             for (var r = 0; r < rows; r++)
               Padding(
-                padding: const EdgeInsets.only(bottom: SmartRailSpacing.sm),
+                padding: EdgeInsets.only(bottom: r == rows - 1 ? 0 : 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     cell(r * 4 + 1),
                     cell(r * 4 + 2),
-                    const SizedBox(width: SmartRailSpacing.lg),
+                    const SizedBox(width: 24),
                     cell(r * 4 + 3),
                     cell(r * 4 + 4),
                   ],
                 ),
               ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Bar extends StatelessWidget {
-  const _Bar({
-    required this.label,
-    required this.fare,
-    required this.button,
-    required this.onPressed,
-  });
-
-  final String label;
-  final String fare;
-  final String button;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: SmartRailColors.surface,
-        border: Border(top: BorderSide(color: SmartRailColors.border)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.all(SmartRailSpacing.lg),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Expanded(child: Text(label)),
-                  Text(fare, style: Theme.of(context).textTheme.titleLarge),
-                ],
-              ),
-              const SizedBox(height: SmartRailSpacing.md),
-              SmartRailButton(label: button, onPressed: onPressed),
-            ],
-          ),
         ),
       ),
     );

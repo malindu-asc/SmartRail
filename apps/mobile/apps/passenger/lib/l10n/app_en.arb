@@ -889,5 +889,10 @@
   "planRecent": "Recent",
   "foodMenuHint": "Menu and prices · call to order",
   "resultsFilter": "Filter",
-  "resultsDirectOnly": "Direct trains only"
+  "resultsDirectOnly": "Direct trains only",
+  "ticketsMoreActions": "More actions",
+  "ticketsAddWithCode": "Add ticket with booking code",
+  "ticketsNonePast": "Tickets you have used will appear here.",
+  "ticketReference": "Ticket",
+  "seatHoldNote": "Your seats are held for 10 minutes once you confirm."
 }

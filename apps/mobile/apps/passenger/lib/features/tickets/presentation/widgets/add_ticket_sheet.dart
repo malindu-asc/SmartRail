@@ -5,14 +5,10 @@ import 'package:smartrail_design_system/smartrail_design_system.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/tickets_providers.dart';
 
-/// "Add ticket" (design 26): a booking number and the email used at purchase put a ticket on this profile, for example on a new phone.
+/// "Add ticket" (design 25): a 24 Bold title with a close button, the booking number with its help line, the email used at purchase,
+/// and Add ticket. It puts a ticket on this profile, for example on a new phone.
 Future<void> showAddTicketSheet(BuildContext context) =>
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (_) => const _AddTicket(),
-    );
+    showSmartRailSheet<void>(context, builder: (_) => const _AddTicket());
 
 class _AddTicket extends ConsumerStatefulWidget {
   const _AddTicket();
@@ -52,7 +48,7 @@ class _AddTicketState extends ConsumerState<_AddTicket> {
         _error = l10n.addNotFound;
       }),
       (_) {
-        ref.invalidate(ticketListProvider(false));
+        ref.invalidate(ticketListProvider);
         Navigator.of(context).pop();
         ScaffoldMessenger.of(
           context,
@@ -65,54 +61,53 @@ class _AddTicketState extends ConsumerState<_AddTicket> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        SmartRailSpacing.xl,
-        0,
-        SmartRailSpacing.xl,
-        SmartRailSpacing.xl + MediaQuery.viewInsetsOf(context).bottom,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return SheetBody(
+      children: [
+        Row(
           children: [
-            Text(l10n.addTitle, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: SmartRailSpacing.lg),
-            SmartRailTextField(
-              label: l10n.addNumberLabel,
-              hint: l10n.addNumberHint,
-              controller: _code,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: SmartRailSpacing.sm,
-              ),
+            Expanded(
               child: Text(
-                l10n.addNumberHelp,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: SmartRailColors.textSecondary,
+                l10n.addTitle,
+                style: SmartRailType.title24.copyWith(
+                  color: SmartRailColors.textPrimary,
                 ),
               ),
             ),
-            SmartRailTextField(
-              label: l10n.addContactLabel,
-              hint: l10n.addContactHint,
-              controller: _contact,
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: SmartRailSpacing.lg),
-            if (_error != null) ...[
-              InfoBanner(kind: BannerKind.warning, title: _error!),
-              const SizedBox(height: SmartRailSpacing.md),
-            ],
-            SmartRailButton(
-              label: l10n.addTitle,
-              onPressed: _busy ? null : _submit,
+            IconButton(
+              tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const SvgIcon(
+                AppIcons.close,
+                size: 22,
+                color: SmartRailColors.textPrimary,
+              ),
             ),
           ],
         ),
-      ),
+        SmartRailTextField(
+          label: l10n.addNumberLabel,
+          hint: l10n.addNumberHint,
+          controller: _code,
+        ),
+        Text(
+          l10n.addNumberHelp,
+          style: SmartRailType.caption.copyWith(
+            color: SmartRailColors.textSecondary,
+          ),
+        ),
+        SmartRailTextField(
+          label: l10n.addContactLabel,
+          hint: l10n.addContactHint,
+          controller: _contact,
+          keyboardType: TextInputType.emailAddress,
+        ),
+        if (_error != null)
+          InfoBanner(kind: BannerKind.warning, title: _error!),
+        SmartRailButton(
+          label: l10n.addTitle,
+          onPressed: _busy ? null : _submit,
+        ),
+      ],
     );
   }
 }

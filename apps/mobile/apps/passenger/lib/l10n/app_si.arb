@@ -656,5 +656,10 @@
   "planRecent": "මෑත",
   "foodMenuHint": "මෙනුව සහ මිල ගණන් · ඇණවුම් කිරීමට අමතන්න",
   "resultsFilter": "පෙරහන",
-  "resultsDirectOnly": "සෘජු දුම්රිය පමණි"
+  "resultsDirectOnly": "සෘජු දුම්රිය පමණි",
+  "ticketsMoreActions": "තවත් ක්‍රියා",
+  "ticketsAddWithCode": "වෙන් කිරීමේ කේතයෙන් ටිකට් එකතු කරන්න",
+  "ticketsNonePast": "ඔබ භාවිත කළ ටිකට් මෙහි පෙනේ.",
+  "ticketReference": "ටිකට්",
+  "seatHoldNote": "ඔබ තහවුරු කළ පසු ආසන මිනිත්තු 10ක් රඳවා ගනී."
 }

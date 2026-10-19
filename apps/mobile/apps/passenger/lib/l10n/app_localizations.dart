@@ -1968,6 +1968,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Direct trains only'**
   String get resultsDirectOnly;
+
+  /// No description provided for @ticketsMoreActions.
+  ///
+  /// In en, this message translates to:
+  /// **'More actions'**
+  String get ticketsMoreActions;
+
+  /// No description provided for @ticketsAddWithCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Add ticket with booking code'**
+  String get ticketsAddWithCode;
+
+  /// No description provided for @ticketsNonePast.
+  ///
+  /// In en, this message translates to:
+  /// **'Tickets you have used will appear here.'**
+  String get ticketsNonePast;
+
+  /// No description provided for @ticketReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket'**
+  String get ticketReference;
+
+  /// No description provided for @seatHoldNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your seats are held for 10 minutes once you confirm.'**
+  String get seatHoldNote;
 }
 
 class _AppLocalizationsDelegate

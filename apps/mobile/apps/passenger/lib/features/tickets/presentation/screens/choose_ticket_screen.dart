@@ -13,7 +13,8 @@ import '../../domain/tickets_domain.dart';
 import '../providers/tickets_providers.dart';
 import '../widgets/ticket_text.dart';
 
-/// Choose ticket (design 27): the trains between the two stations with the fare for who is travelling. It needs an account to go on.
+/// Choose ticket (design 29): the trains between the two stations with the fare for who is travelling, the note that a delay never
+/// makes a new ticket, and the total with Continue. It needs an account to go on.
 class ChooseTicketScreen extends ConsumerStatefulWidget {
   const ChooseTicketScreen({super.key, required this.query});
 
@@ -39,10 +40,8 @@ class _ChooseTicketScreenState extends ConsumerState<ChooseTicketScreen> {
 
   Future<void> _travellers() async {
     final current = _query.travellers;
-    final picked = await showModalBottomSheet<Travellers>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
+    final picked = await showSmartRailSheet<Travellers>(
+      context,
       builder: (_) => _TravellersSheet(initial: current),
     );
     if (picked == null || !mounted) return;
@@ -95,7 +94,7 @@ class _ChooseTicketScreenState extends ConsumerState<ChooseTicketScreen> {
   }
 }
 
-class _Body extends ConsumerWidget {
+class _Body extends StatelessWidget {
   const _Body({
     required this.result,
     required this.travellers,
@@ -113,46 +112,36 @@ class _Body extends ConsumerWidget {
   final ValueChanged<TicketOffer> onContinue;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final clock = clockFor(result.timeZone);
-    final chosen = result.offers
-        .where((o) => o.journeyId == selected)
-        .firstOrNull;
+    // The first train is chosen to begin with, as in the design.
+    final chosen =
+        result.offers.where((o) => o.journeyId == selected).firstOrNull ??
+        result.offers.firstOrNull;
 
     return Column(
       children: [
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.all(SmartRailSpacing.lg),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             children: [
               Semantics(
                 button: true,
                 child: InkWell(
                   onTap: onTravellers,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: SmartRailSpacing.sm,
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            l10n.chooseSummary(
-                              travellersText(l10n, travellers),
-                            ),
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: SmartRailColors.textSecondary,
-                                ),
-                          ),
-                        ),
-                        const Icon(Icons.expand_more),
-                      ],
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text(
+                      l10n.chooseSummary(travellersText(l10n, travellers)),
+                      style: SmartRailType.body14.copyWith(
+                        color: SmartRailColors.textSecondary,
+                      ),
                     ),
                   ),
                 ),
               ),
+              const SizedBox(height: 8),
               if (result.offers.isEmpty)
                 EmptyState(
                   icon: Icons.train_outlined,
@@ -161,65 +150,60 @@ class _Body extends ConsumerWidget {
                 ),
               for (var i = 0; i < result.offers.length; i++)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: SmartRailSpacing.md),
+                  padding: const EdgeInsets.only(bottom: 12),
                   child: AppearIn(
                     index: i,
                     child: _OfferCard(
                       offer: result.offers[i],
                       clock: clock,
-                      selected: result.offers[i].journeyId == selected,
+                      selected: result.offers[i].journeyId == chosen?.journeyId,
                       onTap: () => onSelect(result.offers[i].journeyId),
                     ),
                   ),
                 ),
               if (result.offers.isNotEmpty) ...[
-                InfoBanner(kind: BannerKind.message, title: l10n.chooseNote),
-                const SizedBox(height: SmartRailSpacing.sm),
-                InfoBanner(
-                  kind: BannerKind.message,
-                  title: l10n.chooseNoPayment,
-                ),
+                InfoNote(l10n.chooseNote),
+                const SizedBox(height: 8),
+                InfoNote(l10n.chooseNoPayment),
               ],
             ],
           ),
         ),
-        DecoratedBox(
-          decoration: const BoxDecoration(
-            color: SmartRailColors.surface,
-            border: Border(top: BorderSide(color: SmartRailColors.border)),
-          ),
-          child: SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.all(SmartRailSpacing.lg),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(child: Text(travellersText(l10n, travellers))),
-                      if (chosen != null)
-                        Text(
-                          chosen.fare.label,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                    ],
+        StickyActionBar(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    travellersText(l10n, travellers),
+                    style: SmartRailType.body14.copyWith(
+                      color: SmartRailColors.textSecondary,
+                    ),
                   ),
-                  const SizedBox(height: SmartRailSpacing.md),
-                  SmartRailButton(
-                    label: l10n.continueLabel,
-                    onPressed: chosen == null ? null : () => onContinue(chosen),
+                ),
+                if (chosen != null)
+                  Text(
+                    chosen.fare.label,
+                    style: SmartRailType.title.copyWith(
+                      color: SmartRailColors.textPrimary,
+                    ),
                   ),
-                ],
-              ),
+              ],
             ),
-          ),
+            const SizedBox(height: 8),
+            SmartRailButton(
+              label: l10n.continueLabel,
+              onPressed: chosen == null ? null : () => onContinue(chosen),
+            ),
+          ],
         ),
       ],
     );
   }
 }
 
+/// A train to book: times in 24 Bold with its state on the right, the duration, "Seat required" and the fare. The chosen one has a
+/// 2 wide brand outline.
 class _OfferCard extends StatelessWidget {
   const _OfferCard({
     required this.offer,
@@ -236,7 +220,6 @@ class _OfferCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
 
     final (kind, label) = (offer.delayMinutes ?? 0) >= 2
         ? (StatusKind.delayed, l10n.chipDelayed(offer.delayMinutes!))
@@ -246,17 +229,20 @@ class _OfferCard extends StatelessWidget {
         ? (StatusKind.noLiveData, l10n.chipNoLiveData)
         : (StatusKind.onTime, null);
 
+    final times =
+        '${clock.formatTime(offer.expectedDeparture)} → ${clock.formatTime(offer.expectedArrival)}';
+
     return Semantics(
       button: true,
       selected: selected,
       label:
-          '${clock.formatTime(offer.expectedDeparture)} to ${clock.formatTime(offer.expectedArrival)}, ${l10n.chooseDirect(offer.durationMinutes)}, ${offer.fare.label}${label == null ? '' : ', $label'}',
+          '$times, ${l10n.chooseDirect(offer.durationMinutes)}, ${offer.fare.label}${label == null ? '' : ', $label'}',
       child: ExcludeSemantics(
         child: AnimatedContainer(
           duration: SmartRailMotion.of(context, SmartRailMotion.fast),
           decoration: BoxDecoration(
             color: SmartRailColors.surface,
-            borderRadius: BorderRadius.circular(SmartRailRadius.md),
+            borderRadius: BorderRadius.circular(SmartRailRadius.lg),
             border: Border.all(
               color: selected
                   ? SmartRailColors.primary
@@ -265,45 +251,51 @@ class _OfferCard extends StatelessWidget {
             ),
           ),
           child: InkWell(
-            borderRadius: BorderRadius.circular(SmartRailRadius.md),
+            borderRadius: BorderRadius.circular(SmartRailRadius.lg),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.all(SmartRailSpacing.lg),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Text(
-                        '${clock.formatTime(offer.expectedDeparture)} → ${clock.formatTime(offer.expectedArrival)}',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontFeatures: SmartRailType.timeFeatures,
+                      Expanded(
+                        child: Text(
+                          times,
+                          style: SmartRailType.title24.copyWith(
+                            fontFeatures: SmartRailType.timeFeatures,
+                            color: SmartRailColors.textPrimary,
+                          ),
                         ),
                       ),
-                      const Spacer(),
                       if (label != null) StatusChip(kind: kind, label: label),
                     ],
                   ),
-                  const SizedBox(height: SmartRailSpacing.xs),
+                  const SizedBox(height: 6),
                   Text(
                     l10n.chooseDirect(offer.durationMinutes),
-                    style: theme.textTheme.bodySmall?.copyWith(
+                    style: SmartRailType.body14.copyWith(
                       color: SmartRailColors.textSecondary,
                     ),
                   ),
-                  const SizedBox(height: SmartRailSpacing.sm),
+                  const SizedBox(height: 6),
                   Row(
                     children: [
                       Text(
                         offer.seatRequired
                             ? l10n.chooseSeatRequired
                             : l10n.chooseNoSeat,
-                        style: theme.textTheme.labelSmall,
+                        style: SmartRailType.caption.copyWith(
+                          color: SmartRailColors.textSecondary,
+                        ),
                       ),
                       const Spacer(),
                       Text(
                         offer.fare.label,
-                        style: theme.textTheme.titleMedium,
+                        style: SmartRailType.heading16.copyWith(
+                          color: SmartRailColors.textPrimary,
+                        ),
                       ),
                     ],
                   ),
@@ -317,6 +309,7 @@ class _OfferCard extends StatelessWidget {
   }
 }
 
+/// "Who is travelling?" (design 30): Adult, Child and Senior with a minus, the count and a plus, then "I need help at the station".
 class _TravellersSheet extends StatefulWidget {
   const _TravellersSheet({required this.initial});
 
@@ -333,74 +326,97 @@ class _TravellersSheetState extends State<_TravellersSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          SmartRailSpacing.xl,
-          0,
-          SmartRailSpacing.xl,
-          SmartRailSpacing.xl,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+    Widget divider() =>
+        const Divider(height: 1, thickness: 1, color: SmartRailColors.border);
+
+    return SheetBody(
+      children: [
+        Row(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l10n.whoTitle,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+            Expanded(
+              child: Text(
+                l10n.whoTitle,
+                style: SmartRailType.title24.copyWith(
+                  color: SmartRailColors.textPrimary,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
+              ),
             ),
-            _Counter(
-              label: l10n.whoAdult,
-              hint: l10n.whoAdultHint,
-              value: _t.adults,
-              canDecrease: _t.adults > 0 && _t.total > 1,
-              canIncrease: _t.total < 9,
-              onChanged: (v) => setState(() => _t = _t.copyWith(adults: v)),
-            ),
-            const Divider(),
-            _Counter(
-              label: l10n.whoChild,
-              hint: l10n.whoChildHint,
-              value: _t.children,
-              canDecrease: _t.children > 0 && _t.total > 1,
-              canIncrease: _t.total < 9,
-              onChanged: (v) => setState(() => _t = _t.copyWith(children: v)),
-            ),
-            const Divider(),
-            _Counter(
-              label: l10n.whoSenior,
-              hint: l10n.whoSeniorHint,
-              value: _t.seniors,
-              canDecrease: _t.seniors > 0 && _t.total > 1,
-              canIncrease: _t.total < 9,
-              onChanged: (v) => setState(() => _t = _t.copyWith(seniors: v)),
-            ),
-            const Divider(),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              secondary: const Icon(Icons.accessible),
-              title: Text(l10n.whoHelp),
-              subtitle: Text(l10n.whoHelpHint),
-              value: _t.needsHelp,
-              onChanged: (v) => setState(() => _t = _t.copyWith(needsHelp: v)),
-            ),
-            const SizedBox(height: SmartRailSpacing.md),
-            SmartRailButton(
-              label: l10n.whoConfirm,
-              onPressed: () => Navigator.of(context).pop(_t),
+            IconButton(
+              tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const SvgIcon(
+                AppIcons.close,
+                size: 22,
+                color: SmartRailColors.textPrimary,
+              ),
             ),
           ],
         ),
-      ),
+        _Counter(
+          label: l10n.whoAdult,
+          hint: l10n.whoAdultHint,
+          value: _t.adults,
+          canDecrease: _t.adults > 0 && _t.total > 1,
+          canIncrease: _t.total < 9,
+          onChanged: (v) => setState(() => _t = _t.copyWith(adults: v)),
+        ),
+        divider(),
+        _Counter(
+          label: l10n.whoChild,
+          hint: l10n.whoChildHint,
+          value: _t.children,
+          canDecrease: _t.children > 0 && _t.total > 1,
+          canIncrease: _t.total < 9,
+          onChanged: (v) => setState(() => _t = _t.copyWith(children: v)),
+        ),
+        divider(),
+        _Counter(
+          label: l10n.whoSenior,
+          hint: l10n.whoSeniorHint,
+          value: _t.seniors,
+          canDecrease: _t.seniors > 0 && _t.total > 1,
+          canIncrease: _t.total < 9,
+          onChanged: (v) => setState(() => _t = _t.copyWith(seniors: v)),
+        ),
+        divider(),
+        Row(
+          children: [
+            const SvgIcon(
+              AppIcons.accessHelp,
+              size: 22,
+              color: SmartRailColors.textPrimary,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.whoHelp,
+                    style: SmartRailType.label14.copyWith(
+                      color: SmartRailColors.textPrimary,
+                    ),
+                  ),
+                  Text(
+                    l10n.whoHelpHint,
+                    style: SmartRailType.caption.copyWith(
+                      color: SmartRailColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Switch(
+              value: _t.needsHelp,
+              onChanged: (v) => setState(() => _t = _t.copyWith(needsHelp: v)),
+            ),
+          ],
+        ),
+        SmartRailButton(
+          label: l10n.whoConfirm,
+          onPressed: () => Navigator.of(context).pop(_t),
+        ),
+      ],
     );
   }
 }
@@ -422,50 +438,89 @@ class _Counter extends StatelessWidget {
   final bool canIncrease;
   final ValueChanged<int> onChanged;
 
+  Widget _button(String icon, String tooltip, bool enabled, VoidCallback tap) =>
+      Semantics(
+        button: true,
+        enabled: enabled,
+        label: tooltip,
+        child: ExcludeSemantics(
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: enabled ? tap : null,
+            child: Container(
+              width: 40,
+              height: 40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: enabled
+                      ? SmartRailColors.borderStrong
+                      : SmartRailColors.border,
+                  width: 1.5,
+                ),
+              ),
+              child: SvgIcon(
+                icon,
+                size: 18,
+                color: enabled
+                    ? SmartRailColors.textPrimary
+                    : SmartRailColors.borderStrong,
+              ),
+            ),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: SmartRailType.heading16.copyWith(
+                    color: SmartRailColors.textPrimary,
+                  ),
                 ),
-              ),
-              Text(
-                hint,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: SmartRailColors.textSecondary,
+                Text(
+                  hint,
+                  style: SmartRailType.caption.copyWith(
+                    color: SmartRailColors.textSecondary,
+                  ),
                 ),
+              ],
+            ),
+          ),
+          _button(
+            AppIcons.minus,
+            '− $label',
+            canDecrease,
+            () => onChanged(value - 1),
+          ),
+          SizedBox(
+            width: 28,
+            child: Text(
+              '$value',
+              textAlign: TextAlign.center,
+              style: SmartRailType.title.copyWith(
+                color: SmartRailColors.textPrimary,
               ),
-            ],
+            ),
           ),
-        ),
-        IconButton.outlined(
-          tooltip: '− $label',
-          onPressed: canDecrease ? () => onChanged(value - 1) : null,
-          icon: const Icon(Icons.remove),
-        ),
-        SizedBox(
-          width: 40,
-          child: Text(
-            '$value',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleMedium,
+          _button(
+            AppIcons.plusSmall,
+            '+ $label',
+            canIncrease,
+            () => onChanged(value + 1),
           ),
-        ),
-        IconButton.outlined(
-          tooltip: '+ $label',
-          onPressed: canIncrease ? () => onChanged(value + 1) : null,
-          icon: const Icon(Icons.add),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

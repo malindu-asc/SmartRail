@@ -1138,4 +1138,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resultsDirectOnly => 'Direct trains only';
+
+  @override
+  String get ticketsMoreActions => 'More actions';
+
+  @override
+  String get ticketsAddWithCode => 'Add ticket with booking code';
+
+  @override
+  String get ticketsNonePast => 'Tickets you have used will appear here.';
+
+  @override
+  String get ticketReference => 'Ticket';
+
+  @override
+  String get seatHoldNote =>
+      'Your seats are held for 10 minutes once you confirm.';
 }
