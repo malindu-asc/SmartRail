@@ -36,6 +36,7 @@ public static class JourneysModule
         services.AddScoped<IJourneyReader>(sp => sp.GetRequiredService<JourneyReader>());
         services.AddScoped<IJourneyLookup>(sp => sp.GetRequiredService<JourneyReader>());
         services.AddScoped<IJourneySearch, SmartRail.Modules.Journeys.Application.Queries.Search.JourneySearch>();
+        services.AddScoped<IAffectedJourneys, SmartRail.Modules.Journeys.Application.Queries.GetBoard.AffectedJourneys>();
         services.AddScoped<IJourneysAuditLog, JourneysAuditLog>();
         services.AddScoped<IIngestStore, IngestStore>();
 
