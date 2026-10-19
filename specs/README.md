@@ -100,8 +100,8 @@ Dependency order. Each spec is about three days or less; split anything bigger.
 | SPEC-018 | Web foundation: shared packages, design tokens, auth, routing, data layer (console and kiosk) | Planned | console, kiosk | — |
 | SPEC-019 | Station terminal: destination search, station information, idle reset, lockdown, offline mode | Planned | kiosk | — |
 | SPEC-020 | Notifications: follow a journey, push, inbox, notification event matrix, ticket auto-follow | Proposed | Notifications, passenger app | — |
-| SPEC-021 | Passenger accounts: register, sign in, recover tickets on a new device, delete account and device data, sign-in protection | Proposed | Identity, passenger app | — |
-| SPEC-022 | Ticketing core: tickets bound to a journey, sales window, fares and categories, ticket states, cancellation affects tickets, signed QR with offline display | Proposed | Ticketing, passenger app | — |
+| SPEC-021 | Passenger accounts: register, sign in, recover tickets on a new device, delete account and device data, sign-in protection | In progress | Identity, passenger app | feature/passenger-app |
+| SPEC-022 | Ticketing core: tickets bound to a journey, sales window, fares and categories, ticket states, cancellation affects tickets, signed QR with offline display | In progress | Ticketing, passenger app | feature/passenger-app |
 | SPEC-023 | Payments: provider-neutral port with a fake default, idempotent confirmation, authentic callbacks, issue only after payment, unpaid orders expire | Proposed | Ticketing, simulator | — |
 | SPEC-024 | Refunds: full refund after a railway cancellation, refund as its own record, no double refunds, automatic retry | Proposed | Ticketing | — |
 | SPEC-025 | Ticket inspector mode in the staff app: server-side validation, rejection reasons, past-the-destination, online-only | Proposed | Ticketing, driver app | — |
