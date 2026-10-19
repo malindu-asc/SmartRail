@@ -11,6 +11,7 @@ using SmartRail.Modules.Journeys.Infrastructure.Extensions;
 using SmartRail.Modules.Network.Infrastructure.Extensions;
 using SmartRail.Modules.Notifications.Infrastructure.Extensions;
 using SmartRail.Modules.Operations.Infrastructure.Extensions;
+using SmartRail.Modules.Ticketing.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services.AddNetworkModule(builder.Configuration);
 builder.Services.AddJourneysModule(builder.Configuration);
 builder.Services.AddOperationsModule(builder.Configuration);
 builder.Services.AddNotificationsModule(builder.Configuration);
+builder.Services.AddTicketingModule(builder.Configuration);
 
 // Once, for every module: MediatR handlers, validators, pipeline behaviours, integration-event handlers.
 builder.Services.AddApplicationCore(
@@ -28,7 +30,8 @@ builder.Services.AddApplicationCore(
     NetworkModule.ApplicationAssembly,
     JourneysModule.ApplicationAssembly,
     OperationsModule.ApplicationAssembly,
-    NotificationsModule.ApplicationAssembly);
+    NotificationsModule.ApplicationAssembly,
+    TicketingModule.ApplicationAssembly);
 
 builder.Services.AddInfrastructureCore(builder.Configuration);
 builder.Services.AddApiCore();
