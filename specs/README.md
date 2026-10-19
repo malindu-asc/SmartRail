@@ -87,7 +87,7 @@ Dependency order. Each spec is about three days or less; split anything bigger.
 | SPEC-005 | Live feed ingest, delay, confidence (Live, Stale, Unknown), source precedence | Verifying | Journeys, Identity | `feature/live-ingest` |
 | SPEC-006 | Simulator scenarios through the real ingest endpoint | Planned | Simulator | — |
 | SPEC-007 | Departure board and journey timeline API, realtime push | Planned | Journeys, Notifications | — |
-| SPEC-008 | Flutter foundation: shared packages, app shell, router, localization | Planned | passenger app, driver app | — |
+| SPEC-008 | Flutter foundation: shared packages, app shell, router, localization | In progress | passenger app, driver app | `feature/flutter-foundation` |
 | SPEC-009 | Passenger app: departures board and journey timeline with staleness | Planned | passenger app | — |
 | SPEC-010 | Live network board and controller journey actions with reasons and audit: cancel, terminate short, interrupt, resume, reinstate, platform change, driver messages, concurrent-edit detection | Planned | Operations, Journeys, console | — |
 | SPEC-011 | Driver app and driver events: duty, stop events, delay reasons, offline queue, replay and reconciliation vs the feed, control message delivery, orphaned events, crew handover | Planned | Journeys, driver app | — |
