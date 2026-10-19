@@ -84,6 +84,45 @@ internal sealed class JourneyReader(JourneysDbContext context) : IJourneyReader,
         return rows;
     }
 
+    public async Task<IReadOnlyList<JourneyReadModel>> GetSearchCandidatesAsync(
+        string fromStationCode,
+        string toStationCode,
+        IReadOnlyCollection<DateOnly> serviceDates,
+        DateTimeOffset notBeforeUtc,
+        CancellationToken cancellationToken)
+    {
+        var dates = serviceDates.ToArray();
+
+        var journeys = await context.Journeys
+            .AsNoTracking()
+            .Include(j => j.Stops)
+            .AsSplitQuery()
+            .Where(j => dates.Contains(j.ServiceDate)
+                        && j.Lifecycle != JourneyLifecycle.Completed
+                        && j.Lifecycle != JourneyLifecycle.Cancelled
+                        && j.Lifecycle != JourneyLifecycle.TerminatedEmergency
+                        && j.Stops.Any(s => s.StationCode == fromStationCode || s.StationCode == toStationCode)
+                        && j.Stops.Any(s => s.ScheduledDepartureUtc >= notBeforeUtc || s.ScheduledArrivalUtc >= notBeforeUtc))
+            .ToListAsync(cancellationToken);
+
+        return journeys.Select(journey => new JourneyReadModel(
+            journey.Id,
+            journey.ServiceDate,
+            journey.TrainNumber,
+            journey.RouteCode,
+            journey.OriginStationCode,
+            journey.DestinationStationCode,
+            journey.Lifecycle,
+            journey.Confidence,
+            journey.DelayMinutes,
+            journey.PunctualityBand,
+            journey.LastAcceptedUpdateAt,
+            journey.Stops.OrderBy(s => s.Sequence).Select(s => new JourneyStopReadModel(
+                s.Sequence, s.StationCode, s.Kind, s.State,
+                s.ScheduledArrivalUtc, s.ScheduledDepartureUtc, s.EstimatedArrivalUtc, s.EstimatedDepartureUtc,
+                s.ActualArrivalUtc, s.ActualDepartureUtc, s.PlatformCode, s.PlatformState)).ToList())).ToList();
+    }
+
     // IJourneyLookup: what other modules may know about a journey.
     public async Task<JourneyRef?> FindAsync(Guid journeyId, CancellationToken cancellationToken)
     {

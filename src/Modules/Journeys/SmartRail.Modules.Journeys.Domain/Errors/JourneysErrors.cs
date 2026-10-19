@@ -8,6 +8,9 @@ public static class JourneysErrors
     public static Error JourneyNotFound(Guid id) =>
         Error.NotFound("Journeys.JourneyNotFound", $"Journey '{id}' was not found.");
 
+    public static Error SameStation =>
+        Error.Validation("Journeys.SameStation", "Choose two different stations.");
+
     public static Error StationNotFound(string code) =>
         Error.NotFound("Journeys.StationNotFound", $"Station '{code}' was not found.");
 
