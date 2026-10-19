@@ -84,7 +84,7 @@ internal sealed class KeycloakAccountDirectory(HttpClient http, IOptions<Keycloa
             var last = user.TryGetProperty("lastName", out var l) ? l.GetString() : null;
             var email = user.TryGetProperty("email", out var e) ? e.GetString() ?? string.Empty : string.Empty;
 
-            return new AccountProfile(accountId, string.Join(' ', new[] { first, last }.Where(s => !string.IsNullOrWhiteSpace(s))), email);
+            return new AccountProfile(accountId, string.Join(' ', new[] { first, last == NoLastName ? null : last }.Where(s => !string.IsNullOrWhiteSpace(s))), email);
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
         {
@@ -190,10 +190,15 @@ internal sealed class KeycloakAccountDirectory(HttpClient http, IOptions<Keycloa
         }
     }
 
+    // Stored when the person gave a single name. It is never shown.
+    private const string NoLastName = "-";
+
     private static (string First, string Last) SplitName(string fullName)
     {
         var name = fullName.Trim();
         var space = name.LastIndexOf(' ');
-        return space < 0 ? (name, string.Empty) : (name[..space].Trim(), name[(space + 1)..].Trim());
+
+        // Keycloak will not finish setting up an account without a last name, and a person may have one name only.
+        return space < 0 ? (name, NoLastName) : (name[..space].Trim(), name[(space + 1)..].Trim());
     }
 }
