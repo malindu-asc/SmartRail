@@ -53,38 +53,18 @@ class AppShell extends ConsumerWidget {
             Expanded(child: body),
           ],
         ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: shell.currentIndex,
-          onDestinationSelected: (index) => shell.goBranch(
+        bottomNavigationBar: SmartRailTabBar(
+          currentIndex: shell.currentIndex,
+          onTap: (index) => shell.goBranch(
             index,
             initialLocation: index == shell.currentIndex,
           ),
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(Icons.home_outlined),
-              selectedIcon: const Icon(Icons.home),
-              label: l10n.tabHome,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.route_outlined),
-              selectedIcon: const Icon(Icons.route),
-              label: l10n.tabPlan,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.confirmation_number_outlined),
-              selectedIcon: const Icon(Icons.confirmation_number),
-              label: l10n.tabTickets,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.notifications_none),
-              selectedIcon: const Icon(Icons.notifications),
-              label: l10n.tabAlerts,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.person_outline),
-              selectedIcon: const Icon(Icons.person),
-              label: l10n.tabMe,
-            ),
+          items: [
+            TabBarItem(label: l10n.tabHome, icon: AppIcons.home),
+            TabBarItem(label: l10n.tabPlan, icon: AppIcons.route),
+            TabBarItem(label: l10n.tabTickets, icon: AppIcons.ticket),
+            TabBarItem(label: l10n.tabAlerts, icon: AppIcons.bell),
+            TabBarItem(label: l10n.tabMe, icon: AppIcons.user),
           ],
         ),
       ),

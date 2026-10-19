@@ -26,17 +26,17 @@ class FreshnessLine extends StatelessWidget {
 
     final (icon, color, text) = switch (freshness) {
       Freshness.live => (
-        Icons.check,
+        AppIcons.check,
         SmartRailColors.primary,
         l10n.freshLive(at),
       ),
       Freshness.stale => (
-        Icons.history,
+        AppIcons.history,
         SmartRailColors.staleText,
         l10n.freshStale(at),
       ),
       Freshness.saved => (
-        Icons.wifi_off,
+        AppIcons.wifiOff,
         SmartRailColors.staleText,
         l10n.freshSaved(at),
       ),
@@ -50,12 +50,12 @@ class FreshnessLine extends StatelessWidget {
             key: ValueKey(freshness),
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 16, color: color),
-              const SizedBox(width: SmartRailSpacing.sm),
+              SvgIcon(icon, size: 16, color: color),
+              const SizedBox(width: 6),
               Flexible(
                 child: Text(
                   text,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  style: SmartRailType.caption.copyWith(
                     color: SmartRailColors.textSecondary,
                   ),
                 ),

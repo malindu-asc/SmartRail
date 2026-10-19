@@ -34,7 +34,7 @@ class DeparturesScreen extends ConsumerWidget {
     return PollingScope(
       onTick: () => ref.read(boardProvider(stationCode).notifier).refresh(),
       child: Scaffold(
-        appBar: AppBar(
+        appBar: SmartRailAppBar(
           title: Text(snapshot?.stationName ?? stationCode),
           actions: [
             if (ref.watch(menuProvider(stationCode)).value != null)
@@ -149,7 +149,7 @@ class _Board extends ConsumerWidget {
           ),
           child: Text(
             l10n.departuresToday,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            style: SmartRailType.label14.copyWith(
               color: SmartRailColors.textSecondary,
             ),
           ),

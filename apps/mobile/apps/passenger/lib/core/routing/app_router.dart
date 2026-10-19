@@ -122,6 +122,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                         after: q['after'] == null
                             ? null
                             : DateTime.tryParse(q['after']!),
+                        arriveBy: q['arriveBy'] == null
+                            ? null
+                            : DateTime.tryParse(q['arriveBy']!),
                       );
                     },
                   ),

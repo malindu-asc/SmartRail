@@ -87,7 +87,6 @@ class DepartureRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
     final chip = departureChip(l10n, departure);
     final subline = _subline(l10n);
     final time = clock.formatTime(departure.scheduled);
@@ -117,45 +116,40 @@ class DepartureRow extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SmartRailSpacing.lg,
-                vertical: SmartRailSpacing.md,
-              ),
+              // Design 07: 14 padding all round, the time 20 Bold in a 58 wide slot, 12 between the parts.
+              padding: const EdgeInsets.all(14),
               child: Row(
                 children: [
                   SizedBox(
-                    width: scaler.scale(64),
+                    width: scaler.scale(58),
                     child: Text(
                       time,
-                      style: theme.textTheme.titleLarge?.copyWith(
+                      style: SmartRailType.title20.copyWith(
                         fontFeatures: SmartRailType.timeFeatures,
-                        decoration: departure.isCancelled
-                            ? TextDecoration.lineThrough
-                            : null,
-                        color: departure.isCancelled
-                            ? SmartRailColors.textTertiary
-                            : SmartRailColors.textPrimary,
+                        color: SmartRailColors.textPrimary,
                       ),
                     ),
                   ),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           departure.destinationName,
-                          style: SmartRailType.label14.copyWith(
-                            fontSize: 16,
+                          style: SmartRailType.heading16.copyWith(
                             color: SmartRailColors.textPrimary,
                           ),
                         ),
-                        if (subline.isNotEmpty)
+                        if (subline.isNotEmpty) ...[
+                          const SizedBox(height: 2),
                           Text(
                             subline,
-                            style: theme.textTheme.labelSmall?.copyWith(
+                            style: SmartRailType.caption.copyWith(
                               color: SmartRailColors.textSecondary,
                             ),
                           ),
+                        ],
                         if (chipWidget != null && stacked)
                           Padding(
                             padding: const EdgeInsets.only(

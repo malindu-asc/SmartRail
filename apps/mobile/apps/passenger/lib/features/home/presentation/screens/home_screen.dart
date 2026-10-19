@@ -61,113 +61,129 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.fromLTRB(
-                  SmartRailSpacing.xl,
-                  topInset + SmartRailSpacing.lg,
-                  SmartRailSpacing.xl,
-                  84,
-                ),
-                decoration: const BoxDecoration(
-                  color: SmartRailColors.primary,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(SmartRailRadius.sheet),
+          // The header of design 34 (v2): brand colour, greeting 14 Regular at 85 percent, "Where to today?" 24 Bold. Under it a
+          // 24 high strip where the white sheet starts with 24 radius corners.
+          Container(
+            width: double.infinity,
+            color: SmartRailColors.primary,
+            padding: EdgeInsets.fromLTRB(20, topInset + 12, 20, 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  greeting,
+                  style: SmartRailType.body14.copyWith(
+                    color: SmartRailColors.onPrimary.withValues(alpha: 0.85),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      greeting,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: SmartRailColors.onPrimary.withValues(
-                          alpha: 0.85,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: SmartRailSpacing.xs),
-                    Text(
-                      l10n.homeWhereTo,
-                      style: theme.textTheme.headlineLarge?.copyWith(
-                        fontSize: 28,
-                        color: SmartRailColors.onPrimary,
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 2),
+                Text(
+                  l10n.homeWhereTo,
+                  style: SmartRailType.title24.copyWith(
+                    color: SmartRailColors.onPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: 24,
+            color: SmartRailColors.primary,
+            child: const DecoratedBox(
+              decoration: BoxDecoration(
+                color: SmartRailColors.page,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(SmartRailRadius.sheet),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  SmartRailSpacing.lg,
-                  topInset + 112,
-                  SmartRailSpacing.lg,
-                  0,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            child: AppearIn(
+              index: 0,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: SmartRailColors.page,
+                  border: Border.all(color: SmartRailColors.border),
+                  borderRadius: BorderRadius.circular(SmartRailRadius.lg),
                 ),
-                child: AppearIn(
-                  index: 0,
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(SmartRailSpacing.lg),
-                      child: Column(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    _StationField(
-                                      label: l10n.fromLabel,
-                                      station: from,
-                                      placeholder: l10n.chooseStation,
-                                      onTap: () => _pick(from: true),
-                                    ),
-                                    const Divider(),
-                                    _StationField(
-                                      label: l10n.toLabel,
-                                      station: _to,
-                                      placeholder: l10n.chooseStation,
-                                      onTap: () => _pick(from: false),
-                                    ),
-                                  ],
+                          Expanded(
+                            child: Column(
+                              children: [
+                                _StationField(
+                                  label: l10n.fromLabel,
+                                  station: from,
+                                  placeholder: l10n.chooseStation,
+                                  onTap: () => _pick(from: true),
                                 ),
-                              ),
-                              const SizedBox(width: SmartRailSpacing.sm),
-                              IconButton.filledTonal(
-                                tooltip: '${l10n.fromLabel} / ${l10n.toLabel}',
-                                style: IconButton.styleFrom(
-                                  backgroundColor:
-                                      SmartRailColors.primarySubtle,
-                                  foregroundColor: SmartRailColors.primary,
+                                const Divider(
+                                  height: 1,
+                                  thickness: 1,
+                                  color: SmartRailColors.border,
                                 ),
-                                icon: const Icon(Icons.swap_vert),
-                                onPressed: () => setState(() {
+                                _StationField(
+                                  label: l10n.toLabel,
+                                  station: _to,
+                                  placeholder: l10n.chooseStation,
+                                  onTap: () => _pick(from: false),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Semantics(
+                            button: true,
+                            label: '${l10n.fromLabel} / ${l10n.toLabel}',
+                            child: ExcludeSemantics(
+                              child: InkWell(
+                                customBorder: const CircleBorder(),
+                                onTap: () => setState(() {
                                   final oldFrom = from;
                                   _from = _to;
                                   _to = oldFrom;
                                 }),
+                                child: Container(
+                                  width: 44,
+                                  height: 44,
+                                  alignment: Alignment.center,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: SmartRailColors.primarySubtle,
+                                  ),
+                                  child: const SvgIcon(
+                                    AppIcons.swapSmall,
+                                    size: 20,
+                                    color: SmartRailColors.primary,
+                                  ),
+                                ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: SmartRailSpacing.lg),
-                          SmartRailButton(
-                            label: l10n.findTrains,
-                            onPressed: from != null && _to != null
-                                ? () => context.push(
-                                    AppRoutes.planResults(from.code, _to!.code),
-                                  )
-                                : null,
+                            ),
                           ),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: 14),
+                      SmartRailButton(
+                        label: l10n.findTrains,
+                        onPressed: from != null && _to != null
+                            ? () => context.push(
+                                AppRoutes.planResults(from.code, _to!.code),
+                              )
+                            : null,
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
+            ),
           ),
+          const SizedBox(height: 20),
           const DisruptionBanners(),
           const SizedBox(height: SmartRailSpacing.lg),
           if (follow.journeys.isNotEmpty) ...[
@@ -286,7 +302,6 @@ class _StationField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final text = station?.name ?? placeholder;
 
     return Semantics(
@@ -295,24 +310,23 @@ class _StationField extends StatelessWidget {
       child: ExcludeSemantics(
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(SmartRailRadius.sm),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 52),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
               children: [
-                const Icon(
-                  Icons.location_on_outlined,
+                const SvgIcon(
+                  AppIcons.pin,
+                  size: 20,
                   color: SmartRailColors.primary,
                 ),
-                const SizedBox(width: SmartRailSpacing.md),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         label,
-                        style: theme.textTheme.labelSmall?.copyWith(
+                        style: SmartRailType.caption.copyWith(
                           color: SmartRailColors.textSecondary,
                         ),
                       ),
@@ -320,10 +334,9 @@ class _StationField extends StatelessWidget {
                         child: Text(
                           text,
                           key: ValueKey(text),
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.w600,
+                          style: SmartRailType.heading16.copyWith(
                             color: station == null
-                                ? SmartRailColors.textTertiary
+                                ? SmartRailColors.textSecondary
                                 : SmartRailColors.textPrimary,
                           ),
                         ),

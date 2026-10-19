@@ -19,7 +19,12 @@ abstract final class AppRoutes {
   static const searchPick = '/home/search?pick=1';
 
   /// The trains between two stations. `after` is a UTC instant; leave it out for "now".
-  static String planResults(String from, String to, {DateTime? after}) => Uri(
+  static String planResults(
+    String from,
+    String to, {
+    DateTime? after,
+    DateTime? arriveBy,
+  }) => Uri(
     path: '/plan/results',
     queryParameters: {
       'from': from,
