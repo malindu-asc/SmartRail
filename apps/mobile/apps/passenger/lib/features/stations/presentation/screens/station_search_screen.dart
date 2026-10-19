@@ -49,7 +49,7 @@ class _StationSearchScreenState extends ConsumerState<StationSearchScreen> {
     final query = _controller.text.trim();
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.stationsTitle)),
+      appBar: SmartRailAppBar(title: Text(l10n.stationsTitle)),
       body: Column(
         children: [
           Padding(

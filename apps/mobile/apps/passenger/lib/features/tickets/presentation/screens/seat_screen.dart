@@ -35,7 +35,7 @@ class _SeatScreenState extends ConsumerState<SeatScreen> {
     if (offer == null || query == null) {
       // Opened without a booking (for example after a restart): back to the start.
       return Scaffold(
-        appBar: AppBar(),
+        appBar: SmartRailAppBar(),
         body: Center(
           child: SmartRailButton(
             label: l10n.ticketsBuy,
@@ -55,7 +55,7 @@ class _SeatScreenState extends ConsumerState<SeatScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: SmartRailAppBar(
         title: Text(needed == 1 ? l10n.seatTitle : l10n.seatTitleMany(needed)),
       ),
       body: map.when(

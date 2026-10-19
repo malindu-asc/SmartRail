@@ -74,7 +74,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> {
 
     if (offer == null) {
       return Scaffold(
-        appBar: AppBar(),
+        appBar: SmartRailAppBar(),
         body: Center(
           child: SmartRailButton(
             label: l10n.ticketsBuy,
@@ -92,7 +92,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> {
     final hold = draft.hold;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.reviewTitle)),
+      appBar: SmartRailAppBar(title: Text(l10n.reviewTitle)),
       body: Column(
         children: [
           Expanded(

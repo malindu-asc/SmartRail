@@ -28,7 +28,7 @@ class TicketScreen extends ConsumerWidget {
     final ticket = ref.watch(ticketDetailProvider(ticketId));
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.ticketTitle)),
+      appBar: SmartRailAppBar(title: Text(l10n.ticketTitle)),
       body: ticket.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => FailureView(

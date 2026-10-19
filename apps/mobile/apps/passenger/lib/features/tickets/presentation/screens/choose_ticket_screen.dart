@@ -71,7 +71,7 @@ class _ChooseTicketScreenState extends ConsumerState<ChooseTicketScreen> {
     final data = offers.value;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: SmartRailAppBar(
         title: Text(
           data == null ? '' : l10n.chooseTitle(data.fromName, data.toName),
         ),
