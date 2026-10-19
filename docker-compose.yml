@@ -29,6 +29,8 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
     command: ["start-dev", "--import-realm"]
+    # Development only: Docker creates the named volume owned by root, and Keycloak's default user cannot write its H2 files there.
+    user: "0"
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
@@ -60,6 +62,9 @@ services:
       Authentication__Audience: smartrail-api
       Authentication__RequireHttpsMetadata: "false"
       Diagnostics__Identity: "true"
+      # Passenger accounts are created through Keycloak's admin API (SPEC-021). Development secret.
+      Identity__Admin__BaseUrl: http://keycloak:8080
+      Identity__Admin__ClientSecret: ${IDENTITY_ADMIN_SECRET:-dev-only-change-me}
       Database__ApplyMigrationsOnStartup: "true"
       Network__Seed__ReferenceData: "true"
       Journeys__Generation__RunOnStartup: "true"

@@ -81,7 +81,7 @@
       "enabled": true,
       "publicClient": true,
       "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": false,
+      "directAccessGrantsEnabled": true,
       "redirectUris": [
         "lk.smartrail.passenger:/*",
         "lk.smartrail.driver:/*"
@@ -209,6 +209,16 @@
           }
         }
       ]
+    },
+    {
+      "clientId": "smartrail-identity-admin",
+      "enabled": true,
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "secret": "dev-only-change-me",
+      "description": "The API creates, reads and deletes passenger accounts with this service account. DEVELOPMENT secret; replace outside development."
     }
   ],
   "users": [
@@ -306,6 +316,18 @@
         "admin"
       ],
       "id": "a1000000-0000-4000-8000-000000000004"
+    },
+    {
+      "username": "service-account-smartrail-identity-admin",
+      "enabled": true,
+      "serviceAccountClientId": "smartrail-identity-admin",
+      "clientRoles": {
+        "realm-management": [
+          "manage-users",
+          "view-users",
+          "query-users"
+        ]
+      }
     }
   ],
   "ssoSessionMaxLifespan": 28800,
