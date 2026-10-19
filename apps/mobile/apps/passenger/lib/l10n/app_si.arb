@@ -2,28 +2,652 @@
   "@@locale": "si",
   "appTitle": "SmartRail",
   "tabHome": "මුල් පිටුව",
-  "tabTrips": "ගමන්",
-  "tabAccount": "ගිණුම",
-  "homeTitle": "පිටත්වීම්",
-  "homeBody": "සජීවී පිටත්වීම් සහ ගමන් තත්ත්වය මෙහි පෙන්වනු ඇත.",
-  "tripsTitle": "මගේ ගමන්",
-  "tripsBody": "ඔබ අනුගමනය කරන ගමන් මෙහි පෙන්වනු ඇත.",
-  "accountTitle": "ගිණුම",
-  "accountBody": "ටිකට්පත් මිලදී ගැනීමට සහ පෙන්වීමට පිවිසෙන්න.",
+  "tabPlan": "සැලසුම",
+  "tabTickets": "ටිකට්පත්",
+  "tabAlerts": "දැනුම්දීම්",
+  "tabMe": "මම",
+  "onbSkip": "මඟ හරින්න",
+  "onbNext": "ඊළඟ",
+  "onbDone": "යෙදුමට යන්න",
+  "onb1Title": "පිටත් වීමට පෙර දැනගන්න",
+  "onb1Body": "සෑම ස්ථානයකටම සජීවී පිටත්වීම්, ප්‍රමාද සහ වේදිකා වෙනස්කම්.",
+  "onb2Title": "ඔබේ ගමන අනුගමනය කරන්න",
+  "onb2Body": "ඔබේ වේදිකාව වෙනස් වූ විට හෝ දුම්රිය ප්‍රමාද වූ විට දැනුම්දීමක් ලබාගන්න.",
+  "onb3Title": "පරණ දත්ත ගැන අවංකයි",
+  "onb3Body": "වේලාවක් තහවුරු කළ නොහැකි විට අපි අනුමාන නොකර ඒ බව පවසමු.",
+  "greetingMorning": "සුභ උදෑසනක්",
+  "greetingAfternoon": "සුභ දහවලක්",
+  "greetingEvening": "සුභ සන්ධ්‍යාවක්",
+  "homeWhereTo": "අද කොහෙටද?",
+  "fromLabel": "සිට",
+  "toLabel": "දක්වා",
+  "chooseStation": "ස්ථානයක් තෝරන්න",
+  "findTrains": "දුම්රිය සොයන්න",
+  "homeFollowedStations": "අනුගමනය කරන ස්ථාන",
+  "homeFollowEmptyTitle": "තවම ස්ථාන අනුගමනය කර නැත",
+  "homeFollowEmptyBody": "ස්ථානයක ඊළඟ දුම්රිය මෙහි බැලීමට එය අනුගමනය කරන්න.",
+  "homeFindStation": "ස්ථානයක් සොයන්න",
+  "homeFollowedJourneys": "අනුගමනය කරන ගමන්",
+  "stationsTitle": "ස්ථාන",
+  "stationsSearchLabel": "ස්ථානයේ නම හෝ කේතය",
+  "stationsSearchHint": "උදාහරණ: Central හෝ CEN",
+  "stationsResults": "ප්‍රතිඵල",
+  "stationsRecent": "මෑත",
+  "stationsEmptyTitle": "ගැළපෙන ස්ථාන නැත",
+  "stationsEmptyBody": "නම හෝ කෙටි කේතය උත්සාහ කරන්න, උදාහරණ CEN.",
+  "stationsIntro": "සජීවී පිටත්වීම් බැලීමට ස්ථානයක් සොයන්න.",
+  "freshLive": "සජීවී · {time} යාවත්කාලීන කළා",
+  "freshStale": "{time} වන විට",
+  "freshSaved": "{time} සුරැකිණි",
+  "departuresToday": "අද",
+  "departuresEmptyTitle": "අදට තවත් දුම්රිය නැත",
+  "departuresEmptyBody": "හෙට නැවත බලන්න, නැතහොත් වෙනත් ස්ථානයක් බලන්න.",
+  "inMinutes": "මිනිත්තු {n}කින්",
+  "platformN": "වේදිකාව {p}",
+  "platformTba": "වේදිකාව පසුව දැනුම් දෙනු ලැබේ",
+  "chipOnTime": "නියමිත වේලාවට",
+  "chipDelayed": "+මිනි. {n}",
+  "chipCancelled": "අවලංගුයි",
+  "chipPlatformChanged": "වේදිකාව වෙනස් විය",
+  "chipNoLiveData": "සජීවී දත්ත නැත",
+  "scheduledOnly": "කාලසටහන අනුව",
+  "scheduledNoUpdate": "කාලසටහන අනුව · {time} සිට යාවත්කාලීන නැත",
+  "expectedAt": "{time} අපේක්ෂිතයි",
+  "followStation": "ස්ථානය අනුගමනය කරන්න",
+  "followingStation": "අනුගමනය කරයි",
+  "indicativeNote": "වේලාවන් තොරතුරු සඳහා පමණි. ස්ථානයේ නිවේදන අසන්න.",
+  "trainNumber": "දුම්රිය {n}",
+  "journeyHeader": "{time} {destination} වෙත",
+  "journeyTitle": "{origin} සිට {destination} දක්වා",
+  "headlineRunningOnTime": "ධාවනය වේ · නියමිත වේලාවට",
+  "headlineDelayed": "ප්‍රමාදයි · +මිනි. {n}",
+  "headlineNoLive": "{time} සිට සජීවී දත්ත නැත",
+  "headlineNoLiveEver": "තවම සජීවී දත්ත නැත",
+  "headlineCancelled": "අවලංගුයි",
+  "headlineScheduled": "කාලසටහන අනුව · තවම පිටත් වී නැත",
+  "headlineCompleted": "ගමන අවසන්",
+  "detailLive": "සජීවී · {time} යාවත්කාලීන කළා",
+  "detailLiveDeparted": "සජීවී · {updated} යාවත්කාලීන කළා · {station} සිට {time} ට පිටත් විය",
+  "detailLastKnown": "අවසන් දන්නා: {station} සිට {time} ට පිටත් විය",
+  "detailNoLiveBody": "කාලසටහන පෙන්වයි. වේලාවන් සජීවී නොවේ. ස්ථානයේ නිවේදන අසන්න.",
+  "detailDelayedBody": "{scheduled} වෙනුවට {station} හි {expected} අපේක්ෂිතයි.",
+  "detailCancelledBody": "මෙම දුම්රිය ධාවනය නොවේ. වෙනත් දුම්රියක් බලන්න හෝ ඇමතුම් මධ්‍යස්ථානය අමතන්න.",
+  "detailScheduledBody": "මෙම දුම්රිය තවම පිටත් වී නැත. වේලාවන් කාලසටහනට අනුවයි.",
+  "platformBannerTitle": "වේදිකාව {p}",
+  "platformBannerBody": "{station} හි වේදිකාව වෙනස් විය",
+  "wordDepartedOnTime": "{time} ට පිටත් විය · නියමිත වේලාවට",
+  "wordDepartedLate": "{time} ට පිටත් විය · මිනිත්තු {n} ප්‍රමාදයි",
+  "wordArrivedOnTime": "{time} ට පැමිණියේය · නියමිත වේලාවට",
+  "wordArrivedLate": "{time} ට පැමිණියේය · මිනිත්තු {n} ප්‍රමාදයි",
+  "wordArrivedEarly": "{time} ට පැමිණියේය · මිනිත්තු {n} කල් ඉක්මනින්",
+  "wordAtPlatform": "{time} සිට වේදිකාවේ",
+  "wordExpectedOnTime": "{time} අපේක්ෂිතයි · නියමිත වේලාවට",
+  "wordExpected": "{time} අපේක්ෂිතයි",
+  "wordEstimate": "ඇස්තමේන්තුවකි · වෙනස් විය හැක",
+  "wordScheduled": "කාලසටහන අනුව",
+  "wordSkipped": "නතර නොවේ",
+  "estimatesNote": "{station} ට පසු වේලාවන් ඇස්තමේන්තු වන අතර වෙනස් විය හැක.",
+  "followJourney": "මෙම ගමන අනුගමනය කරන්න",
+  "followingJourney": "අනුගමනය කරයි",
+  "snackFollowingJourney": "ඔබ මෙම ගමන අනුගමනය කරයි",
+  "snackUnfollowedJourney": "ඔබ මෙම ගමන අනුගමනය කිරීම නැවැත්වීය",
+  "snackFollowingStation": "ඔබ මෙම ස්ථානය අනුගමනය කරයි",
+  "snackUnfollowedStation": "ඔබ මෙම ස්ථානය අනුගමනය කිරීම නැවැත්වීය",
+  "undo": "ආපසු",
+  "errorTitle": "යම් දෙයක් වැරදුණා",
+  "errorNetwork": "අපට SmartRail වෙත සම්බන්ධ විය නොහැකි විය. ඔබේ සම්බන්ධතාවය පරීක්ෂා කර නැවත උත්සාහ කරන්න.",
+  "errorNotFound": "අපට එය සොයාගත නොහැකි විය. එය තවදුරටත් නොපවතින්නට පුළුවන.",
+  "errorGeneric": "කරුණාකර මද වේලාවකින් නැවත උත්සාහ කරන්න.",
+  "retry": "නැවත උත්සාහ කරන්න",
+  "comingTitlePlan": "ගමනක් සැලසුම් කරන්න",
+  "comingBodyPlan": "ස්ථාන දෙකක් තෝරා ඒ අතර දුම්රිය බලන්න, අවශ්‍ය නම් මාරුවක් සමඟ. මෙය ඊළඟ යාවත්කාලීනයේ පැමිණේ. ඒ වන තෙක් ඔබට ඕනෑම ස්ථානයක සජීවී පිටත්වීම් බැලිය හැක.",
+  "comingTitleTickets": "ටිකට්පත්",
+  "comingBodyTickets": "ඔබේ ටිකට්පත් මෙහි තිබෙනු ඇත, සම්බන්ධතාවයක් නැතිව ද ඒවා ක්‍රියා කරයි. මෙය ඉදිරි යාවත්කාලීනයක පැමිණේ.",
+  "comingTitleAlerts": "දැනුම්දීම්",
+  "comingBodyAlerts": "ඔබ අනුගමනය කරන ගමන් සහ ස්ථාන සඳහා වේදිකා වෙනස්කම්, ප්‍රමාද සහ අවලංගු කිරීම් මෙහි පෙන්වයි. මෙය ඉදිරි යාවත්කාලීනයක පැමිණේ.",
+  "comingSoon": "ඉක්මනින් එයි",
+  "comingSeeDepartures": "සජීවී පිටත්වීම් බලන්න",
+  "meTitle": "මම",
   "language": "භාෂාව",
   "languageEnglish": "English",
   "languageSinhala": "සිංහල",
+  "meAbout": "SmartRail සජීවී දුම්රිය තොරතුරු පෙන්වයි. වේලාවන් තොරතුරු සඳහා පමණි.",
   "notFoundTitle": "පිටුව හමු නොවීය",
   "notFoundBody": "එම පිටුව නොපවතී.",
-  "notFoundAction": "පිටත්වීම් වෙත යන්න",
+  "notFoundAction": "මුල් පිටුවට යන්න",
   "offlineTitle": "සම්බන්ධතාවයක් නැත",
   "offlineDetail": "{time} ට ලැබුණු අවසාන තොරතුරු පෙන්වමින්",
-  "@offlineDetail": {
+  "offlineNever": "තවමත් තොරතුරු ලැබී නැත.",
+  "planTitle": "ගමනක් සැලසුම් කරන්න",
+  "planLeaveNow": "දැන් පිටත් වන්න",
+  "planLeaveAt": "{time} ට පිටත් වන්න",
+  "@planLeaveAt": {
     "placeholders": {
       "time": {
         "type": "String"
       }
     }
   },
-  "offlineNever": "තවමත් තොරතුරු ලැබී නැත."
+  "planPickTime": "වේලාවක් තෝරන්න",
+  "planSearch": "දුම්රිය පෙන්වන්න",
+  "resultsTitle": "{from} සිට {to} දක්වා",
+  "@resultsTitle": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsDirect": "සෘජු",
+  "resultsChange": "මාරුවක් 1",
+  "resultsDuration": "මිනිත්තු {n}",
+  "@resultsDuration": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsChangeAt": "{station} හිදී මාරු වන්න",
+  "@resultsChangeAt": {
+    "placeholders": {
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsWait": "මාරු වීමට මිනිත්තු {n}",
+  "@resultsWait": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsAtRiskTitle": "සම්බන්ධතාවය අවදානමේ",
+  "resultsAtRiskBody": "{station} හිදී මාරු වීමට ඇත්තේ මිනිත්තු {n} ක් පමණි. දෙවන දුම්රිය මග හැරිය හැක.",
+  "@resultsAtRiskBody": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsTrainLeg": "දුම්රිය {number} · {from} සිට {to} දක්වා",
+  "@resultsTrainLeg": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsArrives": "{time} ට ළඟා වේ",
+  "@resultsArrives": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsEmptyTitle": "දුම්රිය හමු නොවීය",
+  "resultsEmptyBody": "ඉදිරි පැය කිහිපයේ සෘජු හෝ එක් මාරුවක් සහිත දුම්රිය නැත. පසුව වේලාවක් උත්සාහ කරන්න.",
+  "resultsLater": "පසුව උත්සාහ කරන්න",
+  "loginTitle": "ඇතුල් වන්න",
+  "loginWelcome": "නැවත සාදරයෙන් පිළිගනිමු",
+  "emailLabel": "විද්‍යුත් තැපෑල",
+  "emailHint": "ඔබේ විද්‍යුත් තැපෑල ඇතුළත් කරන්න",
+  "passwordLabel": "මුරපදය",
+  "passwordHint": "ඔබේ මුරපදය ඇතුළත් කරන්න",
+  "forgotPassword": "මුරපදය අමතකද?",
+  "forgotSent": "එම විද්‍යුත් තැපෑලට ගිණුමක් ඇත්නම්, මුරපදය යළි සැකසීමට සබැඳියක් එවා ඇත.",
+  "loginNoAccountNeeded": "පිටත්වීම්, ප්‍රමාද සහ වේදිකා වෙනස්කම් බැලීමට ගිණුමක් අවශ්‍ය නැත.",
+  "loginNew": "අලුත්ද?",
+  "loginCreate": "පැතිකඩ සාදන්න",
+  "loginBadCredentials": "එම විද්‍යුත් තැපෑල සහ මුරපදය නොගැළපේ, නැතහොත් ගිණුම මිනිත්තු කිහිපයකට අගුළු දමා ඇත.",
+  "createTitle": "පැතිකඩ සාදන්න",
+  "fullNameLabel": "සම්පූර්ණ නම",
+  "fullNameHint": "ජේන් පෙරේරා",
+  "passwordNewHint": "අවම වශයෙන් අක්ෂර 8ක්",
+  "agreeTerms": "මම නියම සහ පෞද්ගලිකත්ව දැන්වීමට එකඟ වෙමි.",
+  "errName": "ඔබේ සම්පූර්ණ නම ඇතුළත් කරන්න.",
+  "errEmail": "වලංගු විද්‍යුත් තැපැල් ලිපිනයක් ඇතුළත් කරන්න.",
+  "errPassword": "මුරපදයට අවම වශයෙන් අක්ෂර 8ක් අවශ්‍යයි.",
+  "errTerms": "ඉදිරියට යාමට කරුණාකර එකඟ වන්න.",
+  "errAccountExists": "මෙම විද්‍යුත් තැපෑලට ගිණුමක් දැනටමත් ඇත. ඇතුල් වීමට උත්සාහ කරන්න.",
+  "meLogIn": "ඇතුල් වන්න හෝ පැතිකඩ සාදන්න",
+  "meLogInBody": "ටිකට් සඳහා අවශ්‍යයි. දුම්රිය බැලීමට ගිණුමක් කිසිවිටෙක අවශ්‍ය නැත.",
+  "meTextSize": "අකුරු ප්‍රමාණය",
+  "textSizeNormal": "සාමාන්‍ය",
+  "textSizeLarge": "විශාල",
+  "textSizeLarger": "වඩා විශාල",
+  "meNotifications": "දැනුම්දීම්",
+  "stateOn": "සක්‍රීය",
+  "stateOff": "අක්‍රීය",
+  "meDownloadData": "මගේ දත්ත බාගන්න",
+  "meDeleteData": "මගේ දත්ත මකන්න",
+  "meCallCentre": "ඇමතුම් මධ්‍යස්ථානය අමතන්න",
+  "meSignOut": "ඉවත් වන්න",
+  "downloadTitle": "ඔබේ දත්ත",
+  "downloadCopy": "පිටපත් කරන්න",
+  "downloadCopied": "පසුරු පුවරුවට පිටපත් කළා",
+  "downloadFailed": "ඔබේ දත්ත ලබා ගත නොහැකි විය. නැවත උත්සාහ කරන්න.",
+  "deleteTitle": "ඔබේ දත්ත මකන්නද?",
+  "deleteBody": "මෙය ආපසු හැරවිය නොහැක. ඔබේ නම, විද්‍යුත් තැපෑල, සුරැකි ස්ථාන සහ අනුගමනය කරන ගමන් අපි ඉවත් කරමු. ටිකට් සහ ගෙවීම් වාර්තා නීතියට අනුව තබා ගනිමු.",
+  "deleteConfirm": "මගේ දත්ත මකන්න",
+  "cancel": "අවලංගු කරන්න",
+  "deleteDone": "ඔබේ දත්ත මකා දැමුවා.",
+  "callCentreTitle": "ඇමතුම් මධ්‍යස්ථානය",
+  "callCentreBody": "ටිකට් හෝ ගමන් පිළිබඳ ප්‍රශ්න සඳහා දුම්රිය සේවයේ ඇමතුම් මධ්‍යස්ථානය අමතන්න.",
+  "callCentreNumber": "අංකය: {number}",
+  "@callCentreNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "callCentreNoNumber": "දුම්රිය සේවය අංකය සකස් කළ පසු එය මෙහි පෙන්වයි.",
+  "close": "වසන්න",
+  "ticketsTitle": "ටිකට්",
+  "ticketsActive": "සක්‍රීය",
+  "ticketsPast": "පෙර",
+  "ticketsEmptyTitle": "තවම කිසිවක් නැත",
+  "ticketsEmptyBody": "ඔබට ටිකට් නැත. ටිකට් ගැනීමට ගමනක් සැලසුම් කරන්න.",
+  "ticketsBuy": "ටිකට් ගන්න",
+  "ticketsAdd": "ටිකට් එකතු කරන්න",
+  "ticketsSignInTitle": "ඔබේ ටිකට් බැලීමට ඇතුල් වන්න",
+  "ticketsSignInBody": "ටිකට් ඔබේ පැතිකඩට අයිතිය, එබැවින් දුරකථනය මාරු කළත් ආරක්ෂිතයි.",
+  "ticketsRoute": "{from} සිට {to} දක්වා",
+  "@ticketsRoute": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketsWhen": "අද {time}",
+  "@ticketsWhen": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketsWhenDate": "{date} {time}",
+  "@ticketsWhenDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketsCoachSeat": "කෝච්චිය {coach} · ආසනය {seat}",
+  "@ticketsCoachSeat": {
+    "placeholders": {
+      "coach": {
+        "type": "String"
+      },
+      "seat": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketsCoachSeats": "කෝච්චිය {coach} · ආසන {seats}",
+  "@ticketsCoachSeats": {
+    "placeholders": {
+      "coach": {
+        "type": "String"
+      },
+      "seats": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketValid": "වලංගුයි",
+  "ticketAffected": "බලපෑමට ලක්ව ඇත",
+  "ticketPast": "භාවිත කළා",
+  "ticketAffectedTitle": "මෙම දුම්රිය අවලංගු කළා",
+  "ticketAffectedBody": "දුම්රිය සේවය දුම්රිය අවලංගු කළ නිසා ඔබේ ටිකට් තවදුරටත් භාවිත කළ නොහැක. වෙනත් දුම්රියක් සොයන්න, නැතහොත් ඇමතුම් මධ්‍යස්ථානය අමතන්න.",
+  "ticketStatus": "තත්ත්වය",
+  "ticketFindAnother": "වෙනත් දුම්රියක් සොයන්න",
+  "chooseTitle": "{from} සිට {to} දක්වා",
+  "@chooseTitle": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseSummary": "අද · {who}",
+  "@chooseSummary": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "travellersAdults": "{n, plural, =1{වැඩිහිටියෙක් 1} other{වැඩිහිටියන් {n}}}",
+  "@travellersAdults": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "travellersChildren": "{n, plural, =1{ළමයෙක් 1} other{ළමයින් {n}}}",
+  "@travellersChildren": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "travellersSeniors": "{n, plural, =1{ජ්‍යෙෂ්ඨයෙක් 1} other{ජ්‍යෙෂ්ඨයින් {n}}}",
+  "@travellersSeniors": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "chooseDirect": "මිනිත්තු {n} · සෘජු",
+  "@chooseDirect": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "chooseSeatRequired": "ආසනයක් අවශ්‍යයි",
+  "chooseNoSeat": "ආසනයක් අවශ්‍ය නැත",
+  "chooseNoTrains": "වෙන් කිරීමට දුම්රිය නැත",
+  "chooseNoTrainsBody": "ඉදිරි පැය කිහිපයේ සෘජු දුම්රිය නැත. වෙනත් වේලාවක් හෝ ස්ථානයක් උත්සාහ කරන්න.",
+  "chooseNote": "ප්‍රමාදයක් නිසා කිසිවිටෙක නව ටිකට් එකක් සෑදෙන්නේ නැත. ඔබේ ටිකට් එම දුම්රියේම පවතී.",
+  "chooseNoPayment": "මෙම අනුවාදයේ ගෙවීමක් ගනු නොලැබේ. ගාස්තුව පෙන්වන්නේ තොරතුරු සඳහා පමණි.",
+  "continueLabel": "ඉදිරියට",
+  "whoTitle": "කවුද ගමන් කරන්නේ?",
+  "whoAdult": "වැඩිහිටි",
+  "whoAdultHint": "වයස 12 සහ ඉහළ",
+  "whoChild": "ළමා",
+  "whoChildHint": "වයස 5 සිට 11",
+  "whoSenior": "ජ්‍යෙෂ්ඨ",
+  "whoSeniorHint": "වයස 60 සහ ඉහළ",
+  "whoHelp": "මට ස්ථානයේදී උදව් අවශ්‍යයි",
+  "whoHelpHint": "කාර්ය මණ්ඩලයට දැනුම් දෙයි. මිලට බලපාන්නේ නැත.",
+  "whoConfirm": "තහවුරු කරන්න",
+  "seatTitle": "ආසනයක් තෝරන්න",
+  "seatTitleMany": "ආසන {n} ක් තෝරන්න",
+  "@seatTitleMany": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "seatCoach": "කෝච්චිය {c}",
+  "@seatCoach": {
+    "placeholders": {
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "seatFree": "හිස්",
+  "seatTaken": "ගෙන ඇත",
+  "seatYours": "ඔබේ",
+  "seatSelected": "{total} න් {n} ක් තෝරා ඇත",
+  "@seatSelected": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "seatConfirm": "ආසනය තහවුරු කරන්න",
+  "seatConfirmMany": "ආසන තහවුරු කරන්න",
+  "seatLabelFree": "ආසනය {n}, හිස්",
+  "@seatLabelFree": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "seatLabelTaken": "ආසනය {n}, ගෙන ඇත",
+  "@seatLabelTaken": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "seatLabelYours": "ආසනය {n}, ඔබේ",
+  "@seatLabelYours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "seatGone": "කවුරුහරි ආසනයක් ගත්තා. නැවත තෝරන්න.",
+  "reviewTitle": "සමාලෝචනය",
+  "reviewFare": "ගාස්තුව",
+  "reviewTotal": "මුළු",
+  "reviewConfirm": "වෙන් කිරීම තහවුරු කරන්න",
+  "reviewHold": "ආසන {time} දක්වා රඳවා ඇත",
+  "@reviewHold": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewExpired": "ඔබේ ආසන නිදහස් විය. නැවත තෝරන්න.",
+  "ticketTitle": "ටිකට්",
+  "ticketOffline": "සබැඳියෙන් තොරව ක්‍රියා කරයි. SmartRail සමඟ අවසන් වරට {time} ට පරීක්ෂා කළා.",
+  "@ticketOffline": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketBookingNumber": "වෙන් කිරීමේ අංකය {code}",
+  "@ticketBookingNumber": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketBooked": "ඔබේ වෙන් කිරීම තහවුරු කළා.",
+  "addTitle": "ටිකට් එකතු කරන්න",
+  "addNumberLabel": "වෙන් කිරීමේ හෝ ටිකට් අංකය",
+  "addNumberHint": "ඔබේ වෙන් කිරීමේ අංකය ඇතුළත් කරන්න",
+  "addNumberHelp": "අක්ෂර 8ක්. එය ඔබේ තහවුරු කිරීමේ ඇත.",
+  "addContactLabel": "මිලදී ගැනීමේදී භාවිත කළ විද්‍යුත් තැපෑල",
+  "addContactHint": "ඔබ භාවිත කළ විද්‍යුත් තැපෑල ඇතුළත් කරන්න",
+  "addNotFound": "එම තොරතුරු සහිත ටිකට් එකක් සොයා ගත නොහැකි විය.",
+  "addDone": "ටිකට් එකතු කළා",
+  "alertsTitle": "දැනුම්දීම්",
+  "alertsToday": "අද",
+  "alertsEarlier": "කලින්",
+  "alertsNote": "දැනුම්දීම් පෙන්වන්නේ ඔබ අනුගමනය කරන ගමන් සහ ස්ථාන සඳහා පමණි.",
+  "alertsOff": "දැනුම්දීම් අක්‍රීයයි. Me හි ඒවා සක්‍රීය කරන්න.",
+  "alertsEmptyTitle": "තවම දැනුම්දීම් නැත",
+  "alertsEmptyBody": "ඔබ අනුගමනය කරන දුම්රියක් ප්‍රමාද වූ විට, අවලංගු වූ විට හෝ වේදිකාව මාරු වූ විට ඔබට එය මෙහි පෙනේ.",
+  "alertsClear": "සියල්ල මකන්න",
+  "alertPlatformTitle": "වේදිකාව වෙනස් විය",
+  "alertPlatformBody": "{origin} සිට {destination} දක්වා දුම්රිය දැන් පිටත් වන්නේ {now} වේදිකාවෙන් ({was} නොවේ).",
+  "@alertPlatformBody": {
+    "placeholders": {
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      },
+      "now": {
+        "type": "String"
+      },
+      "was": {
+        "type": "String"
+      }
+    }
+  },
+  "alertPlatformBodyNew": "{origin} සිට {destination} දක්වා දුම්රිය දැන් පිටත් වන්නේ {now} වේදිකාවෙන්.",
+  "@alertPlatformBodyNew": {
+    "placeholders": {
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      },
+      "now": {
+        "type": "String"
+      }
+    }
+  },
+  "alertCancelledTitle": "අවලංගු කළා",
+  "alertCancelledBody": "{time} {origin} සිට {destination} දක්වා දුම්රිය අවලංගු කළා.",
+  "@alertCancelledBody": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "alertDelayTitle": "ප්‍රමාදය",
+  "alertDelayBody": "{origin} සිට {destination} දක්වා දුම්රිය දැන් {time} ට අපේක්ෂිතයි (+මිනිත්තු {n}).",
+  "@alertDelayBody": {
+    "placeholders": {
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "alertCorrectionTitle": "නිවැරදි කිරීම",
+  "alertCorrectionBody": "{time} {origin} සිට {destination} දක්වා දුම්රිය ධාවනය වේ. කලින් පණිවිඩයක් එය අවලංගු කළා යැයි පැවසීය.",
+  "@alertCorrectionBody": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "disruptionTitle": "බාධාව",
+  "disruptionUpdated": "{time} ට යාවත්කාලීන කළා",
+  "@disruptionUpdated": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "disruptionStations": "බලපෑමට ලක් වූ ස්ථාන",
+  "disruptionJourneys": "බලපෑමට ලක් වූ ගමන්",
+  "disruptionFollow": "යාවත්කාලීන අනුගමනය කරන්න",
+  "disruptionFollowed": "ඔබ බලපෑමට ලක් වූ ස්ථාන අනුගමනය කරයි.",
+  "disruptionNetworkWide": "මෙය මුළු ජාලයටම බලපායි.",
+  "disruptionExpectedEnd": "මෙය {time} වන විට පිරිසිදු වේ යැයි අපේක්ෂා කරමු.",
+  "@disruptionExpectedEnd": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "disruptionGone": "මෙම බාධාව අවසන්",
+  "disruptionGoneBody": "එය විසඳා ඇත හෝ ඉවත් කර ඇත. පිටත්වීමේ පුවරු දුම්රිය දැන් ඇති ලෙස පෙන්වයි.",
+  "severityMinor": "සුළු",
+  "severityMajor": "විශාල",
+  "severitySevere": "බරපතළ",
+  "foodTitle": "{station} හි ආහාර",
+  "@foodTitle": {
+    "placeholders": {
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "foodAll": "සියල්ල",
+  "foodOrderNote": "ඇණවුම් කිරීම සහ ගෙවීම කෑම සපයන්නා විසින් සිදු කරයි.",
+  "foodCall": "ඇණවුම් කිරීමට අමතන්න",
+  "foodUnavailable": "මෙනුව දැන් නොමැත",
+  "foodUnavailableBody": "දුම්රිය සහ ටිකට් වලට බලපෑමක් නැත. මද වේලාවකින් නැවත උත්සාහ කරන්න.",
+  "foodNone": "මෙම ස්ථානයේ ආහාර නැත",
+  "foodLink": "මෙම ස්ථානයේ ආහාර",
+  "foodArrive": "{time} ට ළඟා වේ",
+  "@foodArrive": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "planWhenTitle": "දිනය සහ වේලාව",
+  "planLaterToday": "අද පසුව",
+  "planTomorrow": "හෙට",
+  "planTomorrowAt": "හෙට {time}",
+  "planTimeNote": "කාලසටහන් දේශීය වේලාව ({zone}) භාවිත කරයි.",
+  "@planTomorrowAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@planTimeNote": {
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  }
 }

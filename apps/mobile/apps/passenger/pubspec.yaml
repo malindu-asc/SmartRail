@@ -46,6 +46,13 @@ dependencies:
     path: ../../packages/design_system
   smartrail_api_client:
     path: ../../packages/api_client
+  shared_preferences: ^2.5.6
+  flutter_secure_storage: ^9.2.4
+  dio: ^5.11.1
+  qr_flutter: ^4.1.0
+  url_launcher: ^6.3.1
+  animations: ^3.0.0
+  fpdart: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +76,8 @@ flutter:
   # the material Icons class.
   generate: true
   uses-material-design: true
+  assets:
+    - assets/images/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
