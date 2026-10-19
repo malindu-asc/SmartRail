@@ -22,13 +22,17 @@ class LanguageSwitcher extends ConsumerWidget {
         const SizedBox(height: SmartRailSpacing.md),
         SmartRailButton(
           label: l10n.languageEnglish,
-          kind: current.languageCode == 'en' ? ButtonKind.tint : ButtonKind.secondary,
+          kind: current.languageCode == 'en'
+              ? ButtonKind.tint
+              : ButtonKind.secondary,
           onPressed: () => notifier.select(const Locale('en')),
         ),
         const SizedBox(height: SmartRailSpacing.md),
         SmartRailButton(
           label: l10n.languageSinhala,
-          kind: current.languageCode == 'si' ? ButtonKind.tint : ButtonKind.secondary,
+          kind: current.languageCode == 'si'
+              ? ButtonKind.tint
+              : ButtonKind.secondary,
           onPressed: () => notifier.select(const Locale('si')),
         ),
       ],
