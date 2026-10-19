@@ -32,6 +32,7 @@ final _rootKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: _rootKey,
+    observers: [_ClearMessages()],
     initialLocation: AppRoutes.launch,
     errorBuilder: (context, state) => const NotFoundScreen(),
     routes: [
@@ -198,3 +199,26 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
+
+/// A message belongs to the screen that showed it: moving to another screen, or back, takes it away. (Sheets and dialogs are not
+/// screens, so a message shown after one closes stays.)
+class _ClearMessages extends NavigatorObserver {
+  void _clear(Route<dynamic> route) {
+    if (route is! PageRoute) return;
+    final context = navigator?.context;
+    if (context != null) ScaffoldMessenger.maybeOf(context)?.clearSnackBars();
+  }
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) =>
+      _clear(route);
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) =>
+      _clear(route);
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    if (newRoute != null) _clear(newRoute);
+  }
+}

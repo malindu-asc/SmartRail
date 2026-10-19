@@ -68,10 +68,11 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
 
     // The profile exists but signing in failed: say so and go to Log in, instead of asking for the same email again.
     if (outcome.created) {
-      ScaffoldMessenger.of(context)
+      final messenger = ScaffoldMessenger.of(context);
+      context.pushReplacement(AppRoutes.login);
+      messenger
         ..hideCurrentSnackBar()
         ..showSnackBar(SnackBar(content: Text(l10n.createdLogIn)));
-      context.pushReplacement(AppRoutes.login);
       return;
     }
 
