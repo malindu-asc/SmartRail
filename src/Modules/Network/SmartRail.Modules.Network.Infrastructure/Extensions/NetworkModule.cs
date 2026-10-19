@@ -8,7 +8,10 @@ using SmartRail.Modules.Network.Contracts;
 using SmartRail.Modules.Network.Infrastructure.Seeding;
 using SmartRail.Modules.Network.Infrastructure.Settings;
 using Microsoft.Extensions.Options;
+using SmartRail.Application.Core.Abstractions;
+using SmartRail.Infrastructure.Core.Audit;
 using SmartRail.Infrastructure.Core.Outbox;
+using SmartRail.Modules.Network.Application.Timetables.Versions;
 using SmartRail.Infrastructure.Core.Persistence;
 
 namespace SmartRail.Modules.Network.Infrastructure.Extensions;
@@ -35,6 +38,9 @@ public static class NetworkModule
 
         services.AddScoped<ITimetableReader, TimetableReader>();
         services.AddScoped<INetworkTimetable, NetworkTimetable>();
+        services.AddScoped<ITimetableVersionStore, TimetableVersionStore>();
+        services.AddScoped<INetworkAuditLog, NetworkAuditLog>();
+        services.AddScoped<IAuditSource>(sp => new AuditSource<NetworkDbContext>(sp.GetRequiredService<NetworkDbContext>(), "network", false));
 
         services.AddOptions<NetworkOptions>().Bind(configuration.GetSection(NetworkOptions.SectionName)).ValidateOnStart();
         services.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
