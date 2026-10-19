@@ -29,6 +29,15 @@ internal sealed class NetworkStations(NetworkDbContext context) : INetworkStatio
                 : s.Translations.FirstOrDefault(t => string.Equals(t.LanguageCode, languageCode, StringComparison.OrdinalIgnoreCase))?.Name ?? s.Name,
             StringComparer.Ordinal);
     }
+
+    public async Task<IReadOnlyList<string>?> GetPlatformsAsync(string stationCode, CancellationToken cancellationToken)
+    {
+        var code = stationCode.Trim().ToUpperInvariant();
+        var station = await context.Stations.AsNoTracking().Include(s => s.Platforms)
+            .FirstOrDefaultAsync(s => s.IsActive && s.Code == code, cancellationToken);
+
+        return station?.Platforms.Where(p => p.IsAvailable).Select(p => p.Code).OrderBy(c => c, StringComparer.Ordinal).ToList();
+    }
 }
 
 internal sealed class NetworkRoutes(NetworkDbContext context) : INetworkRoutes
@@ -52,4 +61,7 @@ internal sealed class NetworkRoutes(NetworkDbContext context) : INetworkRoutes
 
         return route.Stops.OrderBy(s => s.Sequence).Select(s => codes[s.StationId]).ToList();
     }
+
+    public async Task<IReadOnlyList<string>> ListCodesAsync(CancellationToken cancellationToken) =>
+        await context.Routes.AsNoTracking().Where(r => r.IsActive).OrderBy(r => r.Code).Select(r => r.Code).ToListAsync(cancellationToken);
 }
