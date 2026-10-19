@@ -2,8 +2,10 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using System.Security.Claims;
 using SmartRail.Api.Core;
 using SmartRail.Api.Core.Security;
+using SmartRail.Modules.Journeys.Application.Ingest;
 using SmartRail.Modules.Journeys.Application.Manual;
 using SmartRail.Modules.Journeys.Application.Queries.GetBoard;
 using SmartRail.Modules.Journeys.Application.Queries.GetJourney;
@@ -47,8 +49,33 @@ public static class JourneysEndpoints
             .RequireAuthorization(Policies.Scheduler)
             .WithSummary("Create a special or relief journey that is not in the timetable");
 
+        // The train detection feed (and the simulator) send live data here with their own source key, not a user token.
+        var ingest = app.MapGroup("/api/ingest").WithTags(Tags.Ingest).RequireAuthorization(FeedSourceAuth.Policy);
+
+        ingest.MapPost("/stop-events", async (IngestStopEventsRequest request, ClaimsPrincipal user, ISender sender, CancellationToken ct) =>
+            {
+                var events = (request.Events ?? []).Select(e => new StopEventInput(e.Sequence, e.JourneyId, e.StopSequence, e.Type ?? string.Empty, e.OccurredAt)).ToList();
+                var result = await sender.Send(new IngestStopEventsCommand(Sender(user), events), ct);
+                return result.IsSuccess ? Results.Ok(result.Value) : ApiResults.Problem(result);
+            })
+            .WithSummary("Send stop events (arrived, departed, passed) from the feed");
+
+        ingest.MapPost("/positions", async (IngestPositionsRequest request, ClaimsPrincipal user, ISender sender, CancellationToken ct) =>
+            {
+                var readings = (request.Readings ?? []).Select(r => new PositionInput(
+                    r.Sequence, r.VehicleCode ?? string.Empty, r.RecordedAt, r.FromStation ?? string.Empty, r.ToStation ?? string.Empty, r.Progress, r.SpeedKmh)).ToList();
+                var result = await sender.Send(new IngestPositionsCommand(Sender(user), readings), ct);
+                return result.IsSuccess ? Results.Ok(result.Value) : ApiResults.Problem(result);
+            })
+            .WithSummary("Send vehicle positions from the feed");
+
         return app;
     }
+
+    private static FeedSender Sender(ClaimsPrincipal user) => new(
+        Guid.Parse(user.FindFirstValue(FeedSourceAuth.SourceIdClaim)!),
+        user.FindFirstValue(FeedSourceAuth.SourceCodeClaim)!,
+        int.Parse(user.FindFirstValue(FeedSourceAuth.SourceRankClaim)!));
 
     // ?lang= wins; otherwise the first language in Accept-Language.
     private static string? RequestedLanguage(HttpContext http, string? lang)
@@ -72,3 +99,18 @@ public sealed record CreateManualJourneyRequest(
     DateOnly ServiceDate,
     IReadOnlyList<ManualStop> Stops,
     string Reason);
+
+public sealed record IngestStopEventsRequest(IReadOnlyList<StopEventRequest>? Events);
+
+public sealed record StopEventRequest(long Sequence, Guid JourneyId, int StopSequence, string? Type, DateTimeOffset OccurredAt);
+
+public sealed record IngestPositionsRequest(IReadOnlyList<PositionRequest>? Readings);
+
+public sealed record PositionRequest(
+    long Sequence,
+    string? VehicleCode,
+    DateTimeOffset RecordedAt,
+    string? FromStation,
+    string? ToStation,
+    decimal Progress,
+    decimal SpeedKmh);
