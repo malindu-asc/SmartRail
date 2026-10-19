@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SmartRail.Modules.Identity.Api;
+using SmartRail.Modules.Identity.Infrastructure.Feeds;
 using SmartRail.Modules.Identity.Infrastructure.Persistence;
 using SmartRail.Modules.Journeys.Api;
 using SmartRail.Modules.Journeys.Infrastructure.Persistence;
@@ -36,5 +37,12 @@ internal static class WebApplicationExtensions
         await services.GetRequiredService<JourneysDbContext>().Database.MigrateAsync();
         await services.GetRequiredService<OperationsDbContext>().Database.MigrateAsync();
         await services.GetRequiredService<NotificationsDbContext>().Database.MigrateAsync();
+    }
+
+    // Development and test feed sources from configuration (Identity:FeedSources:Seed). Insert-only.
+    internal static async Task SeedFeedSourcesAsync(this WebApplication app)
+    {
+        await using var scope = app.Services.CreateAsyncScope();
+        await scope.ServiceProvider.GetRequiredService<FeedSourceSeeder>().SeedAsync();
     }
 }

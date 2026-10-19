@@ -1,7 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\SmartRail.Modules.Identity.Application\SmartRail.Modules.Identity.Application.csproj" />
+    <ProjectReference Include="..\SmartRail.Modules.Identity.Contracts\SmartRail.Modules.Identity.Contracts.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\SmartRail.Infrastructure.Core\SmartRail.Infrastructure.Core.csproj" />
   </ItemGroup>
 
