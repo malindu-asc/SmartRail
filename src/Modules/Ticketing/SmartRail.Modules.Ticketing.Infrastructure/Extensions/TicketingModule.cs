@@ -30,6 +30,7 @@ public static class TicketingModule
         services.AddScoped<IOutboxMessageProcessor, OutboxMessageProcessor<TicketingDbContext>>();
 
         services.AddScoped<IBookingStore, BookingStore>();
+        services.AddScoped<SmartRail.Modules.Ticketing.Contracts.ITicketImpact, TicketImpact>();
         services.AddScoped<TicketViewer>();
         services.AddScoped<IPersonalDataContributor, TicketsPersonalData>();
 

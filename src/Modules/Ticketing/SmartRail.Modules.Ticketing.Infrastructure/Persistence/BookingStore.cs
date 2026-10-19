@@ -60,3 +60,13 @@ internal sealed class HmacTicketSigner(IOptions<TicketSigningOptions> options) :
         return $"SR1.{booking.Id:N}.{expires}.{signature}";
     }
 }
+
+internal sealed class TicketImpact(TicketingDbContext context) : SmartRail.Modules.Ticketing.Contracts.ITicketImpact
+{
+    public async Task<SmartRail.Modules.Ticketing.Contracts.TicketImpactCount> CountAsync(Guid journeyId, CancellationToken cancellationToken)
+    {
+        var rows = await context.Bookings.AsNoTracking().Where(b => b.JourneyId == journeyId)
+            .Select(b => b.Adults + b.Children + b.Seniors).ToListAsync(cancellationToken);
+        return new SmartRail.Modules.Ticketing.Contracts.TicketImpactCount(rows.Count, rows.Sum());
+    }
+}
