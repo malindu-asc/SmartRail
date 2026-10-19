@@ -64,6 +64,9 @@ services:
       Diagnostics__Identity: "true"
       # Passenger accounts are created through Keycloak's admin API (SPEC-021). Development secret.
       Identity__Admin__BaseUrl: http://keycloak:8080
+      # The catering menu (RailBite) is read over HTTP with its own key. If it is down only the menu says so.
+      Catering__BaseUrl: http://catering:4000
+      Catering__ApiKey: ${CATERING_API_KEY:-dev-catering-key-change-me}
       Identity__Admin__ClientSecret: ${IDENTITY_ADMIN_SECRET:-dev-only-change-me}
       Database__ApplyMigrationsOnStartup: "true"
       Network__Seed__ReferenceData: "true"
@@ -110,6 +113,7 @@ services:
     image: smartrail/catering:${TAG:-local}
     environment:
       PORT: "4000"
+      CATERING_API_KEY: ${CATERING_API_KEY:-dev-catering-key-change-me}
     ports:
       - "4000:4000"
     restart: unless-stopped
