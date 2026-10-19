@@ -26,7 +26,8 @@ class NetworkClock {
     return tz.getLocation(zoneId);
   }
 
-  tz.TZDateTime local(DateTime instant) => tz.TZDateTime.from(instant.toUtc(), _zone);
+  tz.TZDateTime local(DateTime instant) =>
+      tz.TZDateTime.from(instant.toUtc(), _zone);
 
   /// `HH:mm` in the network zone, for example `14:25`.
   String formatTime(DateTime instant) {
@@ -45,7 +46,11 @@ class NetworkClock {
   int daysAfterServiceDate(DateTime instant, String serviceDate) {
     final service = DateTime.parse(serviceDate);
     final t = local(instant);
-    return DateTime.utc(t.year, t.month, t.day).difference(DateTime.utc(service.year, service.month, service.day)).inDays;
+    return DateTime.utc(
+      t.year,
+      t.month,
+      t.day,
+    ).difference(DateTime.utc(service.year, service.month, service.day)).inDays;
   }
 
   /// The time with a day marker when it is not on the service date, for example `00:35 +1`.
