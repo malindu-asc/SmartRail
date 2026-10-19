@@ -75,6 +75,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                     path: 'search',
                     builder: (context, state) => StationSearchScreen(
                       pick: state.uri.queryParameters['pick'] == '1',
+                      exclude: state.uri.queryParameters['exclude'],
                     ),
                   ),
                   GoRoute(

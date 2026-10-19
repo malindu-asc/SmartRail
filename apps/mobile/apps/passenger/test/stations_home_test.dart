@@ -42,7 +42,8 @@ void main() {
       await tester.pump(debounce);
       await tester.pumpAndSettle();
 
-      expect(repo.queries, ['cen']);
+      // The first look lists every station; the typed letters are asked for once, after the pause.
+      expect(repo.queries, ['', 'cen']);
     });
 
     testWidgets('no match says so and suggests the code', (tester) async {
@@ -89,30 +90,34 @@ void main() {
       expect(LocalRecentStationsRepository(store).recent().first.code, 'CEN');
     });
 
-    testWidgets('with nothing typed, recent stations come first', (
-      tester,
-    ) async {
-      final store = MemoryStore({'onboarding_seen': true});
-      await LocalRecentStationsRepository(store).add(stations[1]);
-      await pumpApp(tester, store: store, start: '/home/search');
+    testWidgets('with nothing typed, every station is listed', (tester) async {
+      await pumpApp(tester, start: '/home/search');
 
-      expect(find.text('Recent'), findsOneWidget);
+      expect(find.text('All stations'), findsOneWidget);
       expect(find.text('Oak Park'), findsOneWidget);
+      expect(find.text('Riverside'), findsOneWidget);
     });
 
-    testWidgets('clearing the box goes back to recent stations', (
-      tester,
-    ) async {
-      final store = MemoryStore({'onboarding_seen': true});
-      await LocalRecentStationsRepository(store).add(stations[1]);
-      await pumpApp(tester, store: store, start: '/home/search');
+    testWidgets('clearing the box lists every station again', (tester) async {
+      await pumpApp(tester, start: '/home/search');
 
       await typeQuery(tester, 'riv');
       expect(find.text('Results'), findsOneWidget);
+      expect(find.text('Oak Park'), findsNothing);
 
       await tester.tap(find.byIcon(Icons.close));
       await tester.pumpAndSettle();
-      expect(find.text('Recent'), findsOneWidget);
+      expect(find.text('All stations'), findsOneWidget);
+      expect(find.text('Oak Park'), findsOneWidget);
+    });
+
+    testWidgets('the station already chosen at the other end is left out', (
+      tester,
+    ) async {
+      await pumpApp(tester, start: '/home/search?pick=1&exclude=OAK');
+
+      expect(find.text('Oak Park'), findsNothing);
+      expect(find.text('Riverside'), findsOneWidget);
     });
   });
 

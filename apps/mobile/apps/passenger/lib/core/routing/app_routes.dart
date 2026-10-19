@@ -18,6 +18,10 @@ abstract final class AppRoutes {
   static const search = '/home/search';
   static const searchPick = '/home/search?pick=1';
 
+  /// The picker without the station already chosen at the other end.
+  static String searchPickExcluding(String? code) =>
+      code == null ? searchPick : '$searchPick&exclude=$code';
+
   /// The trains between two stations. `after` is a UTC instant; leave it out for "now".
   static String planResults(
     String from,

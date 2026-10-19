@@ -49,22 +49,18 @@ class StationSearchNotifier extends Notifier<AsyncValue<List<Station>>> {
   @override
   AsyncValue<List<Station>> build() {
     ref.onDispose(() => _timer?.cancel());
-    return const AsyncData([]);
+    // Nothing typed yet: every station is listed, so the passenger can simply pick one.
+    Future.microtask(() => queryChanged(''));
+    return const AsyncLoading<List<Station>>();
   }
 
-  /// An empty query clears the results (the screen then shows the recent stations).
+  /// An empty query lists every station; typing narrows the list a moment after the last key.
   void queryChanged(String query) {
     _timer?.cancel();
     final trimmed = query.trim();
     final generation = ++_generation;
 
-    if (trimmed.isEmpty) {
-      state = const AsyncData([]);
-      return;
-    }
-
-    state = const AsyncLoading<List<Station>>();
-    _timer = Timer(debounce, () async {
+    Future<void> load() async {
       final result = await ref.read(stationRepositoryProvider).search(trimmed);
       // A newer query has been typed since: this answer is out of date.
       if (!ref.mounted || generation != _generation) return;
@@ -72,6 +68,14 @@ class StationSearchNotifier extends Notifier<AsyncValue<List<Station>>> {
         (failure) => AsyncError<List<Station>>(failure, StackTrace.current),
         AsyncData.new,
       );
-    });
+    }
+
+    if (trimmed.isEmpty) {
+      load();
+      return;
+    }
+
+    state = const AsyncLoading<List<Station>>();
+    _timer = Timer(debounce, load);
   }
 }

@@ -12,9 +12,12 @@ import '../providers/station_providers.dart';
 /// Search for a station by name or code (design 18). With [pick] it returns the chosen station to whoever asked (the From and To
 /// fields on Home); otherwise it opens that station's live departures.
 class StationSearchScreen extends ConsumerStatefulWidget {
-  const StationSearchScreen({super.key, this.pick = false});
+  const StationSearchScreen({super.key, this.pick = false, this.exclude});
 
   final bool pick;
+
+  /// The station already chosen at the other end, left out of the list.
+  final String? exclude;
 
   @override
   ConsumerState<StationSearchScreen> createState() =>
@@ -115,21 +118,6 @@ class _StationSearchScreenState extends ConsumerState<StationSearchScreen> {
     AsyncValue<List<Station>> results,
     List<Station> recent,
   ) {
-    if (query.isEmpty) {
-      if (recent.isEmpty) {
-        return EmptyState(
-          icon: Icons.search,
-          title: l10n.stationsTitle,
-          message: l10n.stationsIntro,
-        );
-      }
-      return _StationList(
-        title: l10n.stationsRecent,
-        stations: recent,
-        onTap: _choose,
-      );
-    }
-
     return results.when(
       loading: () => const _LoadingList(),
       error: (error, _) => FailureView(
@@ -137,17 +125,20 @@ class _StationSearchScreenState extends ConsumerState<StationSearchScreen> {
         onRetry: () =>
             ref.read(stationSearchProvider.notifier).queryChanged(query),
       ),
-      data: (stations) => stations.isEmpty
-          ? EmptyState(
-              icon: Icons.search_off,
-              title: l10n.stationsEmptyTitle,
-              message: l10n.stationsEmptyBody,
-            )
-          : _StationList(
-              title: l10n.stationsResults,
-              stations: stations,
-              onTap: _choose,
-            ),
+      data: (all) {
+        final stations = all.where((s) => s.code != widget.exclude).toList();
+        return stations.isEmpty
+            ? EmptyState(
+                icon: Icons.search_off,
+                title: l10n.stationsEmptyTitle,
+                message: l10n.stationsEmptyBody,
+              )
+            : _StationList(
+                title: query.isEmpty ? l10n.stationsAll : l10n.stationsResults,
+                stations: stations,
+                onTap: _choose,
+              );
+      },
     );
   }
 }

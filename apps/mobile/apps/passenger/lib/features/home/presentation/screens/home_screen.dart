@@ -35,7 +35,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _pick({required bool from}) async {
-    final picked = await context.push<Station>(AppRoutes.searchPick);
+    final picked = await context.push<Station>(
+      AppRoutes.searchPickExcluding(from ? _to?.code : _from?.code),
+    );
     if (picked == null || !mounted) return;
     setState(() => from ? _from = picked : _to = picked);
   }
