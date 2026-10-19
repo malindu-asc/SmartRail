@@ -342,10 +342,11 @@ CREATE INDEX ix_journey_stops_arrivals ON journeys.journey_stops (station_code, 
 CREATE TABLE journeys.journey_events (                           -- event history; losing values are kept (REQ-LIVE-006)
     id                        bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     journey_id                uuid         NOT NULL REFERENCES journeys.journeys (id),
-    event_type                varchar(30)  NOT NULL CHECK (event_type IN ('Arrived','Departed','Skipped','Position','DelayReason','Cancelled','TerminatedShort','Reinstated','PlatformChanged','Corrected','StateChanged')),
+    event_type                varchar(30)  NOT NULL CHECK (event_type IN ('Arrived','Departed','Passed','Skipped','Position','DelayReason','Cancelled','TerminatedShort','Reinstated','PlatformChanged','Corrected','StateChanged')),
     stop_sequence             int,
     source_kind               varchar(10)  NOT NULL CHECK (source_kind IN ('Feed', 'Driver', 'Controller', 'System')),
     source_id                 uuid,                               -- -> identity.feed_sources.id
+    source_rank               smallint,                           -- the source's precedence rank when the message arrived (SPEC-005), so the history stands on its own
     actor_subject             varchar(64),
     duty_id                   uuid,                               -- driver events are scoped to a duty (REQ-DRV-009)
     occurred_at_source        timestamptz,                        -- device or feed time; never trusted for ordering

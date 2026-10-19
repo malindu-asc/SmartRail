@@ -201,6 +201,21 @@ curl  http://localhost:5080/api/journeys/<journeyId>
 curl -X POST http://localhost:5080/api/journeys/manual -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json"   -d '{"routeCode":"MAIN","trainNumber":"SP1","serviceDate":"2026-10-14","reason":"Festival special","stops":[{"stationCode":"CEN","departure":"22:00"},{"stationCode":"OAK","arrival":"22:20"}]}'
 ```
 
+### Live feed ingest
+
+The train detection feed (and the simulator) send live data with their own source key, not a user token. Send
+`X-Source-Code` and `X-Source-Key` headers; a wrong or missing key answers `401`. Sequences are one increasing counter per source,
+across both endpoints. Each message in a batch (1 to 100) gets its own result.
+
+```bash
+curl -X POST http://localhost:5080/api/ingest/stop-events -H "X-Source-Code: SIM" -H "X-Source-Key: $FEED_KEY" -H "Content-Type: application/json"   -d '{"events":[{"sequence":1,"journeyId":"<journeyId>","stopSequence":1,"type":"departed","occurredAt":"2026-10-14T02:08:00Z"}]}'
+curl -X POST http://localhost:5080/api/ingest/positions -H "X-Source-Code: SIM" -H "X-Source-Key: $FEED_KEY" -H "Content-Type: application/json"   -d '{"readings":[{"sequence":2,"vehicleCode":"MAIN-F","recordedAt":"2026-10-14T02:10:00Z","fromStation":"CEN","toStation":"OAK","progress":0.4,"speedKmh":72}]}'
+```
+
+`type` is `arrived`, `departed` or `passed`. Aspire and Docker Compose create two development sources (`SIM` rank 1 and
+`SIM-B` rank 2) from `Identity__FeedSources__Seed__*`; their keys are for development only. Live thresholds are in
+`Journeys:Live` (stale after 60 s, Unknown after 300 s).
+
 The demo network is inserted at startup when `Network__Seed__ReferenceData=true` (set by the Aspire AppHost and
 Docker Compose). It only adds missing rows and never changes existing ones.
 

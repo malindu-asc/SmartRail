@@ -32,6 +32,15 @@ var api = builder.AddProject<Projects.SmartRail_Api>("api")
     .WithEnvironment("Network__Seed__ReferenceData", "true")
     .WithEnvironment("Journeys__Generation__RunOnStartup", "true")
     .WithEnvironment("Journeys__Seed__DemoFleet", "true")
+    // Development feed sources for the simulator (SPEC-005). Never use these keys outside development.
+    .WithEnvironment("Identity__FeedSources__Seed__0__Code", "SIM")
+    .WithEnvironment("Identity__FeedSources__Seed__0__Name", "Development feed")
+    .WithEnvironment("Identity__FeedSources__Seed__0__Key", "dev-feed-key-sim-change-me")
+    .WithEnvironment("Identity__FeedSources__Seed__0__Rank", "1")
+    .WithEnvironment("Identity__FeedSources__Seed__1__Code", "SIM-B")
+    .WithEnvironment("Identity__FeedSources__Seed__1__Name", "Development second feed")
+    .WithEnvironment("Identity__FeedSources__Seed__1__Key", "dev-feed-key-simb-change-me")
+    .WithEnvironment("Identity__FeedSources__Seed__1__Rank", "2")
     .WaitFor(database)
     .WaitFor(keycloak);
 
