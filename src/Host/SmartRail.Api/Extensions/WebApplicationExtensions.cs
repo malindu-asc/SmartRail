@@ -21,9 +21,12 @@ internal static class WebApplicationExtensions
     internal static WebApplication MapEndpoints(this WebApplication app)
     {
         app.MapIdentityEndpoints();
+        app.MapAdminEndpoints();
         app.MapNetworkEndpoints();
         app.MapJourneysEndpoints();
+        app.MapOpsJourneysEndpoints();
         app.MapOperationsEndpoints();
+        app.MapTimetableVersionEndpoints();
         app.MapNotificationsEndpoints();
         app.MapTicketingEndpoints();
         return app;
