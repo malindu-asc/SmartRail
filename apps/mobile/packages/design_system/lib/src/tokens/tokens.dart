@@ -18,8 +18,11 @@ abstract final class SmartRailColors {
   static const page = Color(0xFFFFFFFF);
   static const borderStrong = Color(0xFFD1D5DB);
 
-  // A light divider. Taken from the Figma board's Foundations frame; confirm against the file's border token (SPEC-008 Q1).
+  /// border/default: the hairline around cards and dividers.
   static const border = Color(0xFFE5E7EB);
+
+  /// bg/soft: the quiet grey of a skip pill, a segmented control or a skeleton.
+  static const bgSoft = Color(0xFFF3F4F6);
 
   // status/*: each has a text colour and a soft background. Never the only signal: always with an icon and words (REQ-PAX-004).
   static const delayedText = Color(0xFFB45309);
@@ -50,12 +53,18 @@ abstract final class SmartRailRadius {
   static const double sm = 8;
   static const double md = 12;
   static const double lg = 16;
+
+  /// radius/sheet: bottom sheets, illustration containers and the card of a screen.
+  static const double sheet = 24;
   static const double pill = 999;
 }
 
 /// Inter text styles of the Figma file. Until the font files are bundled the platform font stands in (the family is already set).
 abstract final class SmartRailType {
   static const fontFamily = 'Inter';
+
+  /// Display/36 Bold: the title of an onboarding slide.
+  static const display = TextStyle(fontFamily: fontFamily, fontSize: 36, fontWeight: FontWeight.w700, height: 42 / 36);
 
   static const headline = TextStyle(fontFamily: fontFamily, fontSize: 32, fontWeight: FontWeight.w700, height: 1.2);
 

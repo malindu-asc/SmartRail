@@ -13,6 +13,8 @@ class SmartRailTextField extends StatelessWidget {
     this.onChanged,
     this.keyboardType,
     this.obscureText = false,
+    this.errorText,
+    this.autofillHints,
   });
 
   final String label;
@@ -21,6 +23,10 @@ class SmartRailTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final TextInputType? keyboardType;
   final bool obscureText;
+
+  /// Words under the field when its value is not accepted. Colour is never the only signal.
+  final String? errorText;
+  final Iterable<String>? autofillHints;
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +48,15 @@ class SmartRailTextField extends StatelessWidget {
             onChanged: onChanged,
             keyboardType: keyboardType,
             obscureText: obscureText,
+            autofillHints: autofillHints,
             style: SmartRailType.body,
             // The label is the text above, which a screen reader reads with the field.
             decoration: InputDecoration(
               hintText: hint,
+              errorText: errorText,
+              errorStyle: SmartRailType.caption.copyWith(color: SmartRailColors.cancelledText),
+              errorBorder: border.copyWith(borderSide: const BorderSide(color: SmartRailColors.cancelledText, width: 1.5)),
+              focusedErrorBorder: border.copyWith(borderSide: const BorderSide(color: SmartRailColors.cancelledText, width: 1.5)),
               hintStyle: SmartRailType.body.copyWith(color: SmartRailColors.textTertiary),
               filled: true,
               fillColor: SmartRailColors.surface,

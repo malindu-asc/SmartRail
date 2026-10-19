@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../motion/motion.dart';
 import '../tokens/tokens.dart';
 import 'smartrail_button.dart';
 
@@ -90,20 +91,50 @@ class ErrorState extends StatelessWidget {
   }
 }
 
-/// A grey block shown where content is loading. It has no meaning for a screen reader.
-class Skeleton extends StatelessWidget {
+/// A soft grey block shown where content is loading. It breathes very slowly so it reads as "loading", and not at all when motion
+/// is reduced. It has no meaning for a screen reader.
+class Skeleton extends StatefulWidget {
   const Skeleton({super.key, this.width, this.height = 16});
 
   final double? width;
   final double height;
 
   @override
+  State<Skeleton> createState() => _SkeletonState();
+}
+
+class _SkeletonState extends State<Skeleton> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1100));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (SmartRailMotion.reduced(context)) {
+      _controller.stop();
+    } else if (!_controller.isAnimating) {
+      _controller.repeat(reverse: true);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ExcludeSemantics(
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(color: SmartRailColors.staleBg, borderRadius: BorderRadius.circular(SmartRailRadius.sm)),
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) => Container(
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+            color: Color.lerp(SmartRailColors.bgSoft, SmartRailColors.border, _controller.value),
+            borderRadius: BorderRadius.circular(SmartRailRadius.sm),
+          ),
+        ),
       ),
     );
   }

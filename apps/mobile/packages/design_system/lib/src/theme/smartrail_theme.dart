@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 
 import '../tokens/tokens.dart';
@@ -101,6 +102,15 @@ abstract final class SmartRailTheme {
       labelSmall: floor(SmartRailType.caption),
     ).apply(bodyColor: SmartRailColors.textPrimary, displayColor: SmartRailColors.textPrimary);
 
+    OutlineInputBorder field(Color color) => OutlineInputBorder(
+      borderRadius: BorderRadius.circular(SmartRailRadius.md),
+      borderSide: BorderSide(color: color, width: 1.5),
+    );
+
+    final pill = StadiumBorder(side: BorderSide(color: SmartRailColors.borderStrong, width: spec.buttonBorderWidth));
+
+    const sharedAxis = SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal);
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
@@ -109,18 +119,124 @@ abstract final class SmartRailTheme {
       textTheme: textTheme,
       extensions: [spec],
       materialTapTargetSize: MaterialTapTargetSize.padded,
+      splashFactory: InkRipple.splashFactory,
+
+      // Pushed screens slide on a shared axis; tabs fade (see the app shell). Both are off when motion is reduced.
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: sharedAxis,
+          TargetPlatform.iOS: sharedAxis,
+          TargetPlatform.windows: sharedAxis,
+          TargetPlatform.linux: sharedAxis,
+          TargetPlatform.macOS: sharedAxis,
+        },
+      ),
+
       appBarTheme: const AppBarTheme(
         backgroundColor: SmartRailColors.surface,
         foregroundColor: SmartRailColors.textPrimary,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
+        centerTitle: false,
       ),
+
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: SmartRailColors.primary,
+          foregroundColor: SmartRailColors.onPrimary,
+          minimumSize: Size.fromHeight(spec.buttonHeight),
+          textStyle: spec.buttonLabel,
+          shape: const StadiumBorder(),
+          elevation: 0,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: SmartRailColors.surface,
+          foregroundColor: SmartRailColors.textPrimary,
+          minimumSize: Size.fromHeight(spec.buttonHeight),
+          textStyle: spec.buttonLabel,
+          shape: pill,
+          side: BorderSide(color: SmartRailColors.borderStrong, width: spec.buttonBorderWidth),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: SmartRailColors.primary,
+          minimumSize: Size(spec.touchTarget, spec.touchTarget),
+          textStyle: floor(SmartRailType.label14),
+        ),
+      ),
+
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: SmartRailColors.surface,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+        labelStyle: floor(SmartRailType.caption).copyWith(color: SmartRailColors.textSecondary),
+        hintStyle: SmartRailType.body.copyWith(color: SmartRailColors.textTertiary),
+        errorStyle: floor(SmartRailType.caption).copyWith(color: SmartRailColors.cancelledText),
+        border: field(SmartRailColors.borderStrong),
+        enabledBorder: field(SmartRailColors.borderStrong),
+        focusedBorder: field(SmartRailColors.primary),
+        errorBorder: field(SmartRailColors.cancelledText),
+        focusedErrorBorder: field(SmartRailColors.cancelledText),
+      ),
+
+      cardTheme: CardThemeData(
+        color: SmartRailColors.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(SmartRailRadius.lg),
+          side: const BorderSide(color: SmartRailColors.border),
+        ),
+      ),
+
+      chipTheme: ChipThemeData(
+        backgroundColor: SmartRailColors.surface,
+        selectedColor: SmartRailColors.primarySubtle,
+        side: const BorderSide(color: SmartRailColors.borderStrong),
+        shape: const StadiumBorder(),
+        labelStyle: floor(SmartRailType.label14),
+        checkmarkColor: SmartRailColors.primary,
+      ),
+
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: SmartRailColors.surface,
+        surfaceTintColor: Colors.transparent,
+        showDragHandle: true,
+        dragHandleColor: SmartRailColors.borderStrong,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(SmartRailRadius.sheet))),
+      ),
+
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: SmartRailColors.textPrimary,
+        contentTextStyle: floor(SmartRailType.body14).copyWith(color: SmartRailColors.onPrimary),
+        actionTextColor: SmartRailColors.primarySubtle,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SmartRailRadius.md)),
+      ),
+
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: SmartRailColors.surface,
+        surfaceTintColor: Colors.transparent,
         indicatorColor: SmartRailColors.primarySubtle,
+        elevation: 0,
         height: spec.touchTarget + 24,
-        labelTextStyle: WidgetStatePropertyAll(floor(SmartRailType.caption)),
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => floor(SmartRailType.caption).copyWith(
+            color: states.contains(WidgetState.selected) ? SmartRailColors.primary : SmartRailColors.textTertiary,
+          ),
+        ),
+        iconTheme: WidgetStateProperty.resolveWith(
+          (states) => IconThemeData(
+            color: states.contains(WidgetState.selected) ? SmartRailColors.primary : SmartRailColors.textTertiary,
+          ),
+        ),
       ),
+
       dividerTheme: const DividerThemeData(color: SmartRailColors.border, space: 1, thickness: 1),
     );
   }

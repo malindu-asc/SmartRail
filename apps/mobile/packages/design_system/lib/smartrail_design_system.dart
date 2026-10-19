@@ -4,8 +4,10 @@
 /// values and no raw font sizes.
 library;
 
+export 'src/motion/motion.dart';
 export 'src/theme/smartrail_theme.dart';
 export 'src/tokens/tokens.dart';
+export 'src/widgets/dashed_box.dart';
 export 'src/widgets/info_banner.dart';
 export 'src/widgets/smartrail_button.dart';
 export 'src/widgets/smartrail_text_field.dart';
