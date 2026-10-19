@@ -101,6 +101,16 @@ public sealed class DemoScenarioSeeder(
         // Not heard from for ten minutes: the passenger sees "No live data" and the scheduled times only.
         if (coastLive is not null) applied += Run(coastLive, 0, now, now.AddMinutes(-10));
 
+        // The other direction and the rest of the day.
+        Journey? By(string number) => all.FirstOrDefault(j => j.TrainNumber == number && j.Lifecycle == JourneyLifecycle.Ready);
+        if (By("R101") is { } r101 && r101.ScheduledDepartureUtc <= now) applied += Run(r101, 5, now, now);
+        if (By("R201") is { } r201 && r201.ScheduledDepartureUtc <= now) applied += Run(r201, 15, now, now);
+        if (By("R301") is { } r301 && r301.ScheduledDepartureUtc <= now) applied += Run(r301, 0, now, now);
+        if (By("R401") is { } r401 && r401.ScheduledDepartureUtc <= now) applied += Run(r401, -2, now, now);
+        var f302 = By("F302");
+        if (f302 is not null && f302.Cancel("operational").IsSuccess) applied++;
+        if (By("F301") is { } f301 && ChangePlatform(f301, now)) applied++;
+
         // Cancelled and platform changes.
         if (hillFuture.Count > 0 && hillFuture[0].Cancel("operational").IsSuccess) applied++;
         if (mainFuture.Count > 0 && ChangePlatform(mainFuture[0], now)) applied++;
@@ -117,6 +127,11 @@ public sealed class DemoScenarioSeeder(
         tickets += await AddBookingAsync("affected", hillFuture.Count > 0 ? hillFuture[0] : null, "CEN", "HIL", 1, 0, 1, null, false, PassengerSubject, now, cancellationToken);
         tickets += await AddBookingAsync("guest", mainFuture.Count > 1 ? mainFuture[1] : null, "CEN", "OAK", 1, 0, 0, null, false, null, now, cancellationToken);
 
+        tickets += await AddBookingAsync("family", By("F103"), "CEN", "RIV", 1, 1, 1, null, false, PassengerSubject, now, cancellationToken);
+        tickets += await AddBookingAsync("reverse", By("R101") ?? all.FirstOrDefault(j => j.TrainNumber == "R101"), "RIV", "OAK", 1, 0, 0, null, false, PassengerSubject, now, cancellationToken);
+        tickets += await AddBookingAsync("coast", By("F301"), "CEN", "BAY", 2, 0, 0, null, false, PassengerSubject, now, cancellationToken);
+        tickets += await AddBookingAsync("affected2", f302 ?? all.FirstOrDefault(j => j.TrainNumber == "F302"), "BAY", "CEN", 1, 0, 0, null, false, PassengerSubject, now, cancellationToken);
+
         // ---- notices ----
         var notices = await AddDisruptionsAsync(now, cancellationToken);
 
@@ -124,10 +139,14 @@ public sealed class DemoScenarioSeeder(
         return new ScenarioResult(applied, tickets, notices);
     }
 
-    private static readonly (string Number, string Route, int MinutesFromNow)[] DemoTrains =
+    // L = running now, R = running now the other way, F = still to leave. Reverse trains run from the route's far end.
+    private static readonly (string Number, string Route, int MinutesFromNow, bool Forward)[] DemoTrains =
     [
-        ("L101", "MAIN", -12), ("L201", "HILL", -14), ("L301", "COAST", -12), ("L401", "NORTH", -9),
-        ("F101", "MAIN", 25), ("F102", "MAIN", 55), ("F201", "HILL", 40), ("F401", "NORTH", 30)
+        ("L101", "MAIN", -12, true), ("L201", "HILL", -14, true), ("L301", "COAST", -12, true), ("L401", "NORTH", -9, true),
+        ("R101", "MAIN", -10, false), ("R201", "HILL", -16, false), ("R301", "COAST", -11, false), ("R401", "NORTH", -8, false),
+        ("F101", "MAIN", 25, true), ("F102", "MAIN", 55, true), ("F103", "MAIN", 85, true), ("F201", "HILL", 40, true),
+        ("F202", "HILL", 70, true), ("F301", "COAST", 35, true), ("F302", "COAST", 60, false), ("F401", "NORTH", 30, true),
+        ("F402", "NORTH", 50, false), ("F403", "NORTH", 90, true)
     ];
 
     // A copy of the route's first train, moved so it leaves at the wanted time, with a vehicle and a driver so it is Ready.
@@ -137,12 +156,12 @@ public sealed class DemoScenarioSeeder(
         var any = false;
         var trainsets = 0;
 
-        foreach (var (number, route, minutes) in DemoTrains)
+        foreach (var (number, route, minutes, forward) in DemoTrains)
         {
             if (all.Any(j => j.TrainNumber == number))
                 continue;
 
-            var template = all.FirstOrDefault(j => j.RouteCode == route && j.OriginStationCode == ForwardOrigin[route]);
+            var template = all.FirstOrDefault(j => j.RouteCode == route && (j.OriginStationCode == ForwardOrigin[route]) == forward);
             if (template is null)
                 continue;
 
@@ -288,7 +307,7 @@ public sealed class DemoScenarioSeeder(
     {
         var added = 0;
 
-        async Task AddAsync(string key, string title, string message, DisruptionSeverity severity, bool networkWide, string[] stations, int endsInMinutes)
+        async Task AddAsync(string key, string title, string message, DisruptionSeverity severity, bool networkWide, string[] stations, int endsInMinutes, bool resolved = false)
         {
             var id = StableId($"disruption:{key}");
             if (await operationsDb.Disruptions.AnyAsync(d => d.Id == id, ct))
@@ -300,6 +319,9 @@ public sealed class DemoScenarioSeeder(
             if (created.IsFailure)
                 return;
 
+            if (resolved)
+                created.Value.Resolve(now);
+
             operationsDb.Disruptions.Add(created.Value);
             added++;
         }
@@ -310,6 +332,15 @@ public sealed class DemoScenarioSeeder(
         await AddAsync("hill-lift", "Lift out of service at Hill Town",
             "The lift to platform 2 is out of service. Step-free access is available on platform 1.",
             DisruptionSeverity.Minor, false, ["HIL"], 240);
+        await AddAsync("harbour-works", "Harbour line closed for track works",
+            "Trains do not call at Harbour while the track is replaced. Use the Coast line services from Central to Lakeside.",
+            DisruptionSeverity.Severe, false, ["HAR", "LAK"], 300);
+        await AddAsync("market-crowding", "Busy at Market Street",
+            "Expect crowding on the evening trains. Allow a few extra minutes to reach your platform.",
+            DisruptionSeverity.Minor, false, ["MAR"], 120);
+        await AddAsync("airport-lift", "Airport lift repaired",
+            "The lift at Airport is working again.",
+            DisruptionSeverity.Minor, false, ["AIR"], 5, resolved: true);
         await AddAsync("network-check", "Planned track inspection",
             "Some evening services may run a few minutes late while track inspections take place across the network.",
             DisruptionSeverity.Minor, true, [], 360);
