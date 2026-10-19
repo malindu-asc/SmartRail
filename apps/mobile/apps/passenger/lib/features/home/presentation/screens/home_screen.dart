@@ -86,7 +86,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
           ),
+          // The white sheet starts with 24 radius corners over the green (design 34). Full width, or the strip collapses to nothing.
           Container(
+            width: double.infinity,
             height: 24,
             color: SmartRailColors.primary,
             child: const DecoratedBox(
