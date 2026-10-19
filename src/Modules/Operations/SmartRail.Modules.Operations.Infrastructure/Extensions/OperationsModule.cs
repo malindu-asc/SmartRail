@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartRail.Modules.Operations.Application.Abstractions;
+using SmartRail.Modules.Operations.Application.Disruptions;
 using SmartRail.Modules.Operations.Infrastructure.Persistence;
 using SmartRail.Infrastructure.Core.Outbox;
 using SmartRail.Infrastructure.Core.Persistence;
@@ -26,7 +27,7 @@ public static class OperationsModule
         services.AddScoped<IOperationsUnitOfWork>(sp => sp.GetRequiredService<OperationsDbContext>());
         services.AddScoped<IOutboxMessageProcessor, OutboxMessageProcessor<OperationsDbContext>>();
 
-        // Register repositories here.
+        services.AddScoped<IDisruptionStore, DisruptionStore>();
 
         return services;
     }
