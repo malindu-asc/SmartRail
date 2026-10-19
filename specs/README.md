@@ -95,7 +95,7 @@ Dependency order. Each spec is about three days or less; split anything bigger.
 | SPEC-013 | Platform display (kiosk) | Planned | kiosk | — |
 | SPEC-014 | Station search and route stops in the passenger app | Planned | passenger app | — |
 | SPEC-015 | Timetable versioning workflow: draft, review, approve, publish (API and console) | Planned | Network, console | — |
-| SPEC-016 | Journey search A to B with one transfer (REQ-PAX-006) | Planned | Network, Journeys, passenger app | — |
+| SPEC-016 | Journey search A to B with one transfer (REQ-PAX-006) | In progress | Network, Journeys, passenger app | feature/passenger-app |
 | SPEC-017 | Public rate limiting (REQ-SEC-002) and permission-matrix tests (REQ-SEC-003) | Planned | API, all modules | — |
 | SPEC-018 | Web foundation: shared packages, design tokens, auth, routing, data layer (console and kiosk) | Planned | console, kiosk | — |
 | SPEC-019 | Station terminal: destination search, station information, idle reset, lockdown, offline mode | Planned | kiosk | — |
