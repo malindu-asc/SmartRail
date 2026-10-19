@@ -202,7 +202,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
           const SizedBox(height: 16),
           SmartRailButton(
             label: l10n.planSearch,
-            onPressed: from != null && to != null
+            onPressed: from != null && to != null && from.code != to.code
                 ? () => _search(from, to)
                 : null,
           ),
