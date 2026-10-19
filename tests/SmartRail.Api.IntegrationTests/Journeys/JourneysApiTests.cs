@@ -26,6 +26,9 @@ public class JourneysApiFactory : NetworkApiFactory
 
     protected virtual bool DemoFleet => false;
 
+    // The clock the API reads. Tests move it to age the live data (Stale at 60 s, Unknown at 300 s).
+    public AdjustableTimeProvider Clock { get; private set; } = null!;
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         base.ConfigureWebHost(builder);
@@ -33,15 +36,31 @@ public class JourneysApiFactory : NetworkApiFactory
         builder.ConfigureAppConfiguration((_, configuration) =>
             configuration.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["Journeys:Seed:DemoFleet"] = DemoFleet ? "true" : "false"
+                ["Journeys:Seed:DemoFleet"] = DemoFleet ? "true" : "false",
+
+                // Two feed sources of different rank, for the precedence tests. Test keys only.
+                ["Identity:FeedSources:Seed:0:Code"] = FeedKeys.Primary.Code,
+                ["Identity:FeedSources:Seed:0:Name"] = "Primary test feed",
+                ["Identity:FeedSources:Seed:0:Key"] = FeedKeys.Primary.Key,
+                ["Identity:FeedSources:Seed:0:Rank"] = "1",
+                ["Identity:FeedSources:Seed:1:Code"] = FeedKeys.Secondary.Code,
+                ["Identity:FeedSources:Seed:1:Name"] = "Secondary test feed",
+                ["Identity:FeedSources:Seed:1:Key"] = FeedKeys.Secondary.Key,
+                ["Identity:FeedSources:Seed:1:Rank"] = "2"
             }));
 
         builder.ConfigureTestServices(services =>
         {
+            Clock = new AdjustableTimeProvider(Now);
             services.RemoveAll<TimeProvider>();
-            services.AddSingleton<TimeProvider>(new FixedTimeProvider(Now));
+            services.AddSingleton<TimeProvider>(Clock);
         });
     }
+
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, long> _sequences = new();
+
+    // Sequences are one counter per source and must never go backwards, so tests that share a database share the counter.
+    internal long NextSequence(string source) => _sequences.AddOrUpdate(source, 1000, (_, last) => last + 1);
 
     internal async Task<GenerationResult> GenerateAsync()
     {
@@ -58,8 +77,34 @@ public class JourneysApiFactory : NetworkApiFactory
     }
 }
 
+internal static class FeedKeys
+{
+    internal static readonly (string Code, string Key) Primary = ("SIM", "test-key-primary-0123456789");
+    internal static readonly (string Code, string Key) Secondary = ("SIM-B", "test-key-secondary-0123456789");
+}
+
+public sealed class AdjustableTimeProvider(DateTimeOffset now) : TimeProvider
+{
+    private DateTimeOffset _now = now;
+
+    public override DateTimeOffset GetUtcNow() => _now;
+
+    public void Set(DateTimeOffset value) => _now = value;
+
+    public void Advance(TimeSpan by) => _now += by;
+}
+
 public sealed class DemoFleetApiFactory : JourneysApiFactory
 {
+    protected override bool DemoFleet => true;
+}
+
+// 19:30 on 14 October, network time: the 06:30, 08:00, 12:00 and 17:30 services are over, so tests can send their events
+// (never in the future), and the 17:30 ones are still inside the board's 2 hour window for running trains.
+public sealed class LiveIngestApiFactory : JourneysApiFactory
+{
+    protected override DateTimeOffset Now => new(2026, 10, 14, 14, 0, 0, TimeSpan.Zero);
+
     protected override bool DemoFleet => true;
 }
 
