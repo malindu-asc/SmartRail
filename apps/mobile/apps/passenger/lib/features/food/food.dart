@@ -315,113 +315,135 @@ class _Menu extends StatelessWidget {
   }
 }
 
-/// "Food at stop" (design 36): a row under the timeline for the next stop with a menu. A brand-subtle circle with a fork, the station, a
-/// line about menu and prices, and a chevron. Stops with no kitchen, or whose menu cannot be reached, simply do not appear: the
-/// journey never waits for the caterer.
+/// "Order food" (design 36): one row under the timeline. It opens the menu of the next stop that has a kitchen; when several stops do,
+/// it first lists them to choose from. Stops with no kitchen, or whose menu cannot be reached, are left out: the journey never waits
+/// for the caterer.
 class JourneyFood extends ConsumerWidget {
   const JourneyFood({super.key, required this.stops, required this.clock});
 
   final List<JourneyStop> stops;
   final NetworkClock clock;
 
+  String _note(AppLocalizations l10n, JourneyStop stop) {
+    final arrive =
+        stop.estimatedArrival ?? stop.scheduledArrival ?? stop.scheduledTime;
+    return [
+      if (arrive != null) l10n.foodArrive(clock.formatTime(arrive)),
+      if (stop.platform != null) l10n.platformN(stop.platform!),
+    ].join(' · ');
+  }
+
+  void _open(BuildContext context, JourneyStop stop, String note) =>
+      context.push(
+        AppRoutes.food(stop.stationCode, subtitle: note.isEmpty ? null : note),
+      );
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final ahead = stops.where((s) => s.state == 'Pending').toList();
+    final withFood = [
+      for (final stop in stops.where((s) => s.state == 'Pending'))
+        if (ref.watch(menuProvider(stop.stationCode)).value != null) stop,
+    ];
+    if (withFood.isEmpty) return const SizedBox.shrink();
 
-    final cards = <Widget>[];
-    for (final stop in ahead) {
-      if (ref.watch(menuProvider(stop.stationCode)).value == null) continue;
-
-      final arrive =
-          stop.estimatedArrival ?? stop.scheduledArrival ?? stop.scheduledTime;
-      final note = [
-        if (arrive != null) l10n.foodArrive(clock.formatTime(arrive)),
-        if (stop.platform != null) l10n.platformN(stop.platform!),
-      ].join(' · ');
-
-      cards.add(
-        Semantics(
-          button: true,
-          label: '${l10n.foodTitle(stop.stationName)}. ${l10n.foodMenuHint}',
-          child: ExcludeSemantics(
-            child: Material(
-              color: SmartRailColors.page,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(SmartRailRadius.lg),
-                side: const BorderSide(color: SmartRailColors.border),
+    Future<void> onTap() async {
+      if (withFood.length == 1) {
+        _open(context, withFood.first, _note(l10n, withFood.first));
+        return;
+      }
+      final picked = await showSmartRailSheet<JourneyStop>(
+        context,
+        builder: (sheet) => SheetBody(
+          children: [
+            Text(
+              l10n.foodPick,
+              style: SmartRailType.title24.copyWith(
+                color: SmartRailColors.textPrimary,
               ),
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () => context.push(
-                  AppRoutes.food(
-                    stop.stationCode,
-                    subtitle: note.isEmpty ? null : note,
+            ),
+            RowsCard(
+              children: [
+                for (final stop in withFood)
+                  ActionRow(
+                    icon: AppIcons.fork,
+                    label: stop.stationName,
+                    value: _note(l10n, stop),
+                    onTap: () => Navigator.of(sheet).pop(stop),
                   ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: SmartRailColors.primarySubtle,
-                        ),
-                        child: const SvgIcon(
-                          AppIcons.fork,
-                          size: 22,
-                          color: SmartRailColors.primary,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              l10n.foodTitle(stop.stationName),
-                              style: SmartRailType.heading16.copyWith(
-                                color: SmartRailColors.textPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              l10n.foodMenuHint,
-                              style: SmartRailType.body14.copyWith(
-                                color: SmartRailColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SvgIcon(
-                        AppIcons.chevron,
-                        size: 18,
-                        color: SmartRailColors.textTertiary,
-                      ),
-                    ],
+              ],
+            ),
+          ],
+        ),
+      );
+      if (picked != null && context.mounted) {
+        _open(context, picked, _note(l10n, picked));
+      }
+    }
+
+    return Semantics(
+      button: true,
+      label: '${l10n.foodOrder}. ${l10n.foodMenuHint}',
+      child: ExcludeSemantics(
+        child: Material(
+          color: SmartRailColors.page,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(SmartRailRadius.lg),
+            side: const BorderSide(color: SmartRailColors.border),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: SmartRailColors.primarySubtle,
+                    ),
+                    child: const SvgIcon(
+                      AppIcons.fork,
+                      size: 22,
+                      color: SmartRailColors.primary,
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.foodOrder,
+                          style: SmartRailType.heading16.copyWith(
+                            color: SmartRailColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          l10n.foodMenuHint,
+                          style: SmartRailType.body14.copyWith(
+                            color: SmartRailColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SvgIcon(
+                    AppIcons.chevron,
+                    size: 18,
+                    color: SmartRailColors.textTertiary,
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      );
-    }
-
-    if (cards.isEmpty) return const SizedBox.shrink();
-
-    return Column(
-      children: [
-        for (var i = 0; i < cards.length; i++) ...[
-          if (i > 0) const SizedBox(height: 12),
-          cards[i],
-        ],
-      ],
+      ),
     );
   }
 }
