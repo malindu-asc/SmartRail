@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart'
-    show CupertinoDatePicker, CupertinoDatePickerMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -59,25 +57,6 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     return DateTime(n.year, n.month, n.day + 1, 8, 0);
   }
 
-  Future<void> _openSheet() async {
-    final picked = await showModalBottomSheet<DateTime?>(
-      context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (_) => DateTimeSheet(
-        now: _networkNow(),
-        initial: _when,
-        zone: ref.read(networkClockProvider).zoneId,
-      ),
-    );
-    // A result of DateTime(0) means Now.
-    if (!mounted || picked == null) return;
-    setState(
-      () => _when = picked.isAtSameMomentAs(DateTime(0)) ? null : picked,
-    );
-  }
-
   String _hhmm(DateTime w) =>
       '${w.hour.toString().padLeft(2, '0')}:${w.minute.toString().padLeft(2, '0')}';
 
@@ -135,9 +114,6 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
         _from ?? (recentStations.isEmpty ? null : recentStations.first);
     final to = _to;
 
-    final custom =
-        _when != null && _when != _laterToday() && _when != _tomorrow();
-
     return SafeArea(
       bottom: false,
       child: ListView(
@@ -183,14 +159,9 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                 onTap: () => setState(() => _when = null),
               ),
               _TimeChip(
-                label: custom
-                    ? _label(l10n, _when!)
-                    : _label(l10n, _laterToday()),
-                selected: _when != null && !(_when == _tomorrow()),
-                onTap: custom || _when == null
-                    ? _openSheet
-                    : () => setState(() => _when = _laterToday()),
-                onLongPress: _openSheet,
+                label: _label(l10n, _laterToday()),
+                selected: _when == _laterToday(),
+                onTap: () => setState(() => _when = _laterToday()),
               ),
               _TimeChip(
                 label: l10n.planTomorrow,
@@ -499,13 +470,11 @@ class _TimeChip extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
-    this.onLongPress,
   });
 
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -516,7 +485,6 @@ class _TimeChip extends StatelessWidget {
       child: ExcludeSemantics(
         child: GestureDetector(
           onTap: onTap,
-          onLongPress: onLongPress,
           child: AnimatedContainer(
             duration: SmartRailMotion.of(context, SmartRailMotion.fast),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -540,128 +508,6 @@ class _TimeChip extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// "Date and time" (design 11): Now, Later today and Tomorrow as shortcuts, and a scroll wheel for any day in the next week. The
-/// result is a wall-clock time in the railway's zone; [DateTime(0)] means Now.
-class DateTimeSheet extends StatefulWidget {
-  const DateTimeSheet({
-    super.key,
-    required this.now,
-    required this.initial,
-    required this.zone,
-  });
-
-  final DateTime now;
-  final DateTime? initial;
-  final String zone;
-
-  @override
-  State<DateTimeSheet> createState() => _DateTimeSheetState();
-}
-
-class _DateTimeSheetState extends State<DateTimeSheet> {
-  late DateTime _value = widget.initial ?? widget.now;
-  bool _now = false;
-  int _generation = 0;
-
-  DateTime get _min => DateTime(
-    widget.now.year,
-    widget.now.month,
-    widget.now.day,
-    widget.now.hour,
-    widget.now.minute,
-  );
-
-  void _set(DateTime value, {bool now = false}) => setState(() {
-    _value = value.isBefore(_min) ? _min : value;
-    _now = now;
-    _generation++; // moves the wheel to the new value
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final n = widget.now;
-    final laterToday = DateTime(
-      n.year,
-      n.month,
-      n.day,
-      (n.hour + 2).clamp(0, 23),
-      0,
-    );
-    final tomorrow = DateTime(n.year, n.month, n.day + 1, 8, 0);
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          SmartRailSpacing.xl,
-          0,
-          SmartRailSpacing.xl,
-          SmartRailSpacing.xl,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.planWhenTitle,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: SmartRailSpacing.md),
-            Wrap(
-              spacing: SmartRailSpacing.sm,
-              children: [
-                ChoiceChip(
-                  label: Text(l10n.planLeaveNow),
-                  selected: _now,
-                  onSelected: (_) => _set(n, now: true),
-                ),
-                ActionChip(
-                  label: Text(l10n.planLaterToday),
-                  onPressed: () => _set(laterToday),
-                ),
-                ActionChip(
-                  label: Text(l10n.planTomorrow),
-                  onPressed: () => _set(tomorrow),
-                ),
-              ],
-            ),
-            const SizedBox(height: SmartRailSpacing.md),
-            Container(
-              height: 190,
-              decoration: BoxDecoration(
-                color: SmartRailColors.bgSoft,
-                borderRadius: BorderRadius.circular(SmartRailRadius.md),
-              ),
-              child: CupertinoDatePicker(
-                key: ValueKey(_generation),
-                mode: CupertinoDatePickerMode.dateAndTime,
-                use24hFormat: true,
-                initialDateTime: _value,
-                minimumDate: _min,
-                maximumDate: DateTime(n.year, n.month, n.day + 7, 23, 59),
-                onDateTimeChanged: (v) => _value = v,
-              ),
-            ),
-            const SizedBox(height: SmartRailSpacing.sm),
-            Text(
-              l10n.planTimeNote(widget.zone),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: SmartRailColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: SmartRailSpacing.lg),
-            SmartRailButton(
-              label: l10n.whoConfirm,
-              onPressed: () =>
-                  Navigator.of(context).pop(_now ? DateTime(0) : _value),
-            ),
-          ],
         ),
       ),
     );

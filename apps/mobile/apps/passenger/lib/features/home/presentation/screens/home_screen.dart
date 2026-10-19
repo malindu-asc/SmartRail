@@ -175,7 +175,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       const SizedBox(height: 14),
                       SmartRailButton(
                         label: l10n.findTrains,
-                        onPressed: from != null && _to != null && from.code != _to!.code
+                        onPressed:
+                            from != null &&
+                                _to != null &&
+                                from.code != _to!.code
                             ? () => context.push(
                                 AppRoutes.planResults(from.code, _to!.code),
                               )
