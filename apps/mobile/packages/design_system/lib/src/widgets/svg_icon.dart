@@ -7,6 +7,9 @@ abstract final class AppIcons {
   static const access = 'access';
   static const alert = 'alert';
   static const arrows = 'arrows';
+  static const plus = 'plus';
+  static const search = 'search';
+  static const ticketBig = 'ticket_big';
   static const back = 'back';
   static const chevron = 'chevron';
   static const filter = 'filter';
@@ -36,6 +39,12 @@ abstract final class AppIcons {
   static const user = 'user';
   static const wifiOff = 'wifioff';
   static const xc = 'xc';
+  static const xcBig = 'xc_big';
+  static const clockHold = 'clock_hold';
+  static const minus = 'minus';
+  static const plusSmall = 'plus_small';
+  static const accessHelp = 'access_help';
+  static const close = 'close';
 }
 
 class SvgIcon extends StatelessWidget {

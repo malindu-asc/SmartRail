@@ -9,6 +9,8 @@ export 'src/theme/smartrail_theme.dart';
 export 'src/tokens/tokens.dart';
 export 'src/widgets/dashed_box.dart';
 export 'src/widgets/info_banner.dart';
+export 'src/widgets/layout_pieces.dart';
+export 'src/widgets/sheet.dart';
 export 'src/widgets/smartrail_button.dart';
 export 'src/widgets/smartrail_text_field.dart';
 export 'src/widgets/state_widgets.dart';
