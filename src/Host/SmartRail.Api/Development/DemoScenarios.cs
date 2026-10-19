@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using SmartRail.Modules.Identity.Domain.Devices;
+using SmartRail.Modules.Identity.Infrastructure.Persistence;
 using SmartRail.Modules.Journeys.Domain.Crew;
 using SmartRail.Modules.Journeys.Domain.Fleet;
 using SmartRail.Modules.Journeys.Domain.Journeys;
@@ -6,6 +8,8 @@ using SmartRail.Modules.Journeys.Domain.Live;
 using SmartRail.Modules.Journeys.Infrastructure.Persistence;
 using SmartRail.Modules.Network.Contracts;
 using SmartRail.Modules.Operations.Domain.Disruptions;
+using SmartRail.Modules.Operations.Domain.Incidents;
+using SmartRail.Modules.Operations.Domain.Messages;
 using SmartRail.Modules.Operations.Infrastructure.Persistence;
 using SmartRail.Modules.Ticketing.Domain.Bookings;
 using SmartRail.Modules.Ticketing.Infrastructure.Persistence;
@@ -26,6 +30,7 @@ public sealed class DemoScenarioSeeder(
     JourneysDbContext journeysDb,
     TicketingDbContext ticketingDb,
     OperationsDbContext operationsDb,
+    IdentityDbContext identityDb,
     INetworkTimeZone timeZone,
     TimeProvider clock,
     ILogger<DemoScenarioSeeder> logger)
@@ -37,6 +42,11 @@ public sealed class DemoScenarioSeeder(
     // The demo driver of the Keycloak realm and the train they drive.
     public const string DriverSubject = "a1000000-0000-4000-8000-000000000002";
     public const string DriverTrain = "F102";
+
+    // The demo staff of the Keycloak realm (see infra/keycloak/smartrail-realm.json).
+    public const string ControllerSubject = "a1000000-0000-4000-8000-000000000003";
+    public const string SecondControllerSubject = "a1000000-0000-4000-8000-000000000006";
+    public const string SchedulerSubject = "a1000000-0000-4000-8000-000000000005";
 
     private const string Actor = "demo-scenarios";
     private static readonly LiveRules Rules = LiveRules.Default;
@@ -134,6 +144,7 @@ public sealed class DemoScenarioSeeder(
 
         // ---- notices ----
         var notices = await AddDisruptionsAsync(now, cancellationToken);
+        notices += await AddOpsAsync(now, cancellationToken);
 
         logger.LogInformation("Demo scenarios: {Trains} train states, {Tickets} tickets, {Notices} notices", applied, tickets, notices);
         return new ScenarioResult(applied, tickets, notices);
@@ -315,9 +326,13 @@ public sealed class DemoScenarioSeeder(
 
             var created = Disruption.Create(
                 title, message, severity, networkWide, stations,
-                now.AddMinutes(endsInMinutes), now.AddHours(4), "demo-controller", now, id);
+                now.AddMinutes(endsInMinutes), now.AddHours(4), ControllerSubject, now, id, type: "Demo");
             if (created.IsFailure)
                 return;
+
+            // A network-wide notice needs a second person; the demo's second controller approves it.
+            if (networkWide)
+                created.Value.Approve(SecondControllerSubject, now);
 
             if (resolved)
                 created.Value.Resolve(now);
@@ -346,6 +361,149 @@ public sealed class DemoScenarioSeeder(
             DisruptionSeverity.Minor, true, [], 360);
 
         await operationsDb.SaveChangesAsync(ct);
+        return added;
+    }
+
+    // What the controller, scheduler and administrator consoles show on a fresh database: a notice waiting for approval, planned works,
+    // an open and a closed incident, driver messages (one not acknowledged yet), an assistance request and the device register.
+    private async Task<int> AddOpsAsync(DateTimeOffset now, CancellationToken ct)
+    {
+        var added = 0;
+
+        // ---- notices ----
+        var waitingId = StableId("disruption:approval-pending");
+        if (!await operationsDb.Disruptions.AnyAsync(d => d.Id == waitingId, ct))
+        {
+            var waiting = Disruption.Create("Reduced service on all lines tomorrow morning",
+                "Fewer trains run before 07:00 tomorrow while crews change shifts. Check your train before you travel.",
+                DisruptionSeverity.Major, true, [], now.AddHours(12), now.AddHours(6), SecondControllerSubject, now, waitingId, "Staffing");
+            if (waiting.IsSuccess)
+            {
+                operationsDb.Disruptions.Add(waiting.Value);
+                added++;
+            }
+        }
+
+        var plannedId = StableId("disruption:planned-works");
+        if (!await operationsDb.Disruptions.AnyAsync(d => d.Id == plannedId, ct))
+        {
+            var start = now.AddDays(2);
+            var planned = Disruption.Create("Track renewal between Central and Mill Lane",
+                "No trains between Central and Mill Lane from 22:00. Buses replace trains.",
+                DisruptionSeverity.Severe, false, ["CEN", "MIL"], start.AddHours(8), start.AddHours(9), SchedulerSubject, now, plannedId, "Planned works", start);
+            if (planned.IsSuccess)
+            {
+                operationsDb.Disruptions.Add(planned.Value);
+                added++;
+            }
+        }
+
+        var draftId = StableId("disruption:draft");
+        if (!await operationsDb.Disruptions.AnyAsync(d => d.Id == draftId, ct))
+        {
+            var draft = Disruption.Create("Lift works at Oak Park", "The lift at Oak Park will be out of service for a day.",
+                DisruptionSeverity.Minor, false, ["OAK"], null, now.AddHours(24), ControllerSubject, now, draftId, "Facilities", submit: false);
+            if (draft.IsSuccess)
+            {
+                operationsDb.Disruptions.Add(draft.Value);
+                added++;
+            }
+        }
+
+        // ---- incidents ----
+        var openId = StableId("incident:open");
+        if (!await operationsDb.Incidents.AnyAsync(i => i.Id == openId, ct))
+        {
+            var open = Incident.Declare("Signal failure at Mill Lane", IncidentSeverity.Major, ControllerSubject, "Reported by the signaller", ["MIL"],
+                StableId("disruption:mill-lane"), now.AddMinutes(-35), openId);
+            if (open.IsSuccess)
+            {
+                open.Value.AddNote(IncidentEntryKind.Action, "Told the drivers of trains 1004 and 1006 to hold at the previous station", null, ControllerSubject, now.AddMinutes(-30));
+                open.Value.AddNote(IncidentEntryKind.Note, "Signalling team on site, estimated repair in one hour", null, ControllerSubject, now.AddMinutes(-20));
+                operationsDb.Incidents.Add(open.Value);
+                added++;
+            }
+        }
+
+        var closedId = StableId("incident:closed");
+        if (!await operationsDb.Incidents.AnyAsync(i => i.Id == closedId, ct))
+        {
+            var closed = Incident.Declare("Door fault on a Coast line train", IncidentSeverity.Minor, SecondControllerSubject, "Reported by the driver", ["BAY"], null, now.AddHours(-6), closedId);
+            if (closed.IsSuccess)
+            {
+                closed.Value.Resolve("Train swapped at Bay Side; the faulty unit is in the workshop", SecondControllerSubject, now.AddHours(-5));
+                operationsDb.Incidents.Add(closed.Value);
+                added++;
+            }
+        }
+
+        // ---- driver messages and assistance ----
+        var waitingMessageId = StableId("message:hold");
+        if (!await operationsDb.ControlMessages.AnyAsync(m => m.Id == waitingMessageId, ct))
+        {
+            var hold = ControlMessage.Send(DriverSubject, null, DriverTrain, null, openId, "hold", "Hold at the next station until the signaller clears Mill Lane.",
+                true, now.AddHours(2), ControllerSubject, now.AddMinutes(-8), waitingMessageId);
+            if (hold.IsSuccess)
+            {
+                operationsDb.ControlMessages.Add(hold.Value);
+                added++;
+            }
+        }
+
+        var doneMessageId = StableId("message:thanks");
+        if (!await operationsDb.ControlMessages.AnyAsync(m => m.Id == doneMessageId, ct))
+        {
+            var done = ControlMessage.Send(DriverSubject, null, DriverTrain, null, null, null, "Platform 2 is free now. Use platform 2 at Central.",
+                true, now.AddHours(2), ControllerSubject, now.AddMinutes(-50), doneMessageId);
+            if (done.IsSuccess)
+            {
+                done.Value.MarkDelivered(now.AddMinutes(-49));
+                done.Value.Acknowledge(now.AddMinutes(-48));
+                operationsDb.ControlMessages.Add(done.Value);
+                added++;
+            }
+        }
+
+        var helpId = StableId("assistance:open");
+        if (!await operationsDb.AssistanceRequests.AnyAsync(a => a.Id == helpId, ct))
+        {
+            operationsDb.AssistanceRequests.Add(AssistanceRequest.Create(DriverSubject, null, DriverTrain, "MIL", "Passenger unwell on board, please arrange help at the station", now.AddMinutes(-4), helpId));
+            added++;
+        }
+
+        await operationsDb.SaveChangesAsync(ct);
+
+        // ---- the device register (displays, gates, terminals) with how recently each was heard from ----
+        if (!await identityDb.Devices.AnyAsync(ct))
+        {
+            (string Name, DeviceType Type, string Station, string Location, int? HeardSecondsAgo)[] devices =
+            [
+                ("Central platform 1 display", DeviceType.PlatformDisplay, "CEN", "Platform 1", 12),
+                ("Central platform 2 display", DeviceType.PlatformDisplay, "CEN", "Platform 2", 20),
+                ("Central concourse board", DeviceType.ConcourseBoard, "CEN", "Main concourse", 8),
+                ("Mill Lane platform display", DeviceType.PlatformDisplay, "MIL", "Platform 1", 75),
+                ("Hill Town platform display", DeviceType.PlatformDisplay, "HIL", "Platform 1", 400),
+                ("Central gate 3", DeviceType.GateScanner, "CEN", "Gate 3", 15),
+                ("Market Street ticket terminal", DeviceType.Terminal, "MAR", "Ticket hall", 30),
+                ("Airport platform display", DeviceType.PlatformDisplay, "AIR", "Platform 1", null)
+            ];
+
+            foreach (var d in devices)
+            {
+                var device = Device.Register(d.Name, d.Type, d.Station, d.Location, "demo-scenarios", now.AddDays(-30), StableId($"device:{d.Name}"));
+                if (device.IsFailure)
+                    continue;
+
+                if (d.HeardSecondsAgo is { } ago)
+                    device.Value.Heartbeat(now.AddSeconds(-ago), "1.4.2");
+
+                identityDb.Devices.Add(device.Value);
+                added++;
+            }
+
+            await identityDb.SaveChangesAsync(ct);
+        }
+
         return added;
     }
 

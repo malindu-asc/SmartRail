@@ -18,7 +18,7 @@ internal sealed class FakeStaffNames : IStaffNames
 }
 
 // The real API on a real Postgres with the demo network, timetable and fleet: the controller, scheduler and driver consoles end to end.
-public sealed class OpsApiFactory : JourneysApiFactory
+public class OpsApiFactory : JourneysApiFactory
 {
     protected override bool DemoFleet => true;
 
