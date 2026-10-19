@@ -62,7 +62,7 @@ class ResultsScreen extends ConsumerStatefulWidget {
 }
 
 class _ResultsScreenState extends ConsumerState<ResultsScreen> {
-  static const days = 5;
+  static const days = 14;
 
   int _day = 0;
   bool _directOnly = false;
@@ -215,7 +215,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
   }
 }
 
-/// Five days from today: weekday in 12 Medium, date in 16 Semi Bold, and a 3 high bar under the chosen one.
+/// Two weeks from today, scrolling sideways: weekday in 12 Medium, date in 16 Semi Bold, and a 3 high bar under the chosen one.
 class _DateStrip extends StatelessWidget {
   const _DateStrip({
     required this.selected,
@@ -237,65 +237,73 @@ class _DateStrip extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-      child: Row(
-        children: [
-          for (var i = 0; i < _ResultsScreenState.days; i++)
-            Expanded(
-              child: Builder(
-                builder: (context) {
-                  final day = DateTime(today.year, today.month, today.day + i);
-                  final chosen = i == selected;
-                  return Semantics(
-                    button: true,
-                    selected: chosen,
-                    label: '${_weekdays[day.weekday - 1]} ${day.day}',
-                    child: ExcludeSemantics(
-                      child: InkWell(
-                        onTap: () => onSelect(i),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Column(
-                            children: [
-                              Text(
-                                _weekdays[day.weekday - 1],
-                                style: SmartRailType.caption.copyWith(
-                                  color: SmartRailColors.textSecondary,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            for (var i = 0; i < _ResultsScreenState.days; i++)
+              SizedBox(
+                width: 64,
+                child: Builder(
+                  builder: (context) {
+                    final day = DateTime(
+                      today.year,
+                      today.month,
+                      today.day + i,
+                    );
+                    final chosen = i == selected;
+                    return Semantics(
+                      button: true,
+                      selected: chosen,
+                      label: '${_weekdays[day.weekday - 1]} ${day.day}',
+                      child: ExcludeSemantics(
+                        child: InkWell(
+                          onTap: () => onSelect(i),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Column(
+                              children: [
+                                Text(
+                                  _weekdays[day.weekday - 1],
+                                  style: SmartRailType.caption.copyWith(
+                                    color: SmartRailColors.textSecondary,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                '${day.day}',
-                                style: SmartRailType.heading16.copyWith(
-                                  color: chosen
-                                      ? SmartRailColors.primary
-                                      : SmartRailColors.textPrimary,
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${day.day}',
+                                  style: SmartRailType.heading16.copyWith(
+                                    color: chosen
+                                        ? SmartRailColors.primary
+                                        : SmartRailColors.textPrimary,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 2),
-                              AnimatedContainer(
-                                duration: SmartRailMotion.of(
-                                  context,
-                                  SmartRailMotion.fast,
+                                const SizedBox(height: 2),
+                                AnimatedContainer(
+                                  duration: SmartRailMotion.of(
+                                    context,
+                                    SmartRailMotion.fast,
+                                  ),
+                                  height: 3,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    color: chosen
+                                        ? SmartRailColors.primary
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
                                 ),
-                                height: 3,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  color: chosen
-                                      ? SmartRailColors.primary
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(2),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

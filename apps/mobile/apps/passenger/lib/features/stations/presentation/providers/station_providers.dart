@@ -61,12 +61,27 @@ class StationSearchNotifier extends Notifier<AsyncValue<List<Station>>> {
     final generation = ++_generation;
 
     Future<void> load() async {
-      final result = await ref.read(stationRepositoryProvider).search(trimmed);
+      // The API wants two letters; one letter is matched here against the full list.
+      final one = trimmed.length == 1;
+      final result = await ref
+          .read(stationRepositoryProvider)
+          .search(one ? '' : trimmed);
       // A newer query has been typed since: this answer is out of date.
       if (!ref.mounted || generation != _generation) return;
+      final needle = trimmed.toLowerCase();
       state = result.match(
         (failure) => AsyncError<List<Station>>(failure, StackTrace.current),
-        AsyncData.new,
+        (stations) => AsyncData(
+          one
+              ? stations
+                    .where(
+                      (s) =>
+                          s.name.toLowerCase().contains(needle) ||
+                          s.code.toLowerCase().startsWith(needle),
+                    )
+                    .toList()
+              : stations,
+        ),
       );
     }
 
