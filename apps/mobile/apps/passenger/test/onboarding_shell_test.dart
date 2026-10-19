@@ -117,37 +117,33 @@ void main() {
           );
         }
 
-        await tester.tap(
-          find.descendant(
-            of: find.byType(NavigationBar),
-            matching: find.text('Plan'),
-          ),
-        );
-        await tester.pumpAndSettle();
+        Future<void> openTab(String label) async {
+          await tester.tap(
+            find.descendant(
+              of: find.byType(NavigationBar),
+              matching: find.text(label),
+            ),
+          );
+          await tester.pumpAndSettle();
+        }
+
+        await openTab('Plan');
         expect(harness.location, '/plan');
-        expect(find.text('Coming soon'), findsOneWidget);
-        expect(
-          find.text('See live departures'),
-          findsOneWidget,
-        ); // never a dead end
+        expect(find.text('Plan a journey'), findsOneWidget);
+        expect(find.text('Show trains'), findsOneWidget);
 
-        await tester.tap(
-          find.descendant(
-            of: find.byType(NavigationBar),
-            matching: find.text('Tickets'),
-          ),
-        );
-        await tester.pumpAndSettle();
-        expect(find.text('Coming soon'), findsWidgets);
+        // Only the tab being shown is visible: the others must not show through (they once stacked on top of each other).
+        expect(find.text('Where to today?').hitTestable(), findsNothing);
+        expect(find.text('Language').hitTestable(), findsNothing);
 
-        await tester.tap(
-          find.descendant(
-            of: find.byType(NavigationBar),
-            matching: find.text('Alerts'),
-          ),
-        );
-        await tester.pumpAndSettle();
+        await openTab('Tickets');
+        expect(harness.location, '/tickets');
+        expect(find.text('Log in to see your tickets'), findsOneWidget);
+        expect(find.text('Plan a journey').hitTestable(), findsNothing);
+
+        await openTab('Alerts');
         expect(harness.location, '/alerts');
+        expect(find.text('No alerts yet'), findsOneWidget);
 
         await tester.tap(
           find.descendant(
@@ -160,15 +156,13 @@ void main() {
       },
     );
 
-    testWidgets('the Plan placeholder leads to a station search', (
+    testWidgets('Plan needs both stations before it shows trains', (
       tester,
     ) async {
-      final harness = await pumpApp(tester, start: '/plan');
+      await pumpApp(tester, start: '/plan');
 
-      await tester.tap(find.text('See live departures'));
-      await tester.pumpAndSettle();
-
-      expect(harness.location, '/home/search');
+      final button = find.widgetWithText(FilledButton, 'Show trains');
+      expect(tester.widget<FilledButton>(button).onPressed, isNull);
     });
 
     testWidgets('an unknown route shows the not-found screen and a way back', (
@@ -208,7 +202,11 @@ void main() {
     ) async {
       await pumpApp(tester, start: '/me');
 
+      await tester.tap(find.text('Language'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('සිංහල'));
+      await tester.pumpAndSettle();
+      await tester.tapAt(const Offset(10, 10)); // closes the sheet
       await tester.pumpAndSettle();
       expect(find.text('භාෂාව'), findsOneWidget);
       expect(
@@ -219,7 +217,11 @@ void main() {
         findsOneWidget,
       );
 
+      await tester.tap(find.text('භාෂාව'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('English'));
+      await tester.pumpAndSettle();
+      await tester.tapAt(const Offset(10, 10));
       await tester.pumpAndSettle();
       expect(find.text('Language'), findsOneWidget);
     });
