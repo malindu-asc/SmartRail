@@ -2,6 +2,8 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SmartRail.Application.Core.Abstractions;
+using SmartRail.Infrastructure.Core.Audit;
 using SmartRail.Modules.Identity.Application.Abstractions;
 using SmartRail.Modules.Identity.Contracts;
 using Microsoft.Extensions.Options;
@@ -51,6 +53,20 @@ public static class IdentityModule
             o.BaseUrl = o.BaseUrl.TrimEnd('/');
         });
         services.AddHttpClient<IAccountDirectory, KeycloakAccountDirectory>(client => client.Timeout = TimeSpan.FromSeconds(10));
+
+        // Staff accounts, devices, security settings and the access audit (the admin console).
+        services.Configure<StaffDirectoryOptions>(configuration.GetSection(StaffDirectoryOptions.Section));
+        services.AddHttpClient<KeycloakAdminClient>(client => client.Timeout = TimeSpan.FromSeconds(10));
+        services.AddScoped<KeycloakStaffDirectory>();
+        services.AddScoped<IStaffDirectory>(sp => sp.GetRequiredService<KeycloakStaffDirectory>());
+        services.AddScoped<IStaffNames>(sp => sp.GetRequiredService<KeycloakStaffDirectory>());
+
+        services.AddScoped<IDeviceStore, DeviceStore>();
+        services.AddScoped<ISecuritySettingsStore, SecuritySettingsStore>();
+        services.AddScoped<DeviceDirectory>();
+        services.AddScoped<IDeviceHealth>(sp => sp.GetRequiredService<DeviceDirectory>());
+        services.AddScoped<IIdentityAuditLog, IdentityAuditLog>();
+        services.AddScoped<IAuditSource>(sp => new AuditSource<IdentityDbContext>(sp.GetRequiredService<IdentityDbContext>(), "identity", true));
 
         return services;
     }
