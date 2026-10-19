@@ -32,15 +32,18 @@ class AlertsScreen extends ConsumerWidget {
         .toList();
 
     return SafeArea(
+      bottom: false,
       child: ListView(
-        padding: const EdgeInsets.all(SmartRailSpacing.xl),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
         children: [
           Row(
             children: [
               Expanded(
                 child: Text(
                   l10n.alertsTitle,
-                  style: Theme.of(context).textTheme.headlineLarge,
+                  style: SmartRailType.headline.copyWith(
+                    color: SmartRailColors.textPrimary,
+                  ),
                 ),
               ),
               if (alerts.isNotEmpty)
@@ -50,7 +53,7 @@ class AlertsScreen extends ConsumerWidget {
                 ),
             ],
           ),
-          const SizedBox(height: SmartRailSpacing.lg),
+          const SizedBox(height: 14),
           if (!on) InfoBanner(kind: BannerKind.offline, title: l10n.alertsOff),
           if (alerts.isEmpty && on)
             Padding(
@@ -68,8 +71,8 @@ class AlertsScreen extends ConsumerWidget {
           const SizedBox(height: SmartRailSpacing.md),
           Text(
             l10n.alertsNote,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: SmartRailColors.textSecondary,
+            style: SmartRailType.caption.copyWith(
+              color: SmartRailColors.textTertiary,
             ),
           ),
         ],
@@ -92,23 +95,28 @@ class _Group extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+          style: SmartRailType.label14.copyWith(
             color: SmartRailColors.textSecondary,
           ),
         ),
-        const SizedBox(height: SmartRailSpacing.sm),
+        const SizedBox(height: 14),
         Card(
           clipBehavior: Clip.antiAlias,
           child: Column(
             children: [
               for (var i = 0; i < items.length; i++) ...[
-                if (i > 0) const Divider(height: 1),
+                if (i > 0)
+                  const Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: SmartRailColors.border,
+                  ),
                 AlertRow(alert: items[i], clock: clock),
               ],
             ],
           ),
         ),
-        const SizedBox(height: SmartRailSpacing.lg),
+        const SizedBox(height: 14),
       ],
     );
   }
@@ -124,26 +132,24 @@ class AlertRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-
     final (icon, fg, bg) = switch (alert.kind) {
       AlertKind.platformChanged => (
-        Icons.swap_horiz,
+        AppIcons.arrows,
         SmartRailColors.changedText,
         SmartRailColors.changedBg,
       ),
       AlertKind.cancelled => (
-        Icons.cancel_outlined,
+        AppIcons.xc,
         SmartRailColors.cancelledText,
         SmartRailColors.cancelledBg,
       ),
       AlertKind.delay => (
-        Icons.schedule,
+        AppIcons.clock,
         SmartRailColors.delayedText,
         SmartRailColors.delayedBg,
       ),
       AlertKind.correction => (
-        Icons.info_outline,
+        AppIcons.info,
         SmartRailColors.staleText,
         SmartRailColors.staleBg,
       ),
@@ -200,16 +206,18 @@ class AlertRow extends StatelessWidget {
         child: InkWell(
           onTap: () => context.push(AppRoutes.journey(alert.journeyId)),
           child: Padding(
-            padding: const EdgeInsets.all(SmartRailSpacing.lg),
+            padding: const EdgeInsets.all(14),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: bg,
-                  child: Icon(icon, color: fg, size: 22),
+                Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: bg),
+                  child: SvgIcon(icon, size: 20, color: fg),
                 ),
-                const SizedBox(width: SmartRailSpacing.md),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,15 +227,15 @@ class AlertRow extends StatelessWidget {
                           Expanded(
                             child: Text(
                               title,
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.w700,
+                              style: SmartRailType.label14.copyWith(
+                                color: SmartRailColors.textPrimary,
                               ),
                             ),
                           ),
                           Text(
                             clock.formatTime(alert.at),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: SmartRailColors.textSecondary,
+                            style: SmartRailType.caption.copyWith(
+                              color: SmartRailColors.textTertiary,
                             ),
                           ),
                         ],
@@ -235,7 +243,7 @@ class AlertRow extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         body,
-                        style: theme.textTheme.bodyMedium?.copyWith(
+                        style: SmartRailType.body14.copyWith(
                           color: SmartRailColors.textSecondary,
                         ),
                       ),

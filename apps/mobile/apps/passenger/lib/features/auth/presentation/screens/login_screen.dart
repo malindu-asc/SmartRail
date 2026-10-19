@@ -77,16 +77,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.loginTitle)),
+      backgroundColor: SmartRailColors.page,
+      appBar: SmartRailAppBar(title: Text(l10n.loginTitle)),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(SmartRailSpacing.xl),
+          padding: const EdgeInsets.all(16),
           children: [
-            Text(l10n.loginWelcome, style: theme.textTheme.headlineLarge),
-            const SizedBox(height: SmartRailSpacing.xl),
+            Text(
+              l10n.loginWelcome,
+              style: SmartRailType.headline.copyWith(
+                color: SmartRailColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 16),
             SmartRailTextField(
               label: l10n.emailLabel,
               hint: l10n.emailHint,
@@ -94,7 +99,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               keyboardType: TextInputType.emailAddress,
               autofillHints: const [AutofillHints.email],
             ),
-            const SizedBox(height: SmartRailSpacing.lg),
+            const SizedBox(height: 16),
             SmartRailTextField(
               label: l10n.passwordLabel,
               hint: l10n.passwordHint,
@@ -102,38 +107,81 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               obscureText: true,
               autofillHints: const [AutofillHints.password],
             ),
+            const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: _forgot,
-                child: Text(l10n.forgotPassword),
+              child: GestureDetector(
+                onTap: _forgot,
+                child: Text(
+                  l10n.forgotPassword,
+                  style: SmartRailType.label14.copyWith(
+                    color: SmartRailColors.primaryPressed,
+                  ),
+                ),
               ),
             ),
+            const SizedBox(height: 16),
             if (_error != null) ...[
               InfoBanner(kind: BannerKind.warning, title: _error!),
-              const SizedBox(height: SmartRailSpacing.md),
+              const SizedBox(height: 16),
             ],
             SmartRailButton(
               label: l10n.loginTitle,
               onPressed: _busy ? null : _submit,
             ),
-            const SizedBox(height: SmartRailSpacing.lg),
-            InfoBanner(
-              kind: BannerKind.message,
-              title: l10n.loginNoAccountNeeded,
+            const SizedBox(height: 16),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: SmartRailColors.staleBg,
+                borderRadius: BorderRadius.circular(SmartRailRadius.md),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SvgIcon(
+                      AppIcons.info,
+                      size: 18,
+                      color: SmartRailColors.staleText,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        l10n.loginNoAccountNeeded,
+                        style: SmartRailType.caption.copyWith(
+                          color: SmartRailColors.staleText,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: SmartRailSpacing.xl),
-            Center(
+            const SizedBox(height: 32),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: WrapAlignment.center,
+                spacing: 6,
                 children: [
-                  Text(l10n.loginNew, style: theme.textTheme.bodyMedium),
-                  TextButton(
-                    onPressed: _busy
+                  Text(
+                    l10n.loginNew,
+                    style: SmartRailType.body14.copyWith(
+                      color: SmartRailColors.textSecondary,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: _busy
                         ? null
                         : () =>
                               context.pushReplacement(AppRoutes.createProfile),
-                    child: Text(l10n.loginCreate),
+                    child: Text(
+                      l10n.loginCreate,
+                      style: SmartRailType.label14.copyWith(
+                        color: SmartRailColors.primaryPressed,
+                      ),
+                    ),
                   ),
                 ],
               ),

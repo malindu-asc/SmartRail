@@ -92,7 +92,7 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.createTitle)),
+      appBar: SmartRailAppBar(title: Text(l10n.createTitle)),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(SmartRailSpacing.xl),

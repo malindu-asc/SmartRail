@@ -25,39 +25,53 @@ class MeScreen extends ConsumerWidget {
     final alertsOn = ref.watch(alertsOnProvider);
 
     return SafeArea(
+      bottom: false,
       child: ListView(
-        padding: const EdgeInsets.all(SmartRailSpacing.xl),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
         children: [
-          Text(l10n.meTitle, style: Theme.of(context).textTheme.headlineLarge),
-          const SizedBox(height: SmartRailSpacing.xl),
+          Text(
+            l10n.meTitle,
+            style: SmartRailType.headline.copyWith(
+              color: SmartRailColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 14),
           AppearIn(
             index: 0,
             child: signedIn
                 ? const _ProfileCard()
                 : _LogInCard(onTap: () => context.push(AppRoutes.login)),
           ),
-          const SizedBox(height: SmartRailSpacing.lg),
+          const SizedBox(height: 14),
           Card(
             child: Column(
               children: [
                 _Row(
-                  icon: Icons.language,
+                  icon: AppIcons.globe,
                   label: l10n.language,
                   value: locale.languageCode == 'si'
                       ? l10n.languageSinhala
                       : l10n.languageEnglish,
                   onTap: () => _sheet(context, const LanguageSwitcher()),
                 ),
-                const Divider(height: 1),
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: SmartRailColors.border,
+                ),
                 _Row(
-                  icon: Icons.text_fields,
+                  icon: AppIcons.type,
                   label: l10n.meTextSize,
                   value: _sizeLabel(l10n, textSize),
                   onTap: () => _sheet(context, const _TextSizeChoice()),
                 ),
-                const Divider(height: 1),
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: SmartRailColors.border,
+                ),
                 _Row(
-                  icon: Icons.notifications_none,
+                  icon: AppIcons.bellRow,
                   label: l10n.meNotifications,
                   value: alertsOn ? l10n.stateOn : l10n.stateOff,
                   onTap: () =>
@@ -66,27 +80,35 @@ class MeScreen extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: SmartRailSpacing.lg),
+          const SizedBox(height: 14),
           Card(
             child: Column(
               children: [
                 if (signedIn) ...[
                   _Row(
-                    icon: Icons.download_outlined,
+                    icon: AppIcons.download,
                     label: l10n.meDownloadData,
                     onTap: () => _download(context, ref),
                   ),
-                  const Divider(height: 1),
+                  const Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: SmartRailColors.border,
+                  ),
                   _Row(
-                    icon: Icons.delete_outline,
+                    icon: AppIcons.trash,
                     label: l10n.meDeleteData,
                     danger: true,
                     onTap: () => _confirmDelete(context, ref),
                   ),
-                  const Divider(height: 1),
+                  const Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: SmartRailColors.border,
+                  ),
                 ],
                 _Row(
-                  icon: Icons.phone_outlined,
+                  icon: AppIcons.phone,
                   label: l10n.meCallCentre,
                   onTap: () => showCallCentreSheet(context),
                 ),
@@ -94,10 +116,10 @@ class MeScreen extends ConsumerWidget {
             ),
           ),
           if (signedIn) ...[
-            const SizedBox(height: SmartRailSpacing.lg),
+            const SizedBox(height: 14),
             Card(
               child: _Row(
-                icon: Icons.logout,
+                icon: AppIcons.logout,
                 label: l10n.meSignOut,
                 onTap: () => ref.read(authProvider.notifier).signOut(),
               ),
@@ -125,6 +147,7 @@ class MeScreen extends ConsumerWidget {
   Future<void> _sheet(BuildContext context, Widget child) =>
       showModalBottomSheet<void>(
         context: context,
+        useRootNavigator: true,
         showDragHandle: true,
         builder: (context) => SafeArea(
           child: Padding(
@@ -192,6 +215,7 @@ class MeScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final confirmed = await showModalBottomSheet<bool>(
       context: context,
+      useRootNavigator: true,
       showDragHandle: true,
       builder: (context) => SafeArea(
         child: Padding(
@@ -311,21 +335,25 @@ class _ProfileCard extends ConsumerWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(SmartRailSpacing.lg),
+        padding: const EdgeInsets.all(14),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: SmartRailColors.primarySubtle,
+            Container(
+              width: 48,
+              height: 48,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: SmartRailColors.primarySubtle,
+              ),
               child: Text(
                 profile?.initials ?? '',
-                style: const TextStyle(
+                style: SmartRailType.label14.copyWith(
                   color: SmartRailColors.primaryPressed,
-                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-            const SizedBox(width: SmartRailSpacing.md),
+            const SizedBox(width: 12),
             Expanded(
               child: profile == null
                   ? const Skeleton(width: 160, height: 16)
@@ -334,16 +362,24 @@ class _ProfileCard extends ConsumerWidget {
                       children: [
                         Text(
                           profile.fullName,
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(fontWeight: FontWeight.w600),
+                          style: SmartRailType.heading16.copyWith(
+                            color: SmartRailColors.textPrimary,
+                          ),
                         ),
+                        const SizedBox(height: 2),
                         Text(
                           profile.email,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: SmartRailColors.textSecondary),
+                          style: SmartRailType.body14.copyWith(
+                            color: SmartRailColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
+            ),
+            const SvgIcon(
+              AppIcons.right,
+              size: 18,
+              color: SmartRailColors.textTertiary,
             ),
           ],
         ),
@@ -361,7 +397,7 @@ class _Row extends StatelessWidget {
     this.danger = false,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String? value;
   final bool danger;
@@ -379,38 +415,39 @@ class _Row extends StatelessWidget {
       child: ExcludeSemantics(
         child: InkWell(
           onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 56),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SmartRailSpacing.lg,
-              ),
-              child: Row(
-                children: [
-                  Icon(icon, color: color),
-                  const SizedBox(width: SmartRailSpacing.md),
-                  Expanded(
-                    child: Text(
-                      label,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: color,
-                        fontWeight: FontWeight.w600,
-                      ),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                SvgIcon(
+                  icon,
+                  size: 20,
+                  color: danger
+                      ? SmartRailColors.cancelledText
+                      : SmartRailColors.textSecondary,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: SmartRailType.label14.copyWith(color: color),
+                  ),
+                ),
+                if (value != null) ...[
+                  Text(
+                    value!,
+                    style: SmartRailType.body14.copyWith(
+                      color: SmartRailColors.textSecondary,
                     ),
                   ),
-                  if (value != null)
-                    Text(
-                      value!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: SmartRailColors.textSecondary,
-                      ),
-                    ),
-                  const Icon(
-                    Icons.chevron_right,
-                    color: SmartRailColors.textTertiary,
-                  ),
+                  const SizedBox(width: 12),
                 ],
-              ),
+                const SvgIcon(
+                  AppIcons.rightSmall,
+                  size: 16,
+                  color: SmartRailColors.textTertiary,
+                ),
+              ],
             ),
           ),
         ),
