@@ -89,12 +89,7 @@ public static class AdminEndpoints
                 return result.IsSuccess ? Results.Created($"/api/admin/devices/{result.Value.Id}", result.Value) : ApiResults.Problem(result);
             })
             .RequirePermission(Permissions.DeviceProvision)
-            .WithSummary("Register a device; the pairing code is shown once and expires");
-
-        admin.MapPost("/devices/{id:guid}/pairing-code", async (Guid id, ISender sender, CancellationToken ct) =>
-                Respond(await sender.Send(new NewDevicePairingCodeCommand(id), ct)))
-            .RequirePermission(Permissions.DeviceProvision)
-            .WithSummary("A fresh pairing code for a device that is not paired yet");
+            .WithSummary("Register a display, gate scanner or terminal");
 
         admin.MapPost("/devices/{id:guid}/revoke", async (Guid id, ReasonRequest request, ISender sender, CancellationToken ct) =>
                 NoContent(await sender.Send(new RevokeDeviceCommand(id, request.Reason ?? string.Empty), ct)))

@@ -14,8 +14,7 @@ public sealed record SecuritySettings(
     int AccessReviewDays = 90,
     bool FlagLeavers = true,
     int DeviceLateAfterSeconds = 60,
-    int DeviceOfflineAfterSeconds = 90,
-    int PairingCodeMinutes = 10)
+    int DeviceOfflineAfterSeconds = 90)
 {
     public static SecuritySettings Default { get; } = new();
 
@@ -33,8 +32,6 @@ public sealed record SecuritySettings(
             return IdentityErrors.SettingInvalid("AccessReviewDays", "Between 30 and 365 days.");
         if (DeviceLateAfterSeconds is < 30 or > 600 || DeviceOfflineAfterSeconds <= DeviceLateAfterSeconds || DeviceOfflineAfterSeconds > 1800)
             return IdentityErrors.SettingInvalid("DeviceOfflineAfterSeconds", "Late after 30 to 600 seconds; offline must be later than late.");
-        if (PairingCodeMinutes is < 1 or > 60)
-            return IdentityErrors.SettingInvalid("PairingCodeMinutes", "Between 1 and 60 minutes.");
 
         return Result.Success();
     }

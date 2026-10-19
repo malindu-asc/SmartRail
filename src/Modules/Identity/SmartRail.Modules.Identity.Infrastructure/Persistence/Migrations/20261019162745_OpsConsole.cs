@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -46,8 +46,6 @@ namespace SmartRail.Modules.Identity.Infrastructure.Persistence.Migrations
                     StationCode = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: false),
                     Location = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: true),
                     Status = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    PairingCodeHash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
-                    PairingExpiresAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     SoftwareVersion = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
                     RegisteredBy = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     RegisteredAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -96,14 +94,6 @@ namespace SmartRail.Modules.Identity.Infrastructure.Persistence.Migrations
                 schema: "identity",
                 table: "devices",
                 column: "StationCode");
-
-            migrationBuilder.CreateIndex(
-                name: "ux_devices_pairing_code",
-                schema: "identity",
-                table: "devices",
-                column: "PairingCodeHash",
-                unique: true,
-                filter: "\"PairingCodeHash\" is not null");
 
             // The audit log is append-only (REQ-OPS-011).
             migrationBuilder.Sql(@"CREATE FUNCTION identity.forbid_update_delete() RETURNS trigger AS $$

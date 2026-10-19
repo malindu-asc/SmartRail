@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
 using SmartRail.Application.Core.Abstractions;
 using SmartRail.Application.Core.Messaging;
 using SmartRail.Modules.Identity.Application.Abstractions;
@@ -9,26 +7,6 @@ using SmartRail.Modules.Network.Contracts;
 using SmartRail.SharedKernel.Results;
 
 namespace SmartRail.Modules.Identity.Application.Admin;
-
-public static class DeviceSecrets
-{
-    // Letters and digits that cannot be mistaken for each other when read off a screen.
-    private const string Alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-    public static string NewPairingCode() =>
-        new(Enumerable.Range(0, 6).Select(_ => Alphabet[RandomNumberGenerator.GetInt32(Alphabet.Length)]).ToArray());
-
-    // Shown as "7K4 - 9QX".
-    public static string Format(string code) => $"{code[..3]} - {code[3..]}";
-
-    // The code as typed: any spacing, hyphen or case is accepted.
-    public static string Normalise(string typed) =>
-        new(typed.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
-
-    public static string NewToken() => "srd_" + Convert.ToBase64String(RandomNumberGenerator.GetBytes(32)).Replace('+', '-').Replace('/', '_').TrimEnd('=');
-
-    public static string Hash(string secret) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(secret)));
-}
 
 public sealed record DeviceView(
     Guid Id,
@@ -43,7 +21,6 @@ public sealed record DeviceView(
     string? SoftwareVersion,
     string RegisteredBy,
     DateTimeOffset RegisteredAt,
-    DateTimeOffset? PairingExpiresAt,
     DateTimeOffset? RevokedAt,
     string? RevokedBy,
     string? RevokedReason);
@@ -69,7 +46,7 @@ internal static class DeviceViews
             d.Id, d.Name, d.Type.ToString(), d.StationCode, names.GetValueOrDefault(d.StationCode, d.StationCode), d.Location,
             health.ToString(), d.LastHeartbeatAt, d.LastHeartbeatAt is null ? null : (int)(now - d.LastHeartbeatAt.Value).TotalSeconds,
             d.SoftwareVersion, d.RegisteredBy, d.RegisteredAt,
-            d.Status == DeviceStatus.Pending ? d.PairingExpiresAt : null, d.RevokedAt, d.RevokedBy, d.RevokedReason);
+            d.RevokedAt, d.RevokedBy, d.RevokedReason);
     }
 }
 
@@ -138,8 +115,7 @@ public sealed class GetDeviceQueryHandler(IDeviceStore store, ISecuritySettingsS
 
 public sealed record RegisterDeviceCommand(string Name, string Type, string StationCode, string? Location) : ICommand<RegisteredDevice>;
 
-// The pairing code is shown once. Only its hash is kept.
-public sealed record RegisteredDevice(Guid Id, string PairingCode, DateTimeOffset ExpiresAt);
+public sealed record RegisteredDevice(Guid Id);
 
 public sealed class RegisterDeviceCommandHandler(
     IDeviceStore store, ISecuritySettingsStore settings, INetworkStations stations, IIdentityAuditLog audit,
@@ -157,10 +133,7 @@ public sealed class RegisterDeviceCommandHandler(
             return IdentityErrors.DeviceStationInvalid;
 
         var now = clock.GetUtcNow();
-        var pairing = DeviceSecrets.NewPairingCode();
-        var expires = now.AddMinutes((await settings.GetAsync(cancellationToken)).PairingCodeMinutes);
-
-        var device = Device.Register(command.Name, type, code, command.Location, user.UserId ?? "unknown", DeviceSecrets.Hash(pairing), expires, now);
+        var device = Device.Register(command.Name, type, code, command.Location, user.UserId ?? "unknown", now);
         if (device.IsFailure)
             return device.Error;
 
@@ -168,32 +141,7 @@ public sealed class RegisterDeviceCommandHandler(
         audit.Record(new AuditRecord(user.UserId ?? "unknown", user.Roles.FirstOrDefault(), "device.register", "device", device.Value.Id.ToString(), null,
             After: new { device.Value.Name, Type = type.ToString(), StationCode = code, device.Value.Location }));
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return new RegisteredDevice(device.Value.Id, DeviceSecrets.Format(pairing), expires);
-    }
-}
-
-// A fresh code for a device that has not been paired yet.
-public sealed record NewDevicePairingCodeCommand(Guid Id) : ICommand<RegisteredDevice>;
-
-public sealed class NewDevicePairingCodeCommandHandler(
-    IDeviceStore store, ISecuritySettingsStore settings, IIdentityAuditLog audit, IIdentityUnitOfWork unitOfWork, ICurrentUser user, TimeProvider clock)
-    : ICommandHandler<NewDevicePairingCodeCommand, RegisteredDevice>
-{
-    public async Task<Result<RegisteredDevice>> Handle(NewDevicePairingCodeCommand command, CancellationToken cancellationToken)
-    {
-        var device = await store.GetAsync(command.Id, cancellationToken);
-        if (device is null)
-            return IdentityErrors.DeviceNotFound;
-
-        var pairing = DeviceSecrets.NewPairingCode();
-        var expires = clock.GetUtcNow().AddMinutes((await settings.GetAsync(cancellationToken)).PairingCodeMinutes);
-        var result = device.NewPairingCode(DeviceSecrets.Hash(pairing), expires);
-        if (result.IsFailure)
-            return result.Error;
-
-        audit.Record(new AuditRecord(user.UserId ?? "unknown", user.Roles.FirstOrDefault(), "device.pairing_code.new", "device", device.Id.ToString(), null));
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-        return new RegisteredDevice(device.Id, DeviceSecrets.Format(pairing), expires);
+        return new RegisteredDevice(device.Value.Id);
     }
 }
 

@@ -29,8 +29,8 @@ public enum DeviceHealth
     Revoked = 4
 }
 
-// A display, gate scanner or terminal. It signs in with its own token, not a person's (REQ-OPS-009). The pairing code and the
-// device token are shown once; only their hashes are stored.
+// A display, gate scanner or terminal on the register, with the last time it was heard from (REQ-OPS-009). The register holds no
+// secrets: devices do not sign in here.
 public sealed class Device : Entity<Guid>
 {
     private Device() { }
@@ -42,8 +42,6 @@ public sealed class Device : Entity<Guid>
     public string StationCode { get; private set; } = string.Empty;
     public string? Location { get; private set; }
     public DeviceStatus Status { get; private set; }
-    public string? PairingCodeHash { get; private set; }
-    public DateTimeOffset? PairingExpiresAt { get; private set; }
     public string? SoftwareVersion { get; private set; }
     public string RegisteredBy { get; private set; } = string.Empty;
     public DateTimeOffset RegisteredAt { get; private set; }
@@ -54,7 +52,7 @@ public sealed class Device : Entity<Guid>
 
     public static Result<Device> Register(
         string name, DeviceType type, string stationCode, string? location, string registeredBy,
-        string pairingCodeHash, DateTimeOffset pairingExpiresAt, DateTimeOffset now, Guid? id = null)
+        DateTimeOffset now, Guid? id = null)
     {
         if (string.IsNullOrWhiteSpace(name) || name.Trim().Length > 80)
             return IdentityErrors.DeviceNameInvalid;
@@ -68,22 +66,9 @@ public sealed class Device : Entity<Guid>
             StationCode = stationCode.Trim().ToUpperInvariant(),
             Location = string.IsNullOrWhiteSpace(location) ? null : location.Trim(),
             Status = DeviceStatus.Pending,
-            PairingCodeHash = pairingCodeHash,
-            PairingExpiresAt = pairingExpiresAt,
             RegisteredBy = registeredBy,
             RegisteredAt = now
         };
-    }
-
-    // A new code for a device that has not been paired yet (the first one ran out).
-    public Result NewPairingCode(string pairingCodeHash, DateTimeOffset expiresAt)
-    {
-        if (Status != DeviceStatus.Pending)
-            return IdentityErrors.DeviceNotPending;
-
-        PairingCodeHash = pairingCodeHash;
-        PairingExpiresAt = expiresAt;
-        return Result.Success();
     }
 
     // Recorded by whatever watches the device (the simulator, or the display service in a later release). The first one activates it.
@@ -93,14 +78,12 @@ public sealed class Device : Entity<Guid>
             return;
 
         Status = DeviceStatus.Active;
-        PairingCodeHash = null;
-        PairingExpiresAt = null;
         LastHeartbeatAt = now;
         if (!string.IsNullOrWhiteSpace(softwareVersion))
             SoftwareVersion = softwareVersion.Trim();
     }
 
-    // The next request with its token is refused. The record stays for the audit trail.
+    // The device is taken off the network's list. The record stays for the audit trail.
     public Result Revoke(string revokedBy, string reason, DateTimeOffset now)
     {
         if (string.IsNullOrWhiteSpace(reason))
@@ -109,8 +92,6 @@ public sealed class Device : Entity<Guid>
             return IdentityErrors.DeviceAlreadyRevoked;
 
         Status = DeviceStatus.Revoked;
-        PairingCodeHash = null;
-        PairingExpiresAt = null;
         RevokedAt = now;
         RevokedBy = revokedBy;
         RevokedReason = reason.Trim();

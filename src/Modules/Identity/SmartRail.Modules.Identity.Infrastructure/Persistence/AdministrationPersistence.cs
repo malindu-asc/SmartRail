@@ -27,14 +27,11 @@ public sealed class DeviceConfiguration : IEntityTypeConfiguration<Device>
         builder.Property(d => d.StationCode).IsRequired().HasMaxLength(5);
         builder.Property(d => d.Location).HasMaxLength(120);
         builder.Property(d => d.Status).HasConversion<string>().HasMaxLength(10).IsRequired();
-        builder.Property(d => d.PairingCodeHash).HasMaxLength(64);
         builder.Property(d => d.SoftwareVersion).HasMaxLength(30);
         builder.Property(d => d.RegisteredBy).IsRequired().HasMaxLength(64);
         builder.Property(d => d.RevokedBy).HasMaxLength(64);
         builder.Property(d => d.RevokedReason).HasMaxLength(300);
 
-        // The device and the pairing screen look a device up by the hash of what it presents.
-        builder.HasIndex(d => d.PairingCodeHash).IsUnique().HasFilter("\"PairingCodeHash\" is not null").HasDatabaseName("ux_devices_pairing_code");
         builder.HasIndex(d => d.StationCode);
     }
 }
@@ -78,8 +75,7 @@ internal sealed class SecuritySettingsStore(IdentityDbContext context, TimeProvi
             Int("lock_after_failures", d.LockAfterFailures), Int("lock_minutes", d.LockMinutes), Bool("two_step_required", d.TwoStepRequired),
             Int("console_idle_minutes", d.ConsoleIdleMinutes), Int("driver_lock_minutes", d.DriverAppLockMinutes),
             Int("access_review_days", d.AccessReviewDays), Bool("flag_leavers", d.FlagLeavers),
-            Int("device_late_after_seconds", d.DeviceLateAfterSeconds), Int("device_offline_after_seconds", d.DeviceOfflineAfterSeconds),
-            Int("pairing_code_minutes", d.PairingCodeMinutes));
+            Int("device_late_after_seconds", d.DeviceLateAfterSeconds), Int("device_offline_after_seconds", d.DeviceOfflineAfterSeconds));
     }
 
     public async Task SaveAsync(SecuritySettings s, string updatedBy, CancellationToken cancellationToken)
@@ -95,7 +91,6 @@ internal sealed class SecuritySettingsStore(IdentityDbContext context, TimeProvi
             ["flag_leavers"] = s.FlagLeavers.ToString(),
             ["device_late_after_seconds"] = s.DeviceLateAfterSeconds.ToString(CultureInfo.InvariantCulture),
             ["device_offline_after_seconds"] = s.DeviceOfflineAfterSeconds.ToString(CultureInfo.InvariantCulture),
-            ["pairing_code_minutes"] = s.PairingCodeMinutes.ToString(CultureInfo.InvariantCulture)
         };
 
         await UpsertAsync(values, updatedBy, cancellationToken);

@@ -147,13 +147,6 @@ namespace SmartRail.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
 
-                    b.Property<string>("PairingCodeHash")
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<DateTimeOffset?>("PairingExpiresAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTimeOffset>("RegisteredAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -193,11 +186,6 @@ namespace SmartRail.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PairingCodeHash")
-                        .IsUnique()
-                        .HasDatabaseName("ux_devices_pairing_code")
-                        .HasFilter("\"PairingCodeHash\" is not null");
 
                     b.HasIndex("StationCode");
 

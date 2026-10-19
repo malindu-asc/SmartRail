@@ -54,13 +54,7 @@ public static class IdentityErrors
     public static readonly Error DeviceAlreadyRevoked =
         Error.Conflict("Identity.DeviceAlreadyRevoked", "This device is already revoked.");
 
-    public static readonly Error DeviceNotPending =
-        Error.Conflict("Identity.DeviceNotPending", "This device is already paired. Revoke it and register it again.");
-
     // Same answer for a wrong, spent or expired code, so a guess teaches nothing.
-    public static readonly Error PairingCodeInvalid =
-        Error.Validation("Identity.PairingCodeInvalid", "That pairing code is not valid. Ask for a new one.");
-
     // ---- settings ----
 
     public static Error SettingInvalid(string name, string rule) =>

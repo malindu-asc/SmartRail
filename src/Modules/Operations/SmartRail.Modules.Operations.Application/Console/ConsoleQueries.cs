@@ -216,7 +216,7 @@ public sealed class ListAuditQueryHandler(IEnumerable<IAuditSource> sources, ISt
         ["timetable.draft"] = "Drafted timetable", ["timetable.submit"] = "Submitted timetable", ["timetable.publish"] = "Published timetable",
         ["user.invite"] = "Invited user", ["user.role.change"] = "Changed role", ["user.update"] = "Updated user", ["user.disable"] = "Disabled access",
         ["user.enable"] = "Enabled access", ["user.unlock"] = "Unlocked account", ["device.register"] = "Registered device", ["device.revoke"] = "Revoked device",
-        ["device.pairing_code.new"] = "New pairing code", ["security.settings.update"] = "Changed security settings", ["access_review.complete"] = "Completed access review"
+        ["security.settings.update"] = "Changed security settings", ["access_review.complete"] = "Completed access review"
     };
 
     public async Task<Result<IReadOnlyList<AuditEntryView>>> Handle(ListAuditQuery query, CancellationToken cancellationToken)
