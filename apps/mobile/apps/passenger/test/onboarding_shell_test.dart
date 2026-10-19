@@ -105,11 +105,11 @@ void main() {
       (tester) async {
         final harness = await pumpApp(tester);
 
-        expect(find.byType(SmartRailTabBar), findsOneWidget);
+        expect(find.byType(NavigationBar), findsOneWidget);
         for (final label in ['Home', 'Plan', 'Tickets', 'Alerts', 'Me']) {
           expect(
             find.descendant(
-              of: find.byType(SmartRailTabBar),
+              of: find.byType(NavigationBar),
               matching: find.text(label),
             ),
             findsOneWidget,
@@ -120,7 +120,7 @@ void main() {
         Future<void> openTab(String label) async {
           await tester.tap(
             find.descendant(
-              of: find.byType(SmartRailTabBar),
+              of: find.byType(NavigationBar),
               matching: find.text(label),
             ),
           );
@@ -147,7 +147,7 @@ void main() {
 
         await tester.tap(
           find.descendant(
-            of: find.byType(SmartRailTabBar),
+            of: find.byType(NavigationBar),
             matching: find.text('Me'),
           ),
         );
@@ -184,12 +184,18 @@ void main() {
     ) async {
       await pumpApp(tester);
 
-      // The bell is the Alerts tab and nothing else: no separate bell button sits on Home (the tab bar draws it as an SVG).
-      expect(find.byIcon(Icons.notifications_none), findsNothing);
-      expect(find.byIcon(Icons.notifications), findsNothing);
+      // The bell is the Alerts tab and nothing else: no separate bell button sits on Home.
       expect(
         find.descendant(
-          of: find.byType(SmartRailTabBar),
+          of: find.byType(AppBar),
+          matching: find.byIcon(Icons.notifications_none),
+        ),
+        findsNothing,
+      );
+      expect(find.byIcon(Icons.notifications_none), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(NavigationBar),
           matching: find.text('Alerts'),
         ),
         findsOneWidget,
@@ -212,7 +218,7 @@ void main() {
       expect(find.text('භාෂාව'), findsOneWidget);
       expect(
         find.descendant(
-          of: find.byType(SmartRailTabBar),
+          of: find.byType(NavigationBar),
           matching: find.text('මුල් පිටුව'),
         ),
         findsOneWidget,
@@ -302,7 +308,7 @@ void main() {
 
       await tester.tap(
         find.descendant(
-          of: find.byType(SmartRailTabBar),
+          of: find.byType(NavigationBar),
           matching: find.text('Me'),
         ),
       );

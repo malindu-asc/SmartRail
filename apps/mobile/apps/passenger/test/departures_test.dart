@@ -180,13 +180,13 @@ void main() {
           start: '/home/station/CEN',
         );
 
-        expect(find.byType(SmartRailTabBar), findsOneWidget);
+        expect(find.byType(NavigationBar), findsOneWidget);
 
         await tester.tap(find.text('Riverside'));
         await tester.pumpAndSettle();
 
         expect(harness.location, '/home/journey/j42');
-        expect(find.byType(SmartRailTabBar), findsOneWidget);
+        expect(find.byType(NavigationBar), findsOneWidget);
       },
     );
   });
