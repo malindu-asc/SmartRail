@@ -1154,4 +1154,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get seatHoldNote =>
       'Your seats are held for 10 minutes once you confirm.';
+
+  @override
+  String get stationsAll => 'All stations';
+
+  @override
+  String get foodOrder => 'Order food';
+
+  @override
+  String get foodPick => 'Choose a station';
 }

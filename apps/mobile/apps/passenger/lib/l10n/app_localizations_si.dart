@@ -1151,4 +1151,13 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get seatHoldNote => 'ඔබ තහවුරු කළ පසු ආසන මිනිත්තු 10ක් රඳවා ගනී.';
+
+  @override
+  String get stationsAll => 'සියලු ස්ථාන';
+
+  @override
+  String get foodOrder => 'ආහාර ඇණවුම් කරන්න';
+
+  @override
+  String get foodPick => 'ස්ථානයක් තෝරන්න';
 }

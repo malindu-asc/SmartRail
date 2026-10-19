@@ -1998,6 +1998,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your seats are held for 10 minutes once you confirm.'**
   String get seatHoldNote;
+
+  /// No description provided for @stationsAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All stations'**
+  String get stationsAll;
+
+  /// No description provided for @foodOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Order food'**
+  String get foodOrder;
+
+  /// No description provided for @foodPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a station'**
+  String get foodPick;
 }
 
 class _AppLocalizationsDelegate
