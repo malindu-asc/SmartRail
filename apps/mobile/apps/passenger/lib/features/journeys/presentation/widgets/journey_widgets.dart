@@ -14,100 +14,99 @@ class RouteHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final departure = journey.scheduledDeparture;
     final arrival = journey.lastStop?.scheduledArrival;
-
-    TextStyle time() => theme.textTheme.titleLarge!.copyWith(
-      fontSize: 24,
-      fontFeatures: SmartRailType.timeFeatures,
-    );
-    TextStyle name() =>
-        theme.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600);
-
-    final l10n = AppLocalizations.of(context);
     final label = l10n.journeyTitle(
       journey.originName,
       journey.destinationName,
     );
 
+    TextStyle time() => SmartRailType.title20.copyWith(
+      fontFeatures: SmartRailType.timeFeatures,
+      color: SmartRailColors.textPrimary,
+    );
+    final name = SmartRailType.heading16.copyWith(
+      color: SmartRailColors.textPrimary,
+    );
+
     // With very large text the two ends stack instead of fighting for the width.
-    if (MediaQuery.textScalerOf(context).scale(16) > 24) {
+    if (MediaQuery.textScalerOf(context).scale(20) > 30) {
       return Semantics(
         label: label,
         child: ExcludeSemantics(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                departure == null ? '' : clock.formatTime(departure),
-                style: time(),
-              ),
-              Text(journey.originName, style: name()),
-              const SizedBox(height: SmartRailSpacing.md),
-              Text(
-                arrival == null ? '' : clock.formatTime(arrival),
-                style: time(),
-              ),
-              Text(journey.destinationName, style: name()),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Semantics(
-      label: label,
-      child: ExcludeSemantics(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   departure == null ? '' : clock.formatTime(departure),
                   style: time(),
                 ),
-                Text(journey.originName, style: name()),
-              ],
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 14,
-                  left: SmartRailSpacing.sm,
-                  right: SmartRailSpacing.sm,
-                ),
-                child: Row(
-                  children: [
-                    const Expanded(child: _DottedLine()),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: SmartRailSpacing.sm,
-                      ),
-                      child: Icon(
-                        Icons.train,
-                        size: 22,
-                        color: SmartRailColors.primary,
-                      ),
-                    ),
-                    const Expanded(child: _DottedLine()),
-                  ],
-                ),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+                Text(journey.originName, style: name),
+                const SizedBox(height: 8),
                 Text(
                   arrival == null ? '' : clock.formatTime(arrival),
                   style: time(),
                 ),
-                Text(journey.destinationName, style: name()),
+                Text(journey.destinationName, style: name),
               ],
             ),
-          ],
+          ),
+        ),
+      );
+    }
+
+    // Design 36: 20 Bold times either side of a line with the train in the middle, the station names under them in 16 Semi Bold.
+    return Semantics(
+      label: label,
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    departure == null ? '' : clock.formatTime(departure),
+                    style: time(),
+                  ),
+                  const SizedBox(width: 8),
+                  const Expanded(child: _DottedLine()),
+                  const SizedBox(width: 8),
+                  const SvgIcon(
+                    AppIcons.train,
+                    size: 24,
+                    color: SmartRailColors.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  const Expanded(child: _DottedLine()),
+                  const SizedBox(width: 8),
+                  Text(
+                    arrival == null ? '' : clock.formatTime(arrival),
+                    style: time(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(child: Text(journey.originName, style: name)),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      journey.destinationName,
+                      style: name,
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -119,7 +118,7 @@ class _DottedLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const SizedBox(
-    height: 1,
+    height: 2,
     child: DecoratedBox(
       decoration: BoxDecoration(color: SmartRailColors.borderStrong),
     ),
@@ -147,7 +146,7 @@ class JourneyStatusCard extends StatelessWidget {
 
     final String title;
     final String? detail;
-    final IconData icon;
+    final String icon;
     final Color color;
     final Color background;
 
@@ -161,8 +160,8 @@ class JourneyStatusCard extends StatelessWidget {
                 lastKnown!.stationName,
                 clock.formatTime(lastKnown.actualDeparture!),
               );
-        icon = Icons.check;
-        color = SmartRailColors.primary;
+        icon = AppIcons.check;
+        color = SmartRailColors.onTimeText;
         background = SmartRailColors.primarySubtle;
       case JourneyHeadline.delayed:
         title = l10n.headlineDelayed(journey.delayMinutes ?? 0);
@@ -176,7 +175,7 @@ class JourneyStatusCard extends StatelessWidget {
                 next.stationName,
                 clock.formatTime(next.scheduledTime!),
               );
-        icon = Icons.schedule;
+        icon = AppIcons.clock;
         color = SmartRailColors.delayedText;
         background = SmartRailColors.delayedBg;
       case JourneyHeadline.noLiveData:
@@ -186,52 +185,49 @@ class JourneyStatusCard extends StatelessWidget {
         detail = lastKnown == null
             ? l10n.detailNoLiveBody
             : '${l10n.detailLastKnown(lastKnown.stationName, clock.formatTime(lastKnown.actualDeparture ?? lastKnown.actualArrival ?? updated))}\n${l10n.detailNoLiveBody}';
-        icon = Icons.wifi_off;
+        icon = AppIcons.wifiOff;
         color = SmartRailColors.staleText;
         background = SmartRailColors.staleBg;
       case JourneyHeadline.cancelled:
         title = l10n.headlineCancelled;
         detail = l10n.detailCancelledBody;
-        icon = Icons.cancel_outlined;
+        icon = AppIcons.xc;
         color = SmartRailColors.cancelledText;
         background = SmartRailColors.cancelledBg;
       case JourneyHeadline.scheduled:
         title = l10n.headlineScheduled;
         detail = l10n.detailScheduledBody;
-        icon = Icons.schedule;
+        icon = AppIcons.clock;
         color = SmartRailColors.textSecondary;
         background = SmartRailColors.bgSoft;
       case JourneyHeadline.completed:
         title = l10n.headlineCompleted;
         detail = null;
-        icon = Icons.check;
-        color = SmartRailColors.primary;
+        icon = AppIcons.check;
+        color = SmartRailColors.onTimeText;
         background = SmartRailColors.primarySubtle;
     }
 
     final content = Padding(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 22, color: color),
+              SvgIcon(icon, size: 22, color: color),
               const SizedBox(width: SmartRailSpacing.sm),
               Expanded(
                 child: Text(
                   title,
-                  style: SmartRailType.title20.copyWith(color: color),
+                  style: SmartRailType.title.copyWith(color: color),
                 ),
               ),
             ],
           ),
           if (detail != null) ...[
-            const SizedBox(height: SmartRailSpacing.xs),
-            Text(
-              detail,
-              style: SmartRailType.caption.copyWith(color: color, fontSize: 13),
-            ),
+            const SizedBox(height: 6),
+            Text(detail, style: SmartRailType.caption.copyWith(color: color)),
           ],
         ],
       ),
@@ -279,37 +275,34 @@ class PlatformBanner extends StatelessWidget {
       child: ExcludeSemantics(
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: SmartRailSpacing.lg,
-            vertical: 14,
-          ),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: SmartRailColors.textPrimary,
             borderRadius: BorderRadius.circular(SmartRailRadius.md),
           ),
           child: Row(
             children: [
-              const Icon(
-                Icons.swap_horiz,
-                size: 22,
+              const SvgIcon(
+                AppIcons.arrows,
+                size: 20,
                 color: SmartRailColors.onPrimary,
               ),
-              const SizedBox(width: SmartRailSpacing.md),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: SmartRailType.label14.copyWith(
-                        fontSize: 16,
+                      style: SmartRailType.heading16.copyWith(
                         color: SmartRailColors.onPrimary,
                       ),
                     ),
+                    const SizedBox(height: 2),
                     Text(
                       body,
                       style: SmartRailType.caption.copyWith(
-                        color: SmartRailColors.border,
+                        color: SmartRailColors.onPrimary,
                       ),
                     ),
                   ],
@@ -440,11 +433,11 @@ class _StopRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(
-                  width: 64,
+                  width: 60,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         if (differs)
                           Text(
@@ -457,7 +450,7 @@ class _StopRow extends StatelessWidget {
                           ),
                         Text(
                           _t(differs ? live : scheduled),
-                          style: theme.textTheme.bodyLarge?.copyWith(
+                          style: SmartRailType.heading16.copyWith(
                             fontWeight: FontWeight.w600,
                             fontFeatures: SmartRailType.timeFeatures,
                             color: noLive

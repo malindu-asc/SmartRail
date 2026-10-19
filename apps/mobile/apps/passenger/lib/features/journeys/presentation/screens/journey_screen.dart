@@ -31,7 +31,7 @@ class JourneyScreen extends ConsumerWidget {
     return PollingScope(
       onTick: () => ref.read(journeyProvider(journeyId).notifier).refresh(),
       child: Scaffold(
-        appBar: AppBar(
+        appBar: SmartRailAppBar(
           title: Text(
             data == null || clock == null || data.scheduledDeparture == null
                 ? ''
@@ -175,14 +175,21 @@ class _FollowBar extends ConsumerWidget {
         .watch(followProvider)
         .isJourneyFollowed(journey.journeyId);
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(SmartRailSpacing.lg),
-        child: SmartRailButton(
-          label: followed ? l10n.followingJourney : l10n.followJourney,
-          kind: followed ? ButtonKind.secondary : ButtonKind.primary,
-          icon: followed ? Icons.check : null,
-          onPressed: () => _toggle(context, ref, followed),
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: SmartRailColors.surface,
+        border: Border(top: BorderSide(color: SmartRailColors.border)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: SmartRailButton(
+            label: followed ? l10n.followingJourney : l10n.followJourney,
+            kind: followed ? ButtonKind.secondary : ButtonKind.primary,
+            icon: followed ? Icons.check : null,
+            onPressed: () => _toggle(context, ref, followed),
+          ),
         ),
       ),
     );
