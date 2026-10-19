@@ -64,6 +64,15 @@ services:
       Network__Seed__ReferenceData: "true"
       Journeys__Generation__RunOnStartup: "true"
       Journeys__Seed__DemoFleet: "true"
+      # Development feed sources for the simulator (SPEC-005). Never use these keys outside development.
+      Identity__FeedSources__Seed__0__Code: "SIM"
+      Identity__FeedSources__Seed__0__Name: "Development feed"
+      Identity__FeedSources__Seed__0__Key: "dev-feed-key-sim-change-me"
+      Identity__FeedSources__Seed__0__Rank: "1"
+      Identity__FeedSources__Seed__1__Code: "SIM-B"
+      Identity__FeedSources__Seed__1__Name: "Development second feed"
+      Identity__FeedSources__Seed__1__Key: "dev-feed-key-simb-change-me"
+      Identity__FeedSources__Seed__1__Rank: "2"
     ports:
       - "5080:8080"
     depends_on:

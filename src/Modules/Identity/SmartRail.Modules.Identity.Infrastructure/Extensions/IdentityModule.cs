@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartRail.Modules.Identity.Application.Abstractions;
+using SmartRail.Modules.Identity.Contracts;
+using SmartRail.Modules.Identity.Infrastructure.Feeds;
 using SmartRail.Modules.Identity.Infrastructure.Persistence;
 using SmartRail.Infrastructure.Core.Outbox;
 using SmartRail.Infrastructure.Core.Persistence;
@@ -26,7 +28,8 @@ public static class IdentityModule
         services.AddScoped<IIdentityUnitOfWork>(sp => sp.GetRequiredService<IdentityDbContext>());
         services.AddScoped<IOutboxMessageProcessor, OutboxMessageProcessor<IdentityDbContext>>();
 
-        // Register repositories here.
+        services.AddScoped<IFeedSources, FeedSources>();
+        services.AddScoped<FeedSourceSeeder>();
 
         return services;
     }

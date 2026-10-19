@@ -40,6 +40,49 @@ public sealed class JourneyStop
     public string? PlatformOriginalCode { get; private set; }
     public DateTimeOffset? PlatformChangedAt { get; private set; }
     public string? PlatformChangedBy { get; private set; }
+
+    // ---- live data (SPEC-005). Scheduled times are never touched. ----
+
+    internal void RecordArrival(DateTimeOffset at)
+    {
+        ActualArrivalUtc = at;
+        if (State == JourneyStopState.Pending)
+            State = JourneyStopState.Arrived;
+    }
+
+    internal void RecordDeparture(DateTimeOffset at)
+    {
+        ActualDepartureUtc = at;
+        State = JourneyStopState.Departed;
+    }
+
+    // The feed saw the train go through, or a later stop was confirmed: the stop is behind the train, with no actual time.
+    internal void RecordPassed()
+    {
+        if (State is JourneyStopState.Pending or JourneyStopState.Arrived)
+            State = JourneyStopState.Departed;
+    }
+
+    // Actual minus scheduled for the newest comparable pair at this stop; null when there is nothing to compare.
+    internal TimeSpan? DelayAgainstSchedule() =>
+        DepartureDelay() ?? (ActualArrivalUtc is { } actual && ScheduledArrivalUtc is { } planned ? actual - planned : null);
+
+    internal TimeSpan? DepartureDelay() =>
+        ActualDepartureUtc is { } actual && ScheduledDepartureUtc is { } planned ? actual - planned : null;
+
+    internal void SetEstimate(DateTimeOffset? arrival, DateTimeOffset? departure)
+    {
+        EstimatedArrivalUtc = arrival;
+        EstimatedDepartureUtc = departure;
+        EstimateSource = EstimateSource.Live;
+    }
+
+    internal void ClearEstimate()
+    {
+        EstimatedArrivalUtc = null;
+        EstimatedDepartureUtc = null;
+        EstimateSource = State is JourneyStopState.Arrived or JourneyStopState.Departed ? EstimateSource.Confirmed : EstimateSource.Scheduled;
+    }
 }
 
 public sealed record JourneyStopDraft(

@@ -59,6 +59,12 @@ public static class JourneysErrors
     public static Error InvalidDriver =>
         Error.Validation("Journeys.InvalidDriver", "A driver subject is required.");
 
+    public static Error JourneyNotReady =>
+        Error.Conflict("Journeys.JourneyNotReady", "The journey has no vehicle and driver yet, so it cannot be running.");
+
+    public static Error StopNotFound(int sequence) =>
+        Error.Validation("Journeys.StopNotFound", $"The journey has no stop number {sequence}.");
+
     public static Error InvalidCount =>
         Error.Validation("Journeys.InvalidCount", "The count must be between 1 and 50.");
 }

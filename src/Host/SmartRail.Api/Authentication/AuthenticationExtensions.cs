@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,8 @@ public static class AuthenticationExtensions
 
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
+            .AddJwtBearer()
+            .AddScheme<AuthenticationSchemeOptions, FeedKeyAuthenticationHandler>(FeedSourceAuth.Scheme, _ => { });
 
         // Bound lazily from IConfiguration, so environment variables and host overrides always apply.
         services
@@ -81,7 +83,11 @@ public static class AuthenticationExtensions
             .AddPolicy(Policies.Driver, policy => policy.RequireRole(Roles.Driver))
             .AddPolicy(Policies.Controller, policy => policy.RequireRole(Roles.Controller))
             .AddPolicy(Policies.Scheduler, policy => policy.RequireRole(Roles.Scheduler))
-            .AddPolicy(Policies.Admin, policy => policy.RequireRole(Roles.Admin));
+            .AddPolicy(Policies.Admin, policy => policy.RequireRole(Roles.Admin))
+            // Machines that send live data: a source key, never a user token.
+            .AddPolicy(FeedSourceAuth.Policy, policy => policy
+                .AddAuthenticationSchemes(FeedSourceAuth.Scheme)
+                .RequireClaim(FeedSourceAuth.SourceIdClaim));
 
         return services;
     }

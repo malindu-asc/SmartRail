@@ -92,6 +92,12 @@ if (app.Configuration.GetValue<bool>("Network:Seed:ReferenceData"))
     await app.Services.SeedNetworkReferenceDataAsync();
 }
 
+// Inserts the configured development feed sources (Identity:FeedSources:Seed) where they are missing.
+if (app.Configuration.GetSection("Identity:FeedSources:Seed").GetChildren().Any())
+{
+    await app.SeedFeedSourcesAsync();
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 
