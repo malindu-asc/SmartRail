@@ -84,14 +84,14 @@ Dependency order. Each spec is about three days or less; split anything bigger.
 | SPEC-002 | Network reference data and seed | Verifying | Network | `feature/network-reference-data` |
 | SPEC-003 | Timetable: versions, calendars, services, public timetable | Verifying | Network | `feature/timetable` |
 | SPEC-004 | Journey generation and the journey model (lifecycle, per-stop state, assignments, scheduled board) | In progress | Journeys | `feature/journeys` |
-| SPEC-005 | Live feed ingest, delay, confidence (Live, Stale, Unknown), source precedence | Planned | Journeys | — |
+| SPEC-005 | Live feed ingest, delay, confidence (Live, Stale, Unknown), source precedence | Verifying | Journeys, Identity | `feature/live-ingest` |
 | SPEC-006 | Simulator scenarios through the real ingest endpoint | Planned | Simulator | — |
 | SPEC-007 | Departure board and journey timeline API, realtime push | Planned | Journeys, Notifications | — |
 | SPEC-008 | Flutter foundation: shared packages, app shell, router, localization | Planned | passenger app, driver app | — |
 | SPEC-009 | Passenger app: departures board and journey timeline with staleness | Planned | passenger app | — |
-| SPEC-010 | Controller actions with audit (cancel, terminate, platform change) and live board | Planned | Operations, console | — |
-| SPEC-011 | Driver app: duty, stop events, offline queue and replay | Planned | Journeys, driver app | — |
-| SPEC-012 | Assignments (vehicle, driver), vehicle unavailability and roles administration | Planned | Journeys, Identity, console | — |
+| SPEC-010 | Live network board and controller journey actions with reasons and audit: cancel, terminate short, interrupt, resume, reinstate, platform change, driver messages, concurrent-edit detection | Planned | Operations, Journeys, console | — |
+| SPEC-011 | Driver app and driver events: duty, stop events, delay reasons, offline queue, replay and reconciliation vs the feed, control message delivery, orphaned events, crew handover | Planned | Journeys, driver app | — |
+| SPEC-012 | Assignments (vehicle, driver), vehicle unavailability, unassigned alerts, vehicle failure cascade, roles administration, device health and revocation, staff account protection | Planned | Journeys, Identity, console | — |
 | SPEC-013 | Platform display (kiosk) | Planned | kiosk | — |
 | SPEC-014 | Station search and route stops in the passenger app | Planned | passenger app | — |
 | SPEC-015 | Timetable versioning workflow: draft, review, approve, publish (API and console) | Planned | Network, console | — |
@@ -99,6 +99,17 @@ Dependency order. Each spec is about three days or less; split anything bigger.
 | SPEC-017 | Public rate limiting (REQ-SEC-002) and permission-matrix tests (REQ-SEC-003) | Planned | API, all modules | — |
 | SPEC-018 | Web foundation: shared packages, design tokens, auth, routing, data layer (console and kiosk) | Planned | console, kiosk | — |
 | SPEC-019 | Station terminal: destination search, station information, idle reset, lockdown, offline mode | Planned | kiosk | — |
+| SPEC-020 | Notifications: follow a journey, push, inbox, notification event matrix, ticket auto-follow | Proposed | Notifications, passenger app | — |
+| SPEC-021 | Passenger accounts: register, sign in, recover tickets on a new device, delete account and device data, sign-in protection | Proposed | Identity, passenger app | — |
+| SPEC-022 | Ticketing core: tickets bound to a journey, sales window, fares and categories, ticket states, cancellation affects tickets, signed QR with offline display | Proposed | Ticketing, passenger app | — |
+| SPEC-023 | Payments: provider-neutral port with a fake default, idempotent confirmation, authentic callbacks, issue only after payment, unpaid orders expire | Proposed | Ticketing, simulator | — |
+| SPEC-024 | Refunds: full refund after a railway cancellation, refund as its own record, no double refunds, automatic retry | Proposed | Ticketing | — |
+| SPEC-025 | Ticket inspector mode in the staff app: server-side validation, rejection reasons, past-the-destination, online-only | Proposed | Ticketing, driver app | — |
+| SPEC-026 | Gate scanning: gate device, board and exit scans, retries, excess fare, missing exit, offline, scan log | Proposed | Ticketing, kiosk | — |
+| SPEC-027 | Disruptions and incidents: disruption console, second approver, review-by time, scoped resolution, planned works, incident lifecycle, emergency termination, plain-text content, banners and retraction | Proposed | Operations, Journeys, console | — |
+| SPEC-028 | Station Master console: own-station view and actions, live access status (lifts, stairs, gates) | Proposed | Operations, console | — |
+| SPEC-029 | Punctuality report | Proposed | Operations, console | — |
+| SPEC-030 | Catering menu service (Node): read-only menu with call to order, failure isolated from the railway | Proposed | catering | — |
 
 Stretch, only after the core works: tickets, payment, gate scan.
 
