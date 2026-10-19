@@ -5,8 +5,16 @@ import '../tokens/tokens.dart';
 /// The three kinds of the Figma "Driver/Banner": offline, warning and message.
 enum BannerKind {
   offline(Icons.wifi_off, SmartRailColors.staleText, SmartRailColors.staleBg),
-  warning(Icons.warning_amber_rounded, SmartRailColors.delayedText, SmartRailColors.delayedBg),
-  message(Icons.chat_bubble_outline, SmartRailColors.primaryPressed, SmartRailColors.primarySubtle);
+  warning(
+    Icons.warning_amber_rounded,
+    SmartRailColors.delayedText,
+    SmartRailColors.delayedBg,
+  ),
+  message(
+    Icons.chat_bubble_outline,
+    SmartRailColors.primaryPressed,
+    SmartRailColors.primarySubtle,
+  );
 
   const BannerKind(this.icon, this.color, this.background);
 
@@ -18,7 +26,12 @@ enum BannerKind {
 /// A short notice with an icon, a bold title and a line of detail. The words come from the caller. It is a live region, so a
 /// screen reader announces it when it appears.
 class InfoBanner extends StatelessWidget {
-  const InfoBanner({super.key, required this.kind, required this.title, this.detail});
+  const InfoBanner({
+    super.key,
+    required this.kind,
+    required this.title,
+    this.detail,
+  });
 
   final BannerKind kind;
   final String title;
@@ -33,8 +46,11 @@ class InfoBanner extends StatelessWidget {
       child: ExcludeSemantics(
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(color: kind.background, borderRadius: BorderRadius.circular(SmartRailRadius.md)),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: kind.background,
+            borderRadius: BorderRadius.circular(SmartRailRadius.md),
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -44,10 +60,16 @@ class InfoBanner extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: SmartRailType.label14.copyWith(color: kind.color)),
+                    Text(
+                      title,
+                      style: SmartRailType.label14.copyWith(color: kind.color),
+                    ),
                     if (detail != null) ...[
                       const SizedBox(height: 2),
-                      Text(detail!, style: SmartRailType.body14.copyWith(color: kind.color)),
+                      Text(
+                        detail!,
+                        style: SmartRailType.body14.copyWith(color: kind.color),
+                      ),
                     ],
                   ],
                 ),
@@ -68,5 +90,6 @@ class OfflineBanner extends StatelessWidget {
   final String? detail;
 
   @override
-  Widget build(BuildContext context) => InfoBanner(kind: BannerKind.offline, title: title, detail: detail);
+  Widget build(BuildContext context) =>
+      InfoBanner(kind: BannerKind.offline, title: title, detail: detail);
 }

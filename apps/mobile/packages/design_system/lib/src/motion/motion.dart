@@ -10,10 +10,12 @@ abstract final class SmartRailMotion {
   static const curve = Curves.easeOutCubic;
 
   /// Whether the user asked for no motion.
-  static bool reduced(BuildContext context) => MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+  static bool reduced(BuildContext context) =>
+      MediaQuery.maybeDisableAnimationsOf(context) ?? false;
 
   /// [duration], or no time at all when motion is reduced.
-  static Duration of(BuildContext context, Duration duration) => reduced(context) ? Duration.zero : duration;
+  static Duration of(BuildContext context, Duration duration) =>
+      reduced(context) ? Duration.zero : duration;
 }
 
 /// A tap target that gives a very small press response (0.98) so touch feels alive. No effect when motion is reduced.
@@ -43,7 +45,10 @@ class _PressableScaleState extends State<PressableScale> {
       onPointerCancel: (_) => _set(false),
       child: AnimatedScale(
         scale: scale,
-        duration: SmartRailMotion.of(context, const Duration(milliseconds: 100)),
+        duration: SmartRailMotion.of(
+          context,
+          const Duration(milliseconds: 100),
+        ),
         curve: SmartRailMotion.curve,
         child: widget.child,
       ),
@@ -63,9 +68,16 @@ class AppearIn extends StatefulWidget {
   State<AppearIn> createState() => _AppearInState();
 }
 
-class _AppearInState extends State<AppearIn> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(vsync: this, duration: SmartRailMotion.slow);
-  late final Animation<double> _opacity = CurvedAnimation(parent: _controller, curve: SmartRailMotion.curve);
+class _AppearInState extends State<AppearIn>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: SmartRailMotion.slow,
+  );
+  late final Animation<double> _opacity = CurvedAnimation(
+    parent: _controller,
+    curve: SmartRailMotion.curve,
+  );
   bool _started = false;
 
   @override
@@ -97,7 +109,10 @@ class _AppearInState extends State<AppearIn> with SingleTickerProviderStateMixin
       opacity: _opacity,
       child: AnimatedBuilder(
         animation: _opacity,
-        builder: (context, child) => Transform.translate(offset: Offset(0, 8 * (1 - _opacity.value)), child: child),
+        builder: (context, child) => Transform.translate(
+          offset: Offset(0, 8 * (1 - _opacity.value)),
+          child: child,
+        ),
         child: widget.child,
       ),
     );

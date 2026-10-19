@@ -2,19 +2,36 @@ import 'package:flutter/material.dart';
 
 import '../theme/smartrail_theme.dart';
 import '../tokens/tokens.dart';
+import 'svg_icon.dart';
 
 /// What a journey is doing, as far as a passenger needs to know (state-models.md, REQ-PAX-004). The Figma "Status chip" has the
 /// four exceptions; "On time" is a quiet state: colour is reserved for exceptions.
 enum StatusKind {
-  onTime(Icons.check, SmartRailColors.textPrimary, null),
-  delayed(Icons.schedule, SmartRailColors.delayedText, SmartRailColors.delayedBg),
-  cancelled(Icons.cancel_outlined, SmartRailColors.cancelledText, SmartRailColors.cancelledBg),
-  changed(Icons.swap_horiz, SmartRailColors.changedText, SmartRailColors.changedBg),
-  noLiveData(Icons.wifi_off, SmartRailColors.staleText, SmartRailColors.staleBg);
+  onTime(AppIcons.check, SmartRailColors.textPrimary, null),
+  delayed(
+    AppIcons.clock,
+    SmartRailColors.delayedText,
+    SmartRailColors.delayedBg,
+  ),
+  cancelled(
+    AppIcons.xc,
+    SmartRailColors.cancelledText,
+    SmartRailColors.cancelledBg,
+  ),
+  changed(
+    AppIcons.swapChip,
+    SmartRailColors.changedText,
+    SmartRailColors.changedBg,
+  ),
+  noLiveData(
+    AppIcons.wifiOff,
+    SmartRailColors.staleText,
+    SmartRailColors.staleBg,
+  );
 
   const StatusKind(this.icon, this.color, this.background);
 
-  final IconData icon;
+  final String icon;
   final Color color;
 
   /// Null for the quiet on-time state.
@@ -32,8 +49,13 @@ class StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final minimum = SmartRailSpec.of(context).minTextSize;
-    final size = SmartRailType.caption.fontSize! < minimum ? minimum : SmartRailType.caption.fontSize!;
-    final text = Text(label, style: SmartRailType.caption.copyWith(color: kind.color, fontSize: size));
+    final size = SmartRailType.caption.fontSize! < minimum
+        ? minimum
+        : SmartRailType.caption.fontSize!;
+    final text = Text(
+      label,
+      style: SmartRailType.caption.copyWith(color: kind.color, fontSize: size),
+    );
 
     return Semantics(
       container: true,
@@ -43,7 +65,7 @@ class StatusChip extends StatelessWidget {
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(kind.icon, size: 16, color: kind.color),
+                  SvgIcon(kind.icon, size: 16, color: kind.color),
                   const SizedBox(width: SmartRailSpacing.xs),
                   Flexible(child: text),
                 ],
@@ -53,7 +75,7 @@ class StatusChip extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(kind.icon, size: 14, color: kind.color),
+                    SvgIcon(kind.icon, size: 14, color: kind.color),
                     const SizedBox(width: SmartRailSpacing.xs),
                     Flexible(child: text),
                   ],
@@ -73,15 +95,27 @@ class _Pill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = Padding(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: SmartRailSpacing.xs), child: child);
+    final content = Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: SmartRailSpacing.xs,
+      ),
+      child: child,
+    );
     final decorated = DecoratedBox(
-      decoration: BoxDecoration(color: kind.background, borderRadius: BorderRadius.circular(SmartRailRadius.pill)),
+      decoration: BoxDecoration(
+        color: kind.background,
+        borderRadius: BorderRadius.circular(SmartRailRadius.pill),
+      ),
       child: content,
     );
 
     if (kind != StatusKind.noLiveData) return decorated;
 
-    return CustomPaint(foregroundPainter: _DashedPillPainter(SmartRailColors.staleBorder), child: decorated);
+    return CustomPaint(
+      foregroundPainter: _DashedPillPainter(SmartRailColors.staleBorder),
+      child: decorated,
+    );
   }
 }
 
@@ -96,11 +130,23 @@ class _DashedPillPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
-    final path = Path()..addRRect(RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(size.height / 2)));
+    final path = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Offset.zero & size,
+          Radius.circular(size.height / 2),
+        ),
+      );
 
     for (final metric in path.computeMetrics()) {
       for (var at = 0.0; at < metric.length; at += 5) {
-        canvas.drawPath(metric.extractPath(at, at + 3 > metric.length ? metric.length : at + 3), paint);
+        canvas.drawPath(
+          metric.extractPath(
+            at,
+            at + 3 > metric.length ? metric.length : at + 3,
+          ),
+          paint,
+        );
       }
     }
   }

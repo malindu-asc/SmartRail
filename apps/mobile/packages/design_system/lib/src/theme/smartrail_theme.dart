@@ -44,10 +44,12 @@ class SmartRailSpec extends ThemeExtension<SmartRailSpec> {
   );
 
   @override
-  SmartRailSpec lerp(ThemeExtension<SmartRailSpec>? other, double t) => other is! SmartRailSpec || t < 0.5 ? this : other;
+  SmartRailSpec lerp(ThemeExtension<SmartRailSpec>? other, double t) =>
+      other is! SmartRailSpec || t < 0.5 ? this : other;
 
   static SmartRailSpec of(BuildContext context) =>
-      Theme.of(context).extension<SmartRailSpec>() ?? SmartRailTheme.passengerSpec;
+      Theme.of(context).extension<SmartRailSpec>() ??
+      SmartRailTheme.passengerSpec;
 }
 
 abstract final class SmartRailTheme {
@@ -89,27 +91,41 @@ abstract final class SmartRailTheme {
     );
 
     // The driver app never shows text under its minimum size.
-    TextStyle floor(TextStyle style) =>
-        style.copyWith(fontSize: style.fontSize! < spec.minTextSize ? spec.minTextSize : style.fontSize);
+    TextStyle floor(TextStyle style) => style.copyWith(
+      fontSize: style.fontSize! < spec.minTextSize
+          ? spec.minTextSize
+          : style.fontSize,
+    );
 
-    final textTheme = TextTheme(
-      headlineLarge: floor(SmartRailType.headline),
-      titleLarge: floor(SmartRailType.title20),
-      titleMedium: floor(SmartRailType.title),
-      bodyLarge: floor(SmartRailType.body),
-      bodyMedium: floor(SmartRailType.body14),
-      labelLarge: floor(SmartRailType.label14),
-      labelSmall: floor(SmartRailType.caption),
-    ).apply(bodyColor: SmartRailColors.textPrimary, displayColor: SmartRailColors.textPrimary);
+    final textTheme =
+        TextTheme(
+          headlineLarge: floor(SmartRailType.headline),
+          titleLarge: floor(SmartRailType.title20),
+          titleMedium: floor(SmartRailType.title),
+          bodyLarge: floor(SmartRailType.body),
+          bodyMedium: floor(SmartRailType.body14),
+          labelLarge: floor(SmartRailType.label14),
+          labelSmall: floor(SmartRailType.caption),
+        ).apply(
+          bodyColor: SmartRailColors.textPrimary,
+          displayColor: SmartRailColors.textPrimary,
+        );
 
     OutlineInputBorder field(Color color) => OutlineInputBorder(
       borderRadius: BorderRadius.circular(SmartRailRadius.md),
       borderSide: BorderSide(color: color, width: 1.5),
     );
 
-    final pill = StadiumBorder(side: BorderSide(color: SmartRailColors.borderStrong, width: spec.buttonBorderWidth));
+    final pill = StadiumBorder(
+      side: BorderSide(
+        color: SmartRailColors.borderStrong,
+        width: spec.buttonBorderWidth,
+      ),
+    );
 
-    const sharedAxis = SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal);
+    const sharedAxis = SharedAxisPageTransitionsBuilder(
+      transitionType: SharedAxisTransitionType.horizontal,
+    );
 
     return ThemeData(
       useMaterial3: true,
@@ -158,7 +174,10 @@ abstract final class SmartRailTheme {
           minimumSize: Size.fromHeight(spec.buttonHeight),
           textStyle: spec.buttonLabel,
           shape: pill,
-          side: BorderSide(color: SmartRailColors.borderStrong, width: spec.buttonBorderWidth),
+          side: BorderSide(
+            color: SmartRailColors.borderStrong,
+            width: spec.buttonBorderWidth,
+          ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -172,10 +191,19 @@ abstract final class SmartRailTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: SmartRailColors.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-        labelStyle: floor(SmartRailType.caption).copyWith(color: SmartRailColors.textSecondary),
-        hintStyle: SmartRailType.body.copyWith(color: SmartRailColors.textTertiary),
-        errorStyle: floor(SmartRailType.caption).copyWith(color: SmartRailColors.cancelledText),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 16,
+        ),
+        labelStyle: floor(
+          SmartRailType.caption,
+        ).copyWith(color: SmartRailColors.textSecondary),
+        hintStyle: SmartRailType.body.copyWith(
+          color: SmartRailColors.textTertiary,
+        ),
+        errorStyle: floor(
+          SmartRailType.caption,
+        ).copyWith(color: SmartRailColors.cancelledText),
         border: field(SmartRailColors.borderStrong),
         enabledBorder: field(SmartRailColors.borderStrong),
         focusedBorder: field(SmartRailColors.primary),
@@ -194,13 +222,22 @@ abstract final class SmartRailTheme {
         ),
       ),
 
+      // The Figma chip: 14 Semi Bold on white with a strong hairline; the chosen one is brand-subtle with a brand hairline and dark-green
+      // text. No check mark.
       chipTheme: ChipThemeData(
         backgroundColor: SmartRailColors.surface,
         selectedColor: SmartRailColors.primarySubtle,
+        showCheckmark: false,
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
         side: const BorderSide(color: SmartRailColors.borderStrong),
         shape: const StadiumBorder(),
-        labelStyle: floor(SmartRailType.label14),
-        checkmarkColor: SmartRailColors.primary,
+        labelStyle: floor(
+          SmartRailType.label14,
+        ).copyWith(color: SmartRailColors.textPrimary),
+        secondaryLabelStyle: floor(
+          SmartRailType.label14,
+        ).copyWith(color: SmartRailColors.primaryPressed),
+        secondarySelectedColor: SmartRailColors.primarySubtle,
       ),
 
       bottomSheetTheme: const BottomSheetThemeData(
@@ -208,15 +245,23 @@ abstract final class SmartRailTheme {
         surfaceTintColor: Colors.transparent,
         showDragHandle: true,
         dragHandleColor: SmartRailColors.borderStrong,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(SmartRailRadius.sheet))),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(SmartRailRadius.sheet),
+          ),
+        ),
       ),
 
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: SmartRailColors.textPrimary,
-        contentTextStyle: floor(SmartRailType.body14).copyWith(color: SmartRailColors.onPrimary),
+        contentTextStyle: floor(
+          SmartRailType.body14,
+        ).copyWith(color: SmartRailColors.onPrimary),
         actionTextColor: SmartRailColors.primarySubtle,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SmartRailRadius.md)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(SmartRailRadius.md),
+        ),
       ),
 
       navigationBarTheme: NavigationBarThemeData(
@@ -227,17 +272,25 @@ abstract final class SmartRailTheme {
         height: spec.touchTarget + 24,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => floor(SmartRailType.caption).copyWith(
-            color: states.contains(WidgetState.selected) ? SmartRailColors.primary : SmartRailColors.textTertiary,
+            color: states.contains(WidgetState.selected)
+                ? SmartRailColors.primary
+                : SmartRailColors.textTertiary,
           ),
         ),
         iconTheme: WidgetStateProperty.resolveWith(
           (states) => IconThemeData(
-            color: states.contains(WidgetState.selected) ? SmartRailColors.primary : SmartRailColors.textTertiary,
+            color: states.contains(WidgetState.selected)
+                ? SmartRailColors.primary
+                : SmartRailColors.textTertiary,
           ),
         ),
       ),
 
-      dividerTheme: const DividerThemeData(color: SmartRailColors.border, space: 1, thickness: 1),
+      dividerTheme: const DividerThemeData(
+        color: SmartRailColors.border,
+        space: 1,
+        thickness: 1,
+      ),
     );
   }
 }

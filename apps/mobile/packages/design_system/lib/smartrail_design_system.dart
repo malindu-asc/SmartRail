@@ -13,3 +13,5 @@ export 'src/widgets/smartrail_button.dart';
 export 'src/widgets/smartrail_text_field.dart';
 export 'src/widgets/state_widgets.dart';
 export 'src/widgets/status_chip.dart';
+export 'src/widgets/svg_icon.dart';
+export 'src/widgets/tab_bar_and_app_bar.dart';

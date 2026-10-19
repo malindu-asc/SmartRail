@@ -25,6 +25,8 @@ abstract final class SmartRailColors {
   static const bgSoft = Color(0xFFF3F4F6);
 
   // status/*: each has a text colour and a soft background. Never the only signal: always with an icon and words (REQ-PAX-004).
+  /// Status/on-time: the green of "Running · on time".
+  static const onTimeText = Color(0xFF00842F);
   static const delayedText = Color(0xFFB45309);
   static const delayedBg = Color(0xFFFEF3C7);
   static const cancelledText = Color(0xFFB91C1C);
@@ -64,30 +66,91 @@ abstract final class SmartRailType {
   static const fontFamily = 'Inter';
 
   /// Display/36 Bold: the title of an onboarding slide.
-  static const display = TextStyle(fontFamily: fontFamily, fontSize: 36, fontWeight: FontWeight.w700, height: 42 / 36);
+  static const display = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 36,
+    fontWeight: FontWeight.w700,
+    height: 42 / 36,
+  );
 
-  static const headline = TextStyle(fontFamily: fontFamily, fontSize: 32, fontWeight: FontWeight.w700, height: 1.2);
+  static const headline = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 32,
+    fontWeight: FontWeight.w700,
+    height: 1.2,
+  );
 
   /// Title/20 Bold: the label of a driver action button.
-  static const title20 = TextStyle(fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w700, height: 26 / 20);
+  static const title20 = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
+    height: 26 / 20,
+  );
 
   /// Title 18 Semi Bold (from the Figma board; the file's own title style is confirmed with SPEC-009).
-  static const title = TextStyle(fontFamily: fontFamily, fontSize: 18, fontWeight: FontWeight.w600, height: 1.3);
+  static const title = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    height: 1.3,
+  );
 
   /// Button/16 Semi Bold.
-  static const button = TextStyle(fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w600, height: 24 / 16);
+  /// Heading/16 Semi Bold, line height 22.
+  static const heading16 = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 22 / 16,
+  );
+
+  /// Title/24 Bold, line height 30.
+  static const title24 = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    height: 30 / 24,
+  );
+
+  static const button = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 24 / 16,
+  );
 
   /// Body/16 Regular.
-  static const body = TextStyle(fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w400, height: 24 / 16);
+  static const body = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    height: 24 / 16,
+  );
 
   /// Body/14 Regular.
-  static const body14 = TextStyle(fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w400, height: 20 / 14);
+  static const body14 = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    height: 20 / 14,
+  );
 
   /// Label/14 Semi Bold.
-  static const label14 = TextStyle(fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w600, height: 20 / 14);
+  static const label14 = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 20 / 14,
+  );
 
   /// Caption/12 Medium.
-  static const caption = TextStyle(fontFamily: fontFamily, fontSize: 12, fontWeight: FontWeight.w500, height: 16 / 12);
+  static const caption = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    height: 16 / 12,
+  );
 
   /// Times line up in a column when digits have the same width ("14:25 → 15:42").
   static const timeFeatures = [FontFeature.tabularFigures()];

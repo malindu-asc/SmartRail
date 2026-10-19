@@ -25,7 +25,10 @@ class DashedBox extends StatelessWidget {
       foregroundPainter: _DashedRRectPainter(color: color, radius: radius),
       child: Container(
         padding: padding,
-        decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(radius)),
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(radius),
+        ),
         child: child,
       ),
     );
@@ -44,15 +47,25 @@ class _DashedRRectPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
-    final path = Path()..addRRect(RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius)));
+    final path = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius)),
+      );
 
     for (final metric in path.computeMetrics()) {
       for (var at = 0.0; at < metric.length; at += 6) {
-        canvas.drawPath(metric.extractPath(at, at + 3 > metric.length ? metric.length : at + 3), paint);
+        canvas.drawPath(
+          metric.extractPath(
+            at,
+            at + 3 > metric.length ? metric.length : at + 3,
+          ),
+          paint,
+        );
       }
     }
   }
 
   @override
-  bool shouldRepaint(_DashedRRectPainter old) => old.color != color || old.radius != radius;
+  bool shouldRepaint(_DashedRRectPainter old) =>
+      old.color != color || old.radius != radius;
 }

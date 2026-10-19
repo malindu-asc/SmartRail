@@ -18,9 +18,20 @@ class StalenessLabel extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.history, size: 14, color: SmartRailColors.staleText),
+            const Icon(
+              Icons.history,
+              size: 14,
+              color: SmartRailColors.staleText,
+            ),
             const SizedBox(width: SmartRailSpacing.xs),
-            Flexible(child: Text(text, style: SmartRailType.caption.copyWith(color: SmartRailColors.staleText))),
+            Flexible(
+              child: Text(
+                text,
+                style: SmartRailType.caption.copyWith(
+                  color: SmartRailColors.staleText,
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -30,7 +41,12 @@ class StalenessLabel extends StatelessWidget {
 
 /// Nothing to show yet, and why.
 class EmptyState extends StatelessWidget {
-  const EmptyState({super.key, required this.icon, required this.title, this.message});
+  const EmptyState({
+    super.key,
+    required this.icon,
+    required this.title,
+    this.message,
+  });
 
   final IconData icon;
   final String title;
@@ -46,10 +62,20 @@ class EmptyState extends StatelessWidget {
           children: [
             Icon(icon, size: 48, color: SmartRailColors.textTertiary),
             const SizedBox(height: SmartRailSpacing.lg),
-            Text(title, style: SmartRailType.title, textAlign: TextAlign.center),
+            Text(
+              title,
+              style: SmartRailType.title,
+              textAlign: TextAlign.center,
+            ),
             if (message != null) ...[
               const SizedBox(height: SmartRailSpacing.sm),
-              Text(message!, style: SmartRailType.body.copyWith(color: SmartRailColors.textSecondary), textAlign: TextAlign.center),
+              Text(
+                message!,
+                style: SmartRailType.body.copyWith(
+                  color: SmartRailColors.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ],
           ],
         ),
@@ -60,7 +86,13 @@ class EmptyState extends StatelessWidget {
 
 /// Something failed. The words come from the caller, which chooses them from the kind of failure.
 class ErrorState extends StatelessWidget {
-  const ErrorState({super.key, required this.title, required this.message, this.retryLabel, this.onRetry});
+  const ErrorState({
+    super.key,
+    required this.title,
+    required this.message,
+    this.retryLabel,
+    this.onRetry,
+  });
 
   final String title;
   final String message;
@@ -75,14 +107,32 @@ class ErrorState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline, size: 48, color: SmartRailColors.cancelledText),
+            const Icon(
+              Icons.error_outline,
+              size: 48,
+              color: SmartRailColors.cancelledText,
+            ),
             const SizedBox(height: SmartRailSpacing.lg),
-            Text(title, style: SmartRailType.title, textAlign: TextAlign.center),
+            Text(
+              title,
+              style: SmartRailType.title,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: SmartRailSpacing.sm),
-            Text(message, style: SmartRailType.body.copyWith(color: SmartRailColors.textSecondary), textAlign: TextAlign.center),
+            Text(
+              message,
+              style: SmartRailType.body.copyWith(
+                color: SmartRailColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
             if (onRetry != null && retryLabel != null) ...[
               const SizedBox(height: SmartRailSpacing.xl),
-              SmartRailButton(label: retryLabel!, onPressed: onRetry, icon: Icons.refresh),
+              SmartRailButton(
+                label: retryLabel!,
+                onPressed: onRetry,
+                icon: Icons.refresh,
+              ),
             ],
           ],
         ),
@@ -103,8 +153,12 @@ class Skeleton extends StatefulWidget {
   State<Skeleton> createState() => _SkeletonState();
 }
 
-class _SkeletonState extends State<Skeleton> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1100));
+class _SkeletonState extends State<Skeleton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1100),
+  );
 
   @override
   void didChangeDependencies() {
@@ -131,7 +185,11 @@ class _SkeletonState extends State<Skeleton> with SingleTickerProviderStateMixin
           width: widget.width,
           height: widget.height,
           decoration: BoxDecoration(
-            color: Color.lerp(SmartRailColors.bgSoft, SmartRailColors.border, _controller.value),
+            color: Color.lerp(
+              SmartRailColors.bgSoft,
+              SmartRailColors.border,
+              _controller.value,
+            ),
             borderRadius: BorderRadius.circular(SmartRailRadius.sm),
           ),
         ),
