@@ -7,6 +7,7 @@ using SmartRail.Infrastructure.Core.Persistence;
 using SmartRail.Modules.Journeys.Application.Abstractions;
 using SmartRail.Modules.Journeys.Contracts;
 using SmartRail.Modules.Journeys.Domain.Journeys;
+using SmartRail.Modules.Journeys.Domain.Live;
 using SmartRail.Modules.Journeys.Infrastructure.Generation;
 using SmartRail.Modules.Journeys.Infrastructure.Persistence;
 using SmartRail.Modules.Journeys.Infrastructure.Seeding;
@@ -35,6 +36,10 @@ public static class JourneysModule
         services.AddScoped<IJourneyReader>(sp => sp.GetRequiredService<JourneyReader>());
         services.AddScoped<IJourneyLookup>(sp => sp.GetRequiredService<JourneyReader>());
         services.AddScoped<IJourneysAuditLog, JourneysAuditLog>();
+        services.AddScoped<IIngestStore, IngestStore>();
+
+        // The numbers behind live data (Journeys:Live): stale and unknown thresholds, dwell, speed ceiling.
+        services.AddSingleton(configuration.GetSection("Journeys:Live").Get<LiveRules>() ?? LiveRules.Default);
 
         services.Configure<JourneyGenerationOptions>(configuration.GetSection(JourneyGenerationOptions.SectionName));
         services.AddScoped<JourneyGenerationRunner>();

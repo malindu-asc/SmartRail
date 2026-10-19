@@ -133,7 +133,6 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Crew.CrewDuty", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -204,7 +203,6 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Crew.DriverAssignment", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -251,7 +249,6 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Fleet.Vehicle", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -291,7 +288,6 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Fleet.VehicleAssignment", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -343,7 +339,6 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Journeys.Journey", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -607,6 +602,194 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Live.JourneyEvent", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("DeviceSequence")
+                        .HasColumnType("bigint")
+                        .HasColumnName("device_sequence");
+
+                    b.Property<string>("Disposition")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("disposition");
+
+                    b.Property<string>("DispositionReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("disposition_reason");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("event_type");
+
+                    b.Property<Guid>("JourneyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("journey_id");
+
+                    b.Property<DateTimeOffset>("OccurredAtSource")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at_source");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("jsonb")
+                        .HasDefaultValue("{}")
+                        .HasColumnName("payload");
+
+                    b.Property<DateTimeOffset>("ReceivedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("received_at");
+
+                    b.Property<Guid>("SourceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("source_id");
+
+                    b.Property<string>("SourceKind")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("source_kind");
+
+                    b.Property<int>("SourceRank")
+                        .HasColumnType("integer")
+                        .HasColumnName("source_rank");
+
+                    b.Property<int>("StopSequence")
+                        .HasColumnType("integer")
+                        .HasColumnName("stop_sequence");
+
+                    b.Property<long?>("SupersededByEventId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("superseded_by_event_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SupersededByEventId");
+
+                    b.HasIndex("JourneyId", "ReceivedAt")
+                        .HasDatabaseName("ix_events_journey");
+
+                    b.HasIndex("SourceId", "DeviceSequence")
+                        .IsUnique()
+                        .HasDatabaseName("ux_events_source_sequence");
+
+                    b.HasIndex("JourneyId", "StopSequence", "EventType")
+                        .HasDatabaseName("ix_events_fact")
+                        .HasFilter("disposition = 'Applied'");
+
+                    b.ToTable("journey_events", "journeys", t =>
+                        {
+                            t.HasCheckConstraint("ck_journey_events_disposition", "disposition in ('Applied','Superseded','Rejected','HeldForCorrection','Duplicate','Orphaned','OutsideDutyWindow')");
+
+                            t.HasCheckConstraint("ck_journey_events_rank", "source_rank >= 1");
+
+                            t.HasCheckConstraint("ck_journey_events_source_kind", "source_kind in ('Feed','Driver','Controller','System')");
+
+                            t.HasCheckConstraint("ck_journey_events_type", "event_type in ('Arrived','Departed','Passed')");
+                        });
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Live.TelemetryReading", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("Accepted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("accepted");
+
+                    b.Property<bool>("LegalHold")
+                        .HasColumnType("boolean")
+                        .HasColumnName("legal_hold");
+
+                    b.Property<decimal?>("Progress")
+                        .HasPrecision(5, 4)
+                        .HasColumnType("numeric(5,4)")
+                        .HasColumnName("progress");
+
+                    b.Property<DateTimeOffset>("ReceivedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("received_at");
+
+                    b.Property<DateTimeOffset>("RecordedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("recorded_at");
+
+                    b.Property<string>("RejectReason")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("reject_reason");
+
+                    b.Property<Guid?>("ResolvedJourneyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("resolved_journey_id");
+
+                    b.Property<string>("SectionFromStationCode")
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying(5)")
+                        .HasColumnName("section_from_station_code");
+
+                    b.Property<string>("SectionToStationCode")
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying(5)")
+                        .HasColumnName("section_to_station_code");
+
+                    b.Property<long>("Sequence")
+                        .HasColumnType("bigint")
+                        .HasColumnName("sequence");
+
+                    b.Property<Guid>("SourceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("source_id");
+
+                    b.Property<decimal?>("SpeedKmh")
+                        .HasPrecision(5, 1)
+                        .HasColumnType("numeric(5,1)")
+                        .HasColumnName("speed_kmh");
+
+                    b.Property<string>("VehicleCode")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("vehicle_code");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceivedAt")
+                        .HasDatabaseName("ix_telemetry_purge")
+                        .HasFilter("legal_hold = false");
+
+                    b.HasIndex("SourceId", "Sequence")
+                        .IsUnique()
+                        .HasDatabaseName("ux_telemetry_source_sequence");
+
+                    b.HasIndex("VehicleCode", "RecordedAt")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_telemetry_vehicle");
+
+                    b.ToTable("telemetry_readings", "journeys", t =>
+                        {
+                            t.HasCheckConstraint("ck_telemetry_progress", "progress is null or (progress >= 0 and progress <= 1)");
+
+                            t.HasCheckConstraint("ck_telemetry_speed", "speed_kmh is null or speed_kmh >= 0");
+                        });
+                });
+
             modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Crew.CrewDuty", b =>
                 {
                     b.HasOne("SmartRail.Modules.Journeys.Domain.Crew.CrewDuty", null)
@@ -652,6 +835,22 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
                         .HasForeignKey("JourneyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Live.JourneyEvent", b =>
+                {
+                    b.HasOne("SmartRail.Modules.Journeys.Domain.Journeys.Journey", null)
+                        .WithMany()
+                        .HasForeignKey("JourneyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SmartRail.Modules.Journeys.Domain.Live.JourneyEvent", "SupersededBy")
+                        .WithMany()
+                        .HasForeignKey("SupersededByEventId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("SupersededBy");
                 });
 
             modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Journeys.Journey", b =>

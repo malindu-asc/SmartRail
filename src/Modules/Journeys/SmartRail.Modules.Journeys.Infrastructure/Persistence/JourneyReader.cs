@@ -26,8 +26,13 @@ internal sealed class JourneyReader(JourneysDbContext context) : IJourneyReader,
                 journey.DestinationStationCode,
                 journey.Lifecycle,
                 journey.Confidence,
+                journey.DelayMinutes,
+                journey.PunctualityBand,
+                journey.LastAcceptedUpdateAt,
                 journey.Stops.OrderBy(s => s.Sequence).Select(s => new JourneyStopReadModel(
-                    s.Sequence, s.StationCode, s.Kind, s.State, s.ScheduledArrivalUtc, s.ScheduledDepartureUtc, s.PlatformCode, s.PlatformState)).ToList());
+                    s.Sequence, s.StationCode, s.Kind, s.State,
+                    s.ScheduledArrivalUtc, s.ScheduledDepartureUtc, s.EstimatedArrivalUtc, s.EstimatedDepartureUtc,
+                    s.ActualArrivalUtc, s.ActualDepartureUtc, s.PlatformCode, s.PlatformState)).ToList());
     }
 
     public async Task<IReadOnlyList<BoardRowReadModel>> GetBoardAsync(
@@ -35,6 +40,7 @@ internal sealed class JourneyReader(JourneysDbContext context) : IJourneyReader,
         IReadOnlyCollection<DateOnly> serviceDates,
         DateTimeOffset notBeforeUtc,
         DateTimeOffset cancelledNotBeforeUtc,
+        DateTimeOffset runningNotBeforeUtc,
         int count,
         CancellationToken cancellationToken)
     {
@@ -50,8 +56,12 @@ internal sealed class JourneyReader(JourneysDbContext context) : IJourneyReader,
                         && x.Stop.ScheduledDepartureUtc != null
                         && (x.Journey.Lifecycle == JourneyLifecycle.Cancelled
                             ? x.Stop.ScheduledDepartureUtc >= cancelledNotBeforeUtc
-                            : x.Stop.ScheduledDepartureUtc >= notBeforeUtc))
-            .OrderBy(x => x.Stop.ScheduledDepartureUtc)
+                            : (x.Stop.ScheduledDepartureUtc >= notBeforeUtc
+                               || (x.Stop.ActualDepartureUtc != null && x.Stop.ActualDepartureUtc >= notBeforeUtc)
+                               || (x.Journey.Lifecycle == JourneyLifecycle.Running
+                                   && x.Stop.State != JourneyStopState.Departed
+                                   && x.Stop.ScheduledDepartureUtc >= runningNotBeforeUtc))))
+            .OrderBy(x => x.Stop.EstimatedDepartureUtc ?? x.Stop.ScheduledDepartureUtc)
             .ThenBy(x => x.Journey.TrainNumber)
             .Take(count)
             .Select(x => new BoardRowReadModel(
@@ -60,10 +70,15 @@ internal sealed class JourneyReader(JourneysDbContext context) : IJourneyReader,
                 x.Journey.RouteCode,
                 x.Journey.DestinationStationCode,
                 x.Stop.ScheduledDepartureUtc!.Value,
+                x.Stop.EstimatedDepartureUtc,
+                x.Stop.ActualDepartureUtc,
                 x.Stop.PlatformCode,
                 x.Stop.PlatformState,
                 x.Journey.Lifecycle,
-                x.Journey.Confidence))
+                x.Journey.Confidence,
+                x.Journey.DelayMinutes,
+                x.Journey.PunctualityBand,
+                x.Journey.LastAcceptedUpdateAt))
             .ToListAsync(cancellationToken);
 
         return rows;
