@@ -362,7 +362,7 @@
     }
   },
   "planPickTime": "Choose a time",
-  "planSearch": "Show trains",
+  "planSearch": "Search trains",
   "resultsTitle": "{from} to {to}",
   "@resultsTitle": {
     "placeholders": {
@@ -883,5 +883,11 @@
       }
     }
   },
-  "createdLogIn": "Your profile was created. Please log in."
+  "createdLogIn": "Your profile was created. Please log in.",
+  "planDepart": "Depart",
+  "planArrive": "Arrive",
+  "planRecent": "Recent",
+  "foodMenuHint": "Menu and prices · call to order",
+  "resultsFilter": "Filter",
+  "resultsDirectOnly": "Direct trains only"
 }

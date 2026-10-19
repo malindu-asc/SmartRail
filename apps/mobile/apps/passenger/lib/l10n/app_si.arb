@@ -650,5 +650,11 @@
       }
     }
   },
-  "createdLogIn": "ඔබේ පැතිකඩ සාදා ඇත. කරුණාකර ඇතුල් වන්න."
+  "createdLogIn": "ඔබේ පැතිකඩ සාදා ඇත. කරුණාකර ඇතුල් වන්න.",
+  "planDepart": "පිටත් වීම",
+  "planArrive": "ළඟා වීම",
+  "planRecent": "මෑත",
+  "foodMenuHint": "මෙනුව සහ මිල ගණන් · ඇණවුම් කිරීමට අමතන්න",
+  "resultsFilter": "පෙරහන",
+  "resultsDirectOnly": "සෘජු දුම්රිය පමණි"
 }

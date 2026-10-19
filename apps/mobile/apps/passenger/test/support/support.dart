@@ -347,6 +347,12 @@ Future<Harness> pumpApp(
   String? start = '/home',
   List<Override> extra = const [],
 }) async {
+  // A phone-sized screen (390 by 844) unless a test sets its own, so the screens lay out as they do on a device.
+  if (tester.view.physicalSize == const Size(2400, 1800)) {
+    tester.view.physicalSize = const Size(390 * 3, 844 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+  }
   final container = ProviderContainer(
     retry: (retryCount, error) => null,
     overrides: [

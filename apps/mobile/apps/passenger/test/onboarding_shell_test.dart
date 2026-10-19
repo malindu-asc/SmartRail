@@ -105,11 +105,11 @@ void main() {
       (tester) async {
         final harness = await pumpApp(tester);
 
-        expect(find.byType(NavigationBar), findsOneWidget);
+        expect(find.byType(SmartRailTabBar), findsOneWidget);
         for (final label in ['Home', 'Plan', 'Tickets', 'Alerts', 'Me']) {
           expect(
             find.descendant(
-              of: find.byType(NavigationBar),
+              of: find.byType(SmartRailTabBar),
               matching: find.text(label),
             ),
             findsOneWidget,
@@ -120,7 +120,7 @@ void main() {
         Future<void> openTab(String label) async {
           await tester.tap(
             find.descendant(
-              of: find.byType(NavigationBar),
+              of: find.byType(SmartRailTabBar),
               matching: find.text(label),
             ),
           );
@@ -130,7 +130,7 @@ void main() {
         await openTab('Plan');
         expect(harness.location, '/plan');
         expect(find.text('Plan a journey'), findsOneWidget);
-        expect(find.text('Show trains'), findsOneWidget);
+        expect(find.text('Search trains'), findsOneWidget);
 
         // Only the tab being shown is visible: the others must not show through (they once stacked on top of each other).
         expect(find.text('Where to today?').hitTestable(), findsNothing);
@@ -147,7 +147,7 @@ void main() {
 
         await tester.tap(
           find.descendant(
-            of: find.byType(NavigationBar),
+            of: find.byType(SmartRailTabBar),
             matching: find.text('Me'),
           ),
         );
@@ -161,7 +161,7 @@ void main() {
     ) async {
       await pumpApp(tester, start: '/plan');
 
-      final button = find.widgetWithText(FilledButton, 'Show trains');
+      final button = find.widgetWithText(FilledButton, 'Search trains');
       expect(tester.widget<FilledButton>(button).onPressed, isNull);
     });
 
@@ -184,12 +184,13 @@ void main() {
     ) async {
       await pumpApp(tester);
 
-      // The only notification icon on screen is the Alerts tab itself.
-      expect(find.byIcon(Icons.notifications_none), findsOneWidget);
+      // The bell is the Alerts tab and nothing else: no separate bell button sits on Home (the tab bar draws it as an SVG).
+      expect(find.byIcon(Icons.notifications_none), findsNothing);
+      expect(find.byIcon(Icons.notifications), findsNothing);
       expect(
         find.descendant(
-          of: find.byType(NavigationBar),
-          matching: find.byIcon(Icons.notifications_none),
+          of: find.byType(SmartRailTabBar),
+          matching: find.text('Alerts'),
         ),
         findsOneWidget,
       );
@@ -211,7 +212,7 @@ void main() {
       expect(find.text('භාෂාව'), findsOneWidget);
       expect(
         find.descendant(
-          of: find.byType(NavigationBar),
+          of: find.byType(SmartRailTabBar),
           matching: find.text('මුල් පිටුව'),
         ),
         findsOneWidget,
@@ -301,7 +302,7 @@ void main() {
 
       await tester.tap(
         find.descendant(
-          of: find.byType(NavigationBar),
+          of: find.byType(SmartRailTabBar),
           matching: find.text('Me'),
         ),
       );

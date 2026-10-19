@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:smartrail_design_system/smartrail_design_system.dart';
 import 'package:passenger_app/core/storage/key_value_store.dart';
 import 'package:passenger_app/features/board/presentation/widgets/departure_row.dart';
 import 'package:smartrail_core/smartrail_core.dart';
@@ -82,10 +83,8 @@ void main() {
         expect(find.text('Expected 14:52 · Platform 1'), findsOneWidget);
         expect(find.text('+12 min'), findsOneWidget);
 
-        // Cancelled: no expected time, struck through.
+        // Cancelled: no expected time (design 07 draws the time as it is, with the Cancelled chip).
         expect(find.text('Cancelled'), findsOneWidget);
-        final cancelled = tester.widget<Text>(find.text('14:31'));
-        expect(cancelled.style?.decoration, TextDecoration.lineThrough);
 
         // No live data: only the timetable, and since when.
         expect(find.text('No live data'), findsOneWidget);
@@ -96,10 +95,20 @@ void main() {
         expect(find.text('Platform to be announced'), findsWidgets);
 
         // Status is icon plus words: each chip carries an icon.
-        expect(find.byIcon(Icons.schedule), findsOneWidget);
-        expect(find.byIcon(Icons.cancel_outlined), findsOneWidget);
-        expect(find.byIcon(Icons.wifi_off), findsWidgets);
-        expect(find.byIcon(Icons.swap_horiz), findsOneWidget);
+        // Every chip is an icon (the file's own SVG) and words, never colour alone.
+        for (final chip in tester.widgetList<StatusChip>(
+          find.byType(StatusChip),
+        )) {
+          expect(
+            find.descendant(
+              of: find.byWidget(chip),
+              matching: find.byType(SvgIcon),
+            ),
+            findsOneWidget,
+            reason: chip.label,
+          );
+        }
+        expect(find.byType(StatusChip), findsAtLeastNWidgets(4));
       },
     );
 
@@ -171,13 +180,13 @@ void main() {
           start: '/home/station/CEN',
         );
 
-        expect(find.byType(NavigationBar), findsOneWidget);
+        expect(find.byType(SmartRailTabBar), findsOneWidget);
 
         await tester.tap(find.text('Riverside'));
         await tester.pumpAndSettle();
 
         expect(harness.location, '/home/journey/j42');
-        expect(find.byType(NavigationBar), findsOneWidget);
+        expect(find.byType(SmartRailTabBar), findsOneWidget);
       },
     );
   });

@@ -833,7 +833,7 @@ abstract class AppLocalizations {
   /// No description provided for @planSearch.
   ///
   /// In en, this message translates to:
-  /// **'Show trains'**
+  /// **'Search trains'**
   String get planSearch;
 
   /// No description provided for @resultsTitle.
@@ -1932,6 +1932,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your profile was created. Please log in.'**
   String get createdLogIn;
+
+  /// No description provided for @planDepart.
+  ///
+  /// In en, this message translates to:
+  /// **'Depart'**
+  String get planDepart;
+
+  /// No description provided for @planArrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrive'**
+  String get planArrive;
+
+  /// No description provided for @planRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get planRecent;
+
+  /// No description provided for @foodMenuHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu and prices · call to order'**
+  String get foodMenuHint;
+
+  /// No description provided for @resultsFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get resultsFilter;
+
+  /// No description provided for @resultsDirectOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct trains only'**
+  String get resultsDirectOnly;
 }
 
 class _AppLocalizationsDelegate

@@ -451,7 +451,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get planPickTime => 'Choose a time';
 
   @override
-  String get planSearch => 'Show trains';
+  String get planSearch => 'Search trains';
 
   @override
   String resultsTitle(String from, String to) {
@@ -1120,4 +1120,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createdLogIn => 'Your profile was created. Please log in.';
+
+  @override
+  String get planDepart => 'Depart';
+
+  @override
+  String get planArrive => 'Arrive';
+
+  @override
+  String get planRecent => 'Recent';
+
+  @override
+  String get foodMenuHint => 'Menu and prices · call to order';
+
+  @override
+  String get resultsFilter => 'Filter';
+
+  @override
+  String get resultsDirectOnly => 'Direct trains only';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:smartrail_design_system/smartrail_design_system.dart';
 import 'package:passenger_app/core/storage/key_value_store.dart';
 import 'package:passenger_app/features/follow/data/local_follow_repository.dart';
 import 'package:passenger_app/features/follow/domain/follow_repository.dart';
@@ -217,7 +218,11 @@ void main() {
       final toBefore = tester.getTopLeft(find.text('Riverside')).dy;
       expect(fromBefore, lessThan(toBefore));
 
-      await tester.tap(find.byIcon(Icons.swap_vert));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) => w is SvgIcon && w.name == AppIcons.swapSmall,
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(

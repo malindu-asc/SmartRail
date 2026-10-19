@@ -1118,4 +1118,22 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get createdLogIn => 'ඔබේ පැතිකඩ සාදා ඇත. කරුණාකර ඇතුල් වන්න.';
+
+  @override
+  String get planDepart => 'පිටත් වීම';
+
+  @override
+  String get planArrive => 'ළඟා වීම';
+
+  @override
+  String get planRecent => 'මෑත';
+
+  @override
+  String get foodMenuHint => 'මෙනුව සහ මිල ගණන් · ඇණවුම් කිරීමට අමතන්න';
+
+  @override
+  String get resultsFilter => 'පෙරහන';
+
+  @override
+  String get resultsDirectOnly => 'සෘජු දුම්රිය පමණි';
 }
