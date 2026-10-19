@@ -109,7 +109,7 @@ Dependency order. Each spec is about three days or less; split anything bigger.
 | SPEC-027 | Disruptions and incidents: disruption console, second approver, review-by time, scoped resolution, planned works, incident lifecycle, emergency termination, plain-text content, banners and retraction | Proposed | Operations, Journeys, console | — |
 | SPEC-028 | Station Master console: own-station view and actions, live access status (lifts, stairs, gates) | Proposed | Operations, console | — |
 | SPEC-029 | Punctuality report | Proposed | Operations, console | — |
-| SPEC-030 | Catering menu service (Node): read-only menu with call to order, failure isolated from the railway | Proposed | catering | — |
+| SPEC-030 | Catering menu service (Node): read-only menu with call to order, failure isolated from the railway | In progress | catering | feature/passenger-app |
 
 Stretch, only after the core works: tickets, payment, gate scan.
 
