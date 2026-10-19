@@ -1926,6 +1926,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Timetables use local time ({zone}).'**
   String planTimeNote(String zone);
+
+  /// No description provided for @createdLogIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile was created. Please log in.'**
+  String get createdLogIn;
 }
 
 class _AppLocalizationsDelegate

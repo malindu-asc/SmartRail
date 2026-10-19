@@ -1115,4 +1115,7 @@ class AppLocalizationsSi extends AppLocalizations {
   String planTimeNote(String zone) {
     return 'කාලසටහන් දේශීය වේලාව ($zone) භාවිත කරයි.';
   }
+
+  @override
+  String get createdLogIn => 'ඔබේ පැතිකඩ සාදා ඇත. කරුණාකර ඇතුල් වන්න.';
 }

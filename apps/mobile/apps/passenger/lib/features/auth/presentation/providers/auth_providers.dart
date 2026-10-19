@@ -71,8 +71,9 @@ class AuthNotifier extends Notifier<AuthState> {
     });
   }
 
-  /// Creates the profile, then signs in with it.
-  Future<Failure?> register({
+  /// Creates the profile, then signs in with it. [created] says whether the profile exists afterwards, so a screen can tell
+  /// "could not create" from "created, but signing in failed" (and never ask for the same email twice).
+  Future<({bool created, Failure? failure})> register({
     required String fullName,
     required String email,
     required String password,
@@ -86,8 +87,10 @@ class AuthNotifier extends Notifier<AuthState> {
           password: password,
           acceptedTerms: acceptedTerms,
         );
-    if (created.isLeft()) return created.getLeft().toNullable();
-    return signIn(email, password);
+    if (created.isLeft()) {
+      return (created: false, failure: created.getLeft().toNullable());
+    }
+    return (created: true, failure: await signIn(email, password));
   }
 
   Future<void> signOut() async {

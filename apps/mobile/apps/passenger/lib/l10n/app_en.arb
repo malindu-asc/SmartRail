@@ -882,5 +882,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "createdLogIn": "Your profile was created. Please log in."
 }

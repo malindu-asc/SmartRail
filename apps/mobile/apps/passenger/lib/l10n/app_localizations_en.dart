@@ -1117,4 +1117,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String planTimeNote(String zone) {
     return 'Timetables use local time ($zone).';
   }
+
+  @override
+  String get createdLogIn => 'Your profile was created. Please log in.';
 }

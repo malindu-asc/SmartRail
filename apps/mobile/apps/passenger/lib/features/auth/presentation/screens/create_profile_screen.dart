@@ -50,7 +50,7 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
       _serverError = null;
     });
 
-    final failure = await ref
+    final outcome = await ref
         .read(authProvider.notifier)
         .register(
           fullName: _name.text,
@@ -60,8 +60,18 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
         );
     if (!mounted) return;
 
+    final failure = outcome.failure;
     if (failure == null) {
       context.canPop() ? context.pop(true) : context.go(AppRoutes.me);
+      return;
+    }
+
+    // The profile exists but signing in failed: say so and go to Log in, instead of asking for the same email again.
+    if (outcome.created) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l10n.createdLogIn)));
+      context.pushReplacement(AppRoutes.login);
       return;
     }
 
