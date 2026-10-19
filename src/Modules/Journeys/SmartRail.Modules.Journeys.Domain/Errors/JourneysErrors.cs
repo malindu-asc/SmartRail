@@ -70,4 +70,57 @@ public static class JourneysErrors
 
     public static Error InvalidCount =>
         Error.Validation("Journeys.InvalidCount", "The count must be between 1 and 50.");
+
+    // ---- controller actions ----
+
+    public static Error VersionConflict(int current) =>
+        Error.Conflict("Journeys.VersionConflict", $"Someone else changed this journey (now version {current}). Reload it and try again.");
+
+    public static Error ReasonCodeUnknown(string code) =>
+        Error.Validation("Journeys.ReasonCodeUnknown", $"'{code}' is not a reason code for this action.");
+
+    public static Error CannotTerminateThere =>
+        Error.Validation("Journeys.CannotTerminateThere", "Choose a stop the train has not passed yet, and not the last stop.");
+
+    public static Error PlatformUnknown(string station, string platform) =>
+        Error.Validation("Journeys.PlatformUnknown", $"Station {station} has no platform '{platform}'.");
+
+    public static Error PlatformUnchanged =>
+        Error.Validation("Journeys.PlatformUnchanged", "The journey is already at that platform.");
+
+    public static Error PlatformInUse(string detail) =>
+        Error.Conflict("Journeys.PlatformInUse", detail);
+
+    public static Error StopHasNoPlatform =>
+        Error.Validation("Journeys.StopHasNoPlatform", "A passing point has no platform.");
+
+    public static Error VehicleNotFound(Guid id) =>
+        Error.NotFound("Journeys.VehicleNotFound", $"Unit '{id}' was not found.");
+
+    public static Error DutyNotFound(Guid id) =>
+        Error.NotFound("Journeys.DutyNotFound", $"Duty '{id}' was not found.");
+
+    public static Error VehicleUnavailable =>
+        Error.Conflict("Journeys.VehicleUnavailable", "That unit is out of service at that time.");
+
+    public static Error VehicleBusy =>
+        Error.Conflict("Journeys.VehicleBusy", "That unit is already on another journey at that time.");
+
+    public static Error DutyDoesNotCover =>
+        Error.Conflict("Journeys.DutyDoesNotCover", "The driver's duty does not cover the whole journey.");
+
+    public static Error DriverBusy =>
+        Error.Conflict("Journeys.DriverBusy", "That driver is already on another journey at that time.");
+
+    public static Error DriverNotRested(int minutes) =>
+        Error.Conflict("Journeys.DriverNotRested", $"The driver needs at least {minutes} minutes of rest before this journey.");
+
+    public static Error NothingToAssign =>
+        Error.Validation("Journeys.NothingToAssign", "Choose a unit, a driver duty, or both.");
+
+    public static Error UnavailabilityNotFound(Guid id) =>
+        Error.NotFound("Journeys.UnavailabilityNotFound", $"Out-of-service period '{id}' was not found.");
+
+    public static Error DriverUnknown =>
+        Error.Validation("Journeys.DriverUnknown", "That person is not a driver.");
 }

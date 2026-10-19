@@ -111,8 +111,10 @@ public sealed partial class Journey
         if (stop is null)
             return JourneysErrors.StopNotFound(stopSequence);
 
+        var previous = stop.PlatformCode;
         stop.ChangePlatform(platformCode.Trim(), changedBy, now);
         Touch();
+        RaiseDomainEvent(new JourneyPlatformChangedDomainEvent(Id, stopSequence, stop.StationCode, stop.PlatformCode!, previous));
         return Result.Success();
     }
 
@@ -216,3 +218,5 @@ public sealed record JourneyDepartedDomainEvent(Guid JourneyId, DateTimeOffset A
 public sealed record JourneyCompletedDomainEvent(Guid JourneyId, DateTimeOffset At) : DomainEvent;
 
 public sealed record JourneyDelayChangedDomainEvent(Guid JourneyId, int? DelayMinutes, PunctualityBand? Band) : DomainEvent;
+
+public sealed record JourneyPlatformChangedDomainEvent(Guid JourneyId, int StopSequence, string StationCode, string Platform, string? PreviousPlatform) : DomainEvent;

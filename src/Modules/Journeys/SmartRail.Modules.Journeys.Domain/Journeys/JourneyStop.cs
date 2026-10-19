@@ -50,6 +50,22 @@ public sealed class JourneyStop
         PlatformChangedBy = changedBy;
     }
 
+    // The train will not call here: it was cancelled or ended before this stop.
+    internal void MarkCancelled()
+    {
+        State = JourneyStopState.Cancelled;
+        EstimatedArrivalUtc = null;
+        EstimatedDepartureUtc = null;
+        EstimateSource = EstimateSource.Scheduled;
+    }
+
+    // The cancellation was undone before departure.
+    internal void RestorePending()
+    {
+        if (State == JourneyStopState.Cancelled)
+            State = JourneyStopState.Pending;
+    }
+
     // ---- live data (SPEC-005). Scheduled times are never touched. ----
 
     internal void RecordArrival(DateTimeOffset at)
