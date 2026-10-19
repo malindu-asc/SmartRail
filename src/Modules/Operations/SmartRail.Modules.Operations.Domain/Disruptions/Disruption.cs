@@ -11,13 +11,16 @@ public enum DisruptionSeverity
     Severe = 2
 }
 
+// Draft: saved, not sent. AwaitingApproval: a network-wide notice waits for a second person (REQ-OPS-005).
+// Published: passengers see it. Rejected: the second person sent it back with a comment.
 public enum DisruptionStatus
 {
-    // Network-wide notices wait here for a second person to approve (REQ-OPS-005).
     Draft = 0,
     Published = 1,
     Resolved = 2,
-    Retracted = 3
+    Retracted = 3,
+    AwaitingApproval = 4,
+    Rejected = 5
 }
 
 // A notice to passengers about trouble on the network: what, where, how bad, and when it is expected to clear.
@@ -36,26 +39,34 @@ public sealed class Disruption : Entity<Guid>
     public List<string> StationCodes { get; private set; } = [];
     public DateTimeOffset? ExpectedEndUtc { get; private set; }
 
+    // What kind of trouble (for example "Infrastructure fault", "Planned works"); free text chosen from the console's list.
+    public string? Type { get; private set; }
+
+    // Planned works start later: passengers can see them in advance (REQ-OPS-016). Null means "now".
+    public DateTimeOffset? StartsAtUtc { get; private set; }
+
     // Every disruption has a review-by time; past it, the disruption is "expired - review" (REQ-OPS-006).
     public DateTimeOffset ReviewByUtc { get; private set; }
     public string CreatedBy { get; private set; } = string.Empty;
     public string? ApprovedBy { get; private set; }
+    public string? RejectedBy { get; private set; }
+    public string? RejectionComment { get; private set; }
     public DateTimeOffset CreatedAtUtc { get; private set; }
     public DateTimeOffset UpdatedAtUtc { get; private set; }
+    public DateTimeOffset? SubmittedAtUtc { get; private set; }
     public DateTimeOffset? PublishedAtUtc { get; private set; }
 
+    // submit false saves a draft. submit true publishes it, or sends a network-wide notice to a second approver.
     public static Result<Disruption> Create(
         string title, string message, DisruptionSeverity severity, bool networkWide, IEnumerable<string> stationCodes,
-        DateTimeOffset? expectedEnd, DateTimeOffset reviewBy, string createdBy, DateTimeOffset now, Guid? id = null)
+        DateTimeOffset? expectedEnd, DateTimeOffset reviewBy, string createdBy, DateTimeOffset now, Guid? id = null,
+        string? type = null, DateTimeOffset? startsAt = null, bool submit = true)
     {
-        var codes = stationCodes.Select(c => c.Trim().ToUpperInvariant()).Where(c => c.Length > 0).Distinct().ToList();
+        var codes = Normalise(stationCodes);
 
-        if (!ValidText(title, message))
-            return OperationsErrors.TextInvalid;
-        if (!networkWide && codes.Count == 0)
-            return OperationsErrors.ScopeRequired;
-        if (reviewBy <= now)
-            return OperationsErrors.ReviewByRequired;
+        var valid = Validate(title, message, networkWide, codes, expectedEnd, startsAt, reviewBy, now);
+        if (valid.IsFailure)
+            return valid.Error;
 
         var disruption = new Disruption(id ?? Guid.NewGuid())
         {
@@ -65,22 +76,51 @@ public sealed class Disruption : Entity<Guid>
             NetworkWide = networkWide,
             StationCodes = networkWide ? [] : codes,
             ExpectedEndUtc = expectedEnd,
+            StartsAtUtc = startsAt,
+            Type = string.IsNullOrWhiteSpace(type) ? null : type.Trim(),
             ReviewByUtc = reviewBy,
             CreatedBy = createdBy,
             CreatedAtUtc = now,
             UpdatedAtUtc = now,
-            // A network-wide notice is high harm if wrong, so it waits for a second person.
-            Status = networkWide ? DisruptionStatus.Draft : DisruptionStatus.Published,
-            PublishedAtUtc = networkWide ? null : now
+            Status = DisruptionStatus.Draft
         };
+
+        if (submit)
+            disruption.Submit(now);
 
         return disruption;
     }
 
+    // Sends a draft (or a rejected notice) on its way. A network-wide notice is high harm if wrong, so it waits for a second person.
+    public Result Submit(DateTimeOffset now)
+    {
+        if (Status is not (DisruptionStatus.Draft or DisruptionStatus.Rejected))
+            return OperationsErrors.NotDraft;
+        if (ReviewByUtc <= now)
+            return OperationsErrors.ReviewByRequired;
+
+        SubmittedAtUtc = now;
+        UpdatedAtUtc = now;
+        RejectedBy = null;
+        RejectionComment = null;
+
+        if (NetworkWide)
+        {
+            Status = DisruptionStatus.AwaitingApproval;
+        }
+        else
+        {
+            Status = DisruptionStatus.Published;
+            PublishedAtUtc = now;
+        }
+
+        return Result.Success();
+    }
+
     public Result Approve(string approver, DateTimeOffset now)
     {
-        if (Status != DisruptionStatus.Draft)
-            return OperationsErrors.NotDraft;
+        if (Status != DisruptionStatus.AwaitingApproval)
+            return OperationsErrors.NotAwaitingApproval;
         if (string.Equals(approver, CreatedBy, StringComparison.Ordinal))
             return OperationsErrors.SecondApproverRequired;
 
@@ -91,20 +131,48 @@ public sealed class Disruption : Entity<Guid>
         return Result.Success();
     }
 
-    public Result Update(string title, string message, DisruptionSeverity severity, DateTimeOffset? expectedEnd, DateTimeOffset reviewBy, DateTimeOffset now)
+    // The second person says no. A comment is required, and the author can fix it and send it again.
+    public Result Reject(string approver, string comment, DateTimeOffset now)
+    {
+        if (Status != DisruptionStatus.AwaitingApproval)
+            return OperationsErrors.NotAwaitingApproval;
+        if (string.Equals(approver, CreatedBy, StringComparison.Ordinal))
+            return OperationsErrors.SecondApproverRequired;
+        if (string.IsNullOrWhiteSpace(comment))
+            return OperationsErrors.CommentRequired;
+
+        Status = DisruptionStatus.Rejected;
+        RejectedBy = approver;
+        RejectionComment = comment.Trim()[..Math.Min(comment.Trim().Length, 500)];
+        UpdatedAtUtc = now;
+        return Result.Success();
+    }
+
+    // Edit while it is a draft, was rejected, or is live and local. A live network-wide notice cannot be edited (retract it and write again).
+    public Result Update(
+        string title, string message, DisruptionSeverity severity, DateTimeOffset? expectedEnd, DateTimeOffset reviewBy, DateTimeOffset now,
+        IEnumerable<string>? stationCodes = null, string? type = null, DateTimeOffset? startsAt = null)
     {
         if (Status is DisruptionStatus.Resolved or DisruptionStatus.Retracted)
             return OperationsErrors.AlreadyClosed;
-        if (!ValidText(title, message))
-            return OperationsErrors.TextInvalid;
-        if (reviewBy <= now)
-            return OperationsErrors.ReviewByRequired;
+        if (Status == DisruptionStatus.AwaitingApproval || (Status == DisruptionStatus.Published && NetworkWide))
+            return OperationsErrors.NotEditable;
+
+        var codes = stationCodes is null ? StationCodes : Normalise(stationCodes);
+        var valid = Validate(title, message, NetworkWide, codes, expectedEnd, startsAt ?? StartsAtUtc, reviewBy, now);
+        if (valid.IsFailure)
+            return valid;
 
         Title = title.Trim();
         Message = message.Trim();
         Severity = severity;
         ExpectedEndUtc = expectedEnd;
         ReviewByUtc = reviewBy;
+        StationCodes = NetworkWide ? [] : codes.ToList();
+        if (type is not null)
+            Type = string.IsNullOrWhiteSpace(type) ? null : type.Trim();
+        if (startsAt is not null)
+            StartsAtUtc = startsAt;
         UpdatedAtUtc = now;
         return Result.Success();
     }
@@ -117,6 +185,9 @@ public sealed class Disruption : Entity<Guid>
 
     public bool IsExpired(DateTimeOffset now) => Status == DisruptionStatus.Published && ReviewByUtc <= now;
 
+    // Planned works that have not started yet.
+    public bool IsPlanned(DateTimeOffset now) => Status == DisruptionStatus.Published && StartsAtUtc is { } start && start > now;
+
     private Result Close(DisruptionStatus status, DateTimeOffset now)
     {
         if (Status is DisruptionStatus.Resolved or DisruptionStatus.Retracted)
@@ -124,6 +195,25 @@ public sealed class Disruption : Entity<Guid>
 
         Status = status;
         UpdatedAtUtc = now;
+        return Result.Success();
+    }
+
+    private static List<string> Normalise(IEnumerable<string> stationCodes) =>
+        stationCodes.Select(c => c.Trim().ToUpperInvariant()).Where(c => c.Length > 0).Distinct().ToList();
+
+    private static Result Validate(
+        string title, string message, bool networkWide, IReadOnlyList<string> codes, DateTimeOffset? expectedEnd,
+        DateTimeOffset? startsAt, DateTimeOffset reviewBy, DateTimeOffset now)
+    {
+        if (!ValidText(title, message))
+            return OperationsErrors.TextInvalid;
+        if (!networkWide && codes.Count == 0)
+            return OperationsErrors.ScopeRequired;
+        if (reviewBy <= now)
+            return OperationsErrors.ReviewByRequired;
+        if (startsAt is { } start && expectedEnd is { } end && end <= start)
+            return OperationsErrors.PeriodInvalid;
+
         return Result.Success();
     }
 

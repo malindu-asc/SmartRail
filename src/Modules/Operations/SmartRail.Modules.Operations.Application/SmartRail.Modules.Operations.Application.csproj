@@ -6,6 +6,8 @@
     <ProjectReference Include="..\..\..\BuildingBlocks\SmartRail.Application.Core\SmartRail.Application.Core.csproj" />
     <ProjectReference Include="..\..\Journeys\SmartRail.Modules.Journeys.Contracts\SmartRail.Modules.Journeys.Contracts.csproj" />
     <ProjectReference Include="..\..\Network\SmartRail.Modules.Network.Contracts\SmartRail.Modules.Network.Contracts.csproj" />
+    <ProjectReference Include="..\..\Identity\SmartRail.Modules.Identity.Contracts\SmartRail.Modules.Identity.Contracts.csproj" />
+    <ProjectReference Include="..\..\Ticketing\SmartRail.Modules.Ticketing.Contracts\SmartRail.Modules.Ticketing.Contracts.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

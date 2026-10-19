@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using SmartRail.Modules.Operations.Application.Abstractions;
 using SmartRail.Modules.Operations.Application.Disruptions;
 using SmartRail.Modules.Operations.Infrastructure.Persistence;
+using SmartRail.Application.Core.Abstractions;
+using SmartRail.Infrastructure.Core.Audit;
 using SmartRail.Infrastructure.Core.Outbox;
 using SmartRail.Infrastructure.Core.Persistence;
 
@@ -28,6 +30,12 @@ public static class OperationsModule
         services.AddScoped<IOutboxMessageProcessor, OutboxMessageProcessor<OperationsDbContext>>();
 
         services.AddScoped<IDisruptionStore, DisruptionStore>();
+        services.AddScoped<IIncidentStore, IncidentStore>();
+        services.AddScoped<IMessageStore, MessageStore>();
+        services.AddScoped<IAssistanceStore, AssistanceStore>();
+        services.AddScoped<IOperationsAuditLog, OperationsAuditLog>();
+        services.AddScoped<IStationLookup, StationLookup>();
+        services.AddScoped<IAuditSource>(sp => new AuditSource<OperationsDbContext>(sp.GetRequiredService<OperationsDbContext>(), "operations", false));
 
         return services;
     }

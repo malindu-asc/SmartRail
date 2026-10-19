@@ -23,6 +23,75 @@ namespace SmartRail.Modules.Operations.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SmartRail.Infrastructure.Core.Audit.AuditEntry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("action");
+
+                    b.Property<string>("ActorRole")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("actor_role");
+
+                    b.Property<string>("ActorSubject")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("actor_subject");
+
+                    b.Property<string>("AfterState")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("after_state");
+
+                    b.Property<string>("BeforeState")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("before_state");
+
+                    b.Property<string>("CorrelationId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("correlation_id");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<string>("TargetId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("target_id");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("target_type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OccurredAt")
+                        .IsDescending();
+
+                    b.HasIndex("TargetType", "TargetId");
+
+                    b.ToTable("audit_entries", "operations");
+                });
+
             modelBuilder.Entity("SmartRail.Infrastructure.Core.Outbox.OutboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
@@ -100,9 +169,112 @@ namespace SmartRail.Modules.Operations.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("published_at_utc");
 
+                    b.Property<string>("RejectedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("rejected_by");
+
+                    b.Property<string>("RejectionComment")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("rejection_comment");
+
                     b.Property<DateTimeOffset>("ReviewByUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("review_by_utc");
+
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("severity");
+
+                    b.Property<DateTimeOffset?>("StartsAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("starts_at_utc");
+
+                    b.Property<string>("StationCodes")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("station_codes");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset?>("SubmittedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at_utc");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("title");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("type");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_disruptions_status");
+
+                    b.ToTable("disruptions", "operations");
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Operations.Domain.Incidents.Incident", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("DisruptionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("disruption_id");
+
+                    b.Property<DateTimeOffset>("OpenedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("opened_at_utc");
+
+                    b.Property<string>("OpenedBy")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("opened_by");
+
+                    b.Property<string>("OwnerSubject")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("owner_subject");
+
+                    b.Property<string>("ReportedBy")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("reported_by");
+
+                    b.Property<string>("ResolutionNote")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("resolution_note");
+
+                    b.Property<DateTimeOffset?>("ResolvedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("resolved_at_utc");
+
+                    b.Property<string>("ResolvedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("resolved_by");
 
                     b.Property<string>("Severity")
                         .IsRequired()
@@ -127,16 +299,216 @@ namespace SmartRail.Modules.Operations.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(120)")
                         .HasColumnName("title");
 
-                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                    b.HasKey("Id");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_incidents_status");
+
+                    b.ToTable("incidents", "operations");
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Operations.Domain.Incidents.IncidentEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("At")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at_utc");
+                        .HasColumnName("at");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("author");
+
+                    b.Property<string>("Detail")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("detail");
+
+                    b.Property<Guid>("IncidentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("incident_id");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("kind");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncidentId", "At")
+                        .HasDatabaseName("ix_incident_entries_incident_at");
+
+                    b.ToTable("incident_entries", "operations");
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Operations.Domain.Messages.AssistanceRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("DriverSubject")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("driver_subject");
+
+                    b.Property<DateTimeOffset?>("HandledAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("handled_at_utc");
+
+                    b.Property<string>("HandledBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("handled_by");
+
+                    b.Property<Guid?>("JourneyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("journey_id");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("note");
+
+                    b.Property<string>("Outcome")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("outcome");
+
+                    b.Property<DateTimeOffset>("RequestedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("requested_at_utc");
+
+                    b.Property<string>("StationCode")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("station_code");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TrainNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("train_number");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Status")
-                        .HasDatabaseName("ix_disruptions_status");
+                        .HasDatabaseName("ix_assistance_requests_status");
 
-                    b.ToTable("disruptions", "operations");
+                    b.ToTable("assistance_requests", "operations");
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Operations.Domain.Messages.ControlMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset?>("AcknowledgedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("acknowledged_at_utc");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("body");
+
+                    b.Property<DateTimeOffset?>("DeliveredAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("delivered_at_utc");
+
+                    b.Property<string>("DriverSubject")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("driver_subject");
+
+                    b.Property<Guid?>("IncidentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("incident_id");
+
+                    b.Property<Guid?>("JourneyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("journey_id");
+
+                    b.Property<bool>("RequiresAck")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_ack");
+
+                    b.Property<int>("ResentCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("resent_count");
+
+                    b.Property<DateTimeOffset>("SentAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("sent_at_utc");
+
+                    b.Property<string>("SentBy")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("sent_by");
+
+                    b.Property<string>("Template")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("template");
+
+                    b.Property<string>("TrainNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("train_number");
+
+                    b.Property<string>("UnitCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("unit_code");
+
+                    b.Property<DateTimeOffset>("ValidUntilUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("valid_until_utc");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncidentId")
+                        .HasDatabaseName("ix_control_messages_incident");
+
+                    b.HasIndex("DriverSubject", "SentAtUtc")
+                        .HasDatabaseName("ix_control_messages_driver_sent");
+
+                    b.ToTable("control_messages", "operations");
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Operations.Domain.Incidents.IncidentEntry", b =>
+                {
+                    b.HasOne("SmartRail.Modules.Operations.Domain.Incidents.Incident", null)
+                        .WithMany("Entries")
+                        .HasForeignKey("IncidentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Operations.Domain.Incidents.Incident", b =>
+                {
+                    b.Navigation("Entries");
                 });
 #pragma warning restore 612, 618
         }
