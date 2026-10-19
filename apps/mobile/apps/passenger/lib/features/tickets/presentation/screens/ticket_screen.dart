@@ -28,6 +28,7 @@ class TicketScreen extends ConsumerWidget {
     final ticket = ref.watch(ticketDetailProvider(ticketId));
 
     return Scaffold(
+      backgroundColor: SmartRailColors.page,
       appBar: SmartRailAppBar(title: Text(l10n.ticketTitle)),
       body: ticket.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -50,7 +51,6 @@ class _Ticket extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
     final s = detail.summary;
     final clock = clockFor(s.timeZone);
     final now = ref.watch(nowProvider)();
@@ -62,92 +62,100 @@ class _Ticket extends ConsumerWidget {
       TicketState.past => (StatusKind.noLiveData, l10n.ticketPast),
     };
 
+    final faded = affected || s.state == TicketState.past;
+
     return ListView(
-      padding: const EdgeInsets.all(SmartRailSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       children: [
         if (created) ...[
-          InfoBanner(kind: BannerKind.message, title: l10n.ticketBooked),
-          const SizedBox(height: SmartRailSpacing.md),
+          InfoNote(l10n.ticketBooked),
+          const SizedBox(height: 14),
         ],
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(SmartRailSpacing.lg),
-            child: Column(
-              children: [
-                Text(
-                  l10n.ticketsRoute(s.fromName, s.toName),
-                  style: theme.textTheme.titleLarge,
-                  textAlign: TextAlign.center,
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: SmartRailColors.surface,
+            border: Border.all(color: SmartRailColors.border),
+            borderRadius: BorderRadius.circular(SmartRailRadius.lg),
+          ),
+          child: Column(
+            children: [
+              Text(
+                l10n.ticketsRoute(s.fromName, s.toName),
+                textAlign: TextAlign.center,
+                style: SmartRailType.title20.copyWith(
+                  color: SmartRailColors.textPrimary,
                 ),
-                const SizedBox(height: SmartRailSpacing.xs),
-                Text(
-                  ticketWhenAndSeat(l10n, s, clock, now),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: SmartRailColors.textSecondary,
-                  ),
-                  textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 14),
+              Text(
+                ticketWhenAndSeat(l10n, s, clock, now),
+                textAlign: TextAlign.center,
+                style: SmartRailType.body14.copyWith(
+                  color: SmartRailColors.textSecondary,
                 ),
-                const SizedBox(height: SmartRailSpacing.lg),
-                Semantics(
-                  label: '${l10n.ticketTitle} ${s.reference}',
-                  image: true,
-                  child: Container(
-                    padding: const EdgeInsets.all(SmartRailSpacing.lg),
-                    decoration: BoxDecoration(
-                      color: SmartRailColors.surface,
-                      border: Border.all(color: SmartRailColors.borderStrong),
-                      borderRadius: BorderRadius.circular(SmartRailRadius.md),
+              ),
+              const SizedBox(height: 14),
+              Semantics(
+                label: '${l10n.ticketTitle} ${s.reference}',
+                image: true,
+                child: Container(
+                  width: 220,
+                  height: 220,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: SmartRailColors.surface,
+                    border: Border.all(
+                      color: SmartRailColors.borderStrong,
+                      width: 1.5,
                     ),
-                    child: Opacity(
-                      opacity: affected || s.state == TicketState.past
-                          ? 0.35
-                          : 1,
-                      child: QrImageView(
-                        data: detail.qrPayload,
-                        size: 200,
-                        backgroundColor: SmartRailColors.surface,
-                        errorCorrectionLevel: QrErrorCorrectLevel.M,
-                      ),
+                    borderRadius: BorderRadius.circular(SmartRailRadius.md),
+                  ),
+                  child: Opacity(
+                    opacity: faded ? 0.35 : 1,
+                    child: QrImageView(
+                      data: detail.qrPayload,
+                      size: 170,
+                      padding: EdgeInsets.zero,
+                      backgroundColor: SmartRailColors.surface,
+                      errorCorrectionLevel: QrErrorCorrectLevel.M,
                     ),
                   ),
                 ),
-                const SizedBox(height: SmartRailSpacing.md),
-                StatusChip(kind: kind, label: label),
-                const SizedBox(height: SmartRailSpacing.sm),
-                Text(
-                  s.reference,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: SmartRailColors.textSecondary,
-                  ),
+              ),
+              const SizedBox(height: 14),
+              StatusChip(kind: kind, label: label),
+              const SizedBox(height: 14),
+              Text(
+                s.reference,
+                style: SmartRailType.caption.copyWith(
+                  color: SmartRailColors.textTertiary,
                 ),
-                Text(
-                  l10n.ticketBookingNumber(detail.bookingCode),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: SmartRailColors.textSecondary,
-                  ),
+              ),
+              Text(
+                l10n.ticketBookingNumber(detail.bookingCode),
+                style: SmartRailType.caption.copyWith(
+                  color: SmartRailColors.textTertiary,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: SmartRailSpacing.md),
+        const SizedBox(height: 14),
         if (affected) ...[
           InfoBanner(
             kind: BannerKind.warning,
             title: l10n.ticketAffectedTitle,
             detail: l10n.ticketAffectedBody,
           ),
-          const SizedBox(height: SmartRailSpacing.md),
+          const SizedBox(height: 14),
           SmartRailButton(
             label: l10n.ticketFindAnother,
             onPressed: () =>
                 context.go(AppRoutes.planResults(s.fromCode, s.toCode)),
           ),
         ] else
-          InfoBanner(
-            kind: BannerKind.message,
-            title: l10n.ticketOffline(clock.formatTime(detail.fetchedAt)),
-          ),
+          InfoNote(l10n.ticketOffline(clock.formatTime(detail.fetchedAt))),
       ],
     );
   }

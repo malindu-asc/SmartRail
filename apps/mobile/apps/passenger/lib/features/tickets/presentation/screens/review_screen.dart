@@ -86,116 +86,131 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> {
 
     final clock = clockFor('Asia/Colombo');
     final now = ref.watch(nowProvider)();
-    final theme = Theme.of(context);
     final fare = offer.fare;
     final seats = seatsText(l10n, draft.seats.map((s) => '$s').toList());
     final hold = draft.hold;
 
+    TextStyle body14(Color c) => SmartRailType.body14.copyWith(color: c);
+
+    Widget row(String label, String value) => Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Text(label, style: body14(SmartRailColors.textSecondary)),
+        ),
+        const SizedBox(width: 12),
+        Text(value, style: body14(SmartRailColors.textPrimary)),
+      ],
+    );
+
     return Scaffold(
+      backgroundColor: SmartRailColors.page,
       appBar: SmartRailAppBar(title: Text(l10n.reviewTitle)),
       body: Column(
         children: [
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(SmartRailSpacing.lg),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
               children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(SmartRailSpacing.lg),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${offer.fromCode} → ${offer.toCode}',
-                          style: theme.textTheme.titleLarge,
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: SmartRailColors.surface,
+                    border: Border.all(color: SmartRailColors.border),
+                    borderRadius: BorderRadius.circular(SmartRailRadius.lg),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${offer.fromCode} → ${offer.toCode}',
+                        style: SmartRailType.title.copyWith(
+                          color: SmartRailColors.textPrimary,
                         ),
-                        const SizedBox(height: SmartRailSpacing.xs),
-                        Text(
-                          [
-                            '${ticketWhen(l10n, offer.expectedDeparture, clock, now)} → ${clock.formatTime(offer.expectedArrival)}',
-                            if (seats.isNotEmpty) seats,
-                          ].join(' · '),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: SmartRailColors.textSecondary,
-                          ),
-                        ),
-                        Text(
-                          [
-                            travellersText(l10n, draft.travellers),
-                            if (offer.platform != null)
-                              l10n.platformN(offer.platform!),
-                          ].join(' · '),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: SmartRailColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        [
+                          '${ticketWhen(l10n, offer.expectedDeparture, clock, now)} → ${clock.formatTime(offer.expectedArrival)}',
+                          if (seats.isNotEmpty) seats,
+                        ].join(' · '),
+                        style: body14(SmartRailColors.textSecondary),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        [
+                          travellersText(l10n, draft.travellers),
+                          if (offer.platform != null)
+                            l10n.platformN(offer.platform!),
+                        ].join(' · '),
+                        style: body14(SmartRailColors.textSecondary),
+                      ),
+                    ],
                   ),
                 ),
                 if (hold != null) ...[
-                  const SizedBox(height: SmartRailSpacing.md),
-                  InfoBanner(
-                    kind: BannerKind.message,
-                    title: l10n.reviewHold(clock.formatTime(hold.expiresAt)),
-                  ),
+                  const SizedBox(height: 14),
+                  InfoNote(l10n.reviewHold(clock.formatTime(hold.expiresAt))),
                 ],
-                const SizedBox(height: SmartRailSpacing.lg),
-                for (final line in fare.lines)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '${l10n.reviewFare} · ${line.count} × ${_category(l10n, line.category)}',
-                          ),
-                        ),
-                        Text('${fare.currency} ${line.total.round()}'),
-                      ],
-                    ),
+                const SizedBox(height: 14),
+                Text(
+                  l10n.reviewFare,
+                  style: SmartRailType.heading16.copyWith(
+                    color: SmartRailColors.textPrimary,
                   ),
-                const Divider(),
+                ),
+                const SizedBox(height: 14),
+                for (final line in fare.lines) ...[
+                  row(
+                    '${line.count} × ${_category(l10n, line.category)}',
+                    '${fare.currency} ${line.total.round()}',
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: SmartRailColors.border,
+                ),
+                const SizedBox(height: 8),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Text(
-                        l10n.reviewTotal,
-                        style: theme.textTheme.titleMedium,
+                    Text(
+                      l10n.reviewTotal,
+                      style: SmartRailType.heading16.copyWith(
+                        color: SmartRailColors.textPrimary,
                       ),
                     ),
-                    Text(fare.label, style: theme.textTheme.titleLarge),
+                    Text(
+                      fare.label,
+                      style: SmartRailType.title.copyWith(
+                        color: SmartRailColors.textPrimary,
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: SmartRailSpacing.md),
+                const SizedBox(height: 14),
                 Text(
                   l10n.chooseNoPayment,
-                  style: theme.textTheme.bodySmall?.copyWith(
+                  style: SmartRailType.caption.copyWith(
                     color: SmartRailColors.textSecondary,
                   ),
                 ),
                 if (_error != null) ...[
-                  const SizedBox(height: SmartRailSpacing.md),
+                  const SizedBox(height: 14),
                   InfoBanner(kind: BannerKind.warning, title: _error!),
                 ],
               ],
             ),
           ),
-          DecoratedBox(
-            decoration: const BoxDecoration(
-              color: SmartRailColors.surface,
-              border: Border(top: BorderSide(color: SmartRailColors.border)),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.all(SmartRailSpacing.lg),
-                child: SmartRailButton(
-                  label: l10n.reviewConfirm,
-                  onPressed: _busy ? null : _confirm,
-                ),
+          StickyActionBar(
+            children: [
+              SmartRailButton(
+                label: l10n.reviewConfirm,
+                onPressed: _busy ? null : _confirm,
               ),
-            ),
+            ],
           ),
         ],
       ),

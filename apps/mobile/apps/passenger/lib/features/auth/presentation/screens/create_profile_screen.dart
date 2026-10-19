@@ -89,66 +89,121 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-
     return Scaffold(
+      backgroundColor: SmartRailColors.page,
       appBar: SmartRailAppBar(title: Text(l10n.createTitle)),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(SmartRailSpacing.xl),
+        child: Column(
           children: [
-            SmartRailTextField(
-              label: l10n.fullNameLabel,
-              hint: l10n.fullNameHint,
-              controller: _name,
-              onChanged: (_) => setState(() {}),
-              errorText: _tried && !_nameOk ? l10n.errName : null,
-              autofillHints: const [AutofillHints.name],
-            ),
-            const SizedBox(height: SmartRailSpacing.lg),
-            SmartRailTextField(
-              label: l10n.emailLabel,
-              hint: 'name@example.com',
-              controller: _email,
-              onChanged: (_) => setState(() {}),
-              keyboardType: TextInputType.emailAddress,
-              errorText: _tried && !_emailOk ? l10n.errEmail : null,
-              autofillHints: const [AutofillHints.email],
-            ),
-            const SizedBox(height: SmartRailSpacing.lg),
-            SmartRailTextField(
-              label: l10n.passwordLabel,
-              hint: l10n.passwordNewHint,
-              controller: _password,
-              obscureText: true,
-              onChanged: (_) => setState(() {}),
-              errorText: _tried && !_passwordOk ? l10n.errPassword : null,
-              autofillHints: const [AutofillHints.newPassword],
-            ),
-            const SizedBox(height: SmartRailSpacing.md),
-            CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
-              value: _agreed,
-              onChanged: (v) => setState(() => _agreed = v ?? false),
-              title: Text(l10n.agreeTerms, style: theme.textTheme.bodyMedium),
-              subtitle: _tried && !_agreed
-                  ? Text(
-                      l10n.errTerms,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: SmartRailColors.cancelledText,
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  SmartRailTextField(
+                    label: l10n.fullNameLabel,
+                    hint: l10n.fullNameHint,
+                    controller: _name,
+                    onChanged: (_) => setState(() {}),
+                    errorText: _tried && !_nameOk ? l10n.errName : null,
+                    autofillHints: const [AutofillHints.name],
+                  ),
+                  const SizedBox(height: 14),
+                  SmartRailTextField(
+                    label: l10n.emailLabel,
+                    hint: 'name@example.com',
+                    controller: _email,
+                    onChanged: (_) => setState(() {}),
+                    keyboardType: TextInputType.emailAddress,
+                    errorText: _tried && !_emailOk ? l10n.errEmail : null,
+                    autofillHints: const [AutofillHints.email],
+                  ),
+                  const SizedBox(height: 14),
+                  SmartRailTextField(
+                    label: l10n.passwordLabel,
+                    hint: l10n.passwordNewHint,
+                    controller: _password,
+                    obscureText: true,
+                    onChanged: (_) => setState(() {}),
+                    errorText: _tried && !_passwordOk ? l10n.errPassword : null,
+                    autofillHints: const [AutofillHints.newPassword],
+                  ),
+                  const SizedBox(height: 14),
+                  Semantics(
+                    container: true,
+                    checked: _agreed,
+                    label: l10n.agreeTerms,
+                    child: InkWell(
+                      onTap: () => setState(() => _agreed = !_agreed),
+                      child: ExcludeSemantics(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AnimatedContainer(
+                              duration: SmartRailMotion.of(
+                                context,
+                                SmartRailMotion.fast,
+                              ),
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: _agreed
+                                    ? SmartRailColors.primary
+                                    : SmartRailColors.surface,
+                                border: Border.all(
+                                  color: _agreed
+                                      ? SmartRailColors.primary
+                                      : SmartRailColors.borderStrong,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  SmartRailRadius.sm,
+                                ),
+                              ),
+                              child: _agreed
+                                  ? const SvgIcon(
+                                      AppIcons.check,
+                                      size: 16,
+                                      color: SmartRailColors.onPrimary,
+                                    )
+                                  : null,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                l10n.agreeTerms,
+                                style: SmartRailType.body14.copyWith(
+                                  color: SmartRailColors.textSecondary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    )
-                  : null,
+                    ),
+                  ),
+                  if (_tried && !_agreed)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6, left: 36),
+                      child: Text(
+                        l10n.errTerms,
+                        style: SmartRailType.caption.copyWith(
+                          color: SmartRailColors.cancelledText,
+                        ),
+                      ),
+                    ),
+                  if (_serverError != null) ...[
+                    const SizedBox(height: 14),
+                    InfoBanner(kind: BannerKind.warning, title: _serverError!),
+                  ],
+                ],
+              ),
             ),
-            const SizedBox(height: SmartRailSpacing.lg),
-            if (_serverError != null) ...[
-              InfoBanner(kind: BannerKind.warning, title: _serverError!),
-              const SizedBox(height: SmartRailSpacing.md),
-            ],
-            SmartRailButton(
-              label: l10n.createTitle,
-              onPressed: _busy ? null : _submit,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: SmartRailButton(
+                label: l10n.createTitle,
+                onPressed: _busy ? null : _submit,
+              ),
             ),
           ],
         ),
