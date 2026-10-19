@@ -104,6 +104,18 @@ public sealed partial class Journey
         return new StopEventOutcome(inferred, departedNow, completedNow, delayChanged);
     }
 
+    // Moves a stop to another platform before or while the train runs. Scheduled times are untouched.
+    public Result ChangePlatform(int stopSequence, string platformCode, string changedBy, DateTimeOffset now)
+    {
+        var stop = _stops.FirstOrDefault(s => s.Sequence == stopSequence);
+        if (stop is null)
+            return JourneysErrors.StopNotFound(stopSequence);
+
+        stop.ChangePlatform(platformCode.Trim(), changedBy, now);
+        Touch();
+        return Result.Success();
+    }
+
     // An accepted position proves the feed is alive for this journey. It moves the running sub-state, nothing else.
     public Result RecordPosition(DateTimeOffset now)
     {
