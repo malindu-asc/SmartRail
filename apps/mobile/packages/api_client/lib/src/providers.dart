@@ -11,11 +11,17 @@ final localeCodeProvider = Provider<String>((ref) => 'en');
 
 /// The one API client of the app. Reads the current language each time it makes a request.
 final apiClientProvider = Provider<ApiClient>(
-  (ref) => ApiClient(locale: () => ref.read(localeCodeProvider), token: () => ref.read(accessTokenProvider)()),
+  (ref) => ApiClient(
+    locale: () => ref.read(localeCodeProvider),
+    token: () => ref.read(accessTokenProvider)(),
+  ),
 );
 
 /// Gives the sign-in token for a request, or null when nobody is signed in. The app replaces it with its sign-in state.
-final accessTokenProvider = Provider<Future<String?> Function()>((ref) => () async => null);
+final accessTokenProvider = Provider<Future<String?> Function()>(
+  (ref) =>
+      () async => null,
+);
 
 /// Asks the platform whether it can be reached. The default calls a cheap public read; tests replace it.
 abstract interface class ApiProbe {
@@ -28,13 +34,18 @@ class HttpApiProbe implements ApiProbe {
   final ApiClient _client;
 
   @override
-  Future<bool> isReachable() async => (await _client.get('/api/network/routes')).isRight();
+  Future<bool> isReachable() async =>
+      (await _client.get('/api/network/routes')).isRight();
 }
 
-final apiProbeProvider = Provider<ApiProbe>((ref) => HttpApiProbe(ref.watch(apiClientProvider)));
+final apiProbeProvider = Provider<ApiProbe>(
+  (ref) => HttpApiProbe(ref.watch(apiClientProvider)),
+);
 
 /// How often the app asks again while it is open. Zero turns polling off.
-final reachabilityIntervalProvider = Provider<Duration>((ref) => const Duration(seconds: 30));
+final reachabilityIntervalProvider = Provider<Duration>(
+  (ref) => const Duration(seconds: 30),
+);
 
 /// Whether the API could be reached at the last check, and when it last could (REQ-NFR-006).
 class Reachability {
@@ -44,9 +55,14 @@ class Reachability {
   final DateTime? lastSuccess;
 }
 
-final reachabilityClockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
+final reachabilityClockProvider = Provider<DateTime Function()>(
+  (ref) => DateTime.now,
+);
 
-final reachabilityProvider = NotifierProvider<ReachabilityNotifier, Reachability>(ReachabilityNotifier.new);
+final reachabilityProvider =
+    NotifierProvider<ReachabilityNotifier, Reachability>(
+      ReachabilityNotifier.new,
+    );
 
 class ReachabilityNotifier extends Notifier<Reachability> {
   @override
@@ -68,7 +84,10 @@ class ReachabilityNotifier extends Notifier<Reachability> {
     if (!ref.mounted) return;
 
     state = ok
-        ? Reachability(online: true, lastSuccess: ref.read(reachabilityClockProvider)())
+        ? Reachability(
+            online: true,
+            lastSuccess: ref.read(reachabilityClockProvider)(),
+          )
         : Reachability(online: false, lastSuccess: state.lastSuccess);
   }
 }
@@ -80,7 +99,8 @@ class ReachabilityLifecycle extends ConsumerStatefulWidget {
   final Widget child;
 
   @override
-  ConsumerState<ReachabilityLifecycle> createState() => _ReachabilityLifecycleState();
+  ConsumerState<ReachabilityLifecycle> createState() =>
+      _ReachabilityLifecycleState();
 }
 
 class _ReachabilityLifecycleState extends ConsumerState<ReachabilityLifecycle> {

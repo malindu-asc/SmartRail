@@ -2,7 +2,11 @@
 ///
 /// Used for `ETag` revalidation and to show stale data instead of nothing (REQ-PAX-005, REQ-NFR-006).
 class CachedResponse {
-  const CachedResponse({required this.body, required this.etag, required this.fetchedAt});
+  const CachedResponse({
+    required this.body,
+    required this.etag,
+    required this.fetchedAt,
+  });
 
   final Object? body;
   final String? etag;

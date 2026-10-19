@@ -14,7 +14,10 @@ abstract final class ProblemMapper {
       case DioExceptionType.connectionError:
         return const NetworkFailure.unreachable();
       case DioExceptionType.badResponse:
-        return fromStatus(error.response?.statusCode ?? 0, error.response?.data);
+        return fromStatus(
+          error.response?.statusCode ?? 0,
+          error.response?.data,
+        );
       case DioExceptionType.cancel:
       case DioExceptionType.badCertificate:
       case DioExceptionType.unknown:
@@ -25,10 +28,16 @@ abstract final class ProblemMapper {
   static Failure fromStatus(int status, Object? body) {
     final problem = body is Map ? body : const <String, Object?>{};
     final code = problem['code'] is String ? problem['code'] as String : null;
-    final detail = problem['detail'] is String ? problem['detail'] as String : (problem['title'] is String ? problem['title'] as String : null);
+    final detail = problem['detail'] is String
+        ? problem['detail'] as String
+        : (problem['title'] is String ? problem['title'] as String : null);
 
     return switch (status) {
-      400 => ValidationFailure(code ?? 'validation', detail, _fieldErrors(problem['errors'])),
+      400 => ValidationFailure(
+        code ?? 'validation',
+        detail,
+        _fieldErrors(problem['errors']),
+      ),
       401 => UnauthorizedFailure(code ?? 'auth.unauthorized', detail),
       403 => ForbiddenFailure(code ?? 'auth.forbidden', detail),
       404 => NotFoundFailure(code ?? 'not_found', detail),
@@ -42,7 +51,12 @@ abstract final class ProblemMapper {
     if (errors is! Map) return const {};
     return {
       for (final entry in errors.entries)
-        entry.key.toString(): [if (entry.value is List) ...(entry.value as List).map((e) => e.toString()) else entry.value.toString()],
+        entry.key.toString(): [
+          if (entry.value is List)
+            ...(entry.value as List).map((e) => e.toString())
+          else
+            entry.value.toString(),
+        ],
     };
   }
 }
