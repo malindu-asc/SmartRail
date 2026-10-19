@@ -117,6 +117,16 @@ class ApiClient {
     }
   }
 
+  /// A delete (for example "delete my account"). Never retried.
+  Future<Either<Failure, ApiResponse>> delete(String path) async {
+    try {
+      final response = await _dio.delete<Object?>(path);
+      return right(ApiResponse(body: response.data, fetchedAt: _now()));
+    } on DioException catch (error) {
+      return left(ProblemMapper.fromDio(error));
+    }
+  }
+
   /// The last good answer to a read, for showing stale data when a fresh read failed. Null when there is none.
   ApiResponse? cachedCopy(String path, {Map<String, Object?>? query}) {
     final cached = _cache.read(_key(path, query));

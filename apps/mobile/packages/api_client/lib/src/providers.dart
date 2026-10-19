@@ -10,7 +10,12 @@ import 'api_client.dart';
 final localeCodeProvider = Provider<String>((ref) => 'en');
 
 /// The one API client of the app. Reads the current language each time it makes a request.
-final apiClientProvider = Provider<ApiClient>((ref) => ApiClient(locale: () => ref.read(localeCodeProvider)));
+final apiClientProvider = Provider<ApiClient>(
+  (ref) => ApiClient(locale: () => ref.read(localeCodeProvider), token: () => ref.read(accessTokenProvider)()),
+);
+
+/// Gives the sign-in token for a request, or null when nobody is signed in. The app replaces it with its sign-in state.
+final accessTokenProvider = Provider<Future<String?> Function()>((ref) => () async => null);
 
 /// Asks the platform whether it can be reached. The default calls a cheap public read; tests replace it.
 abstract interface class ApiProbe {
