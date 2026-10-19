@@ -110,16 +110,18 @@ class FadeBranches extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         for (var i = 0; i < children.length; i++)
+          // The fade sits outside the TickerMode: a tab that is leaving must still be allowed to run its fade-out, only its own
+          // content stops animating.
           IgnorePointer(
             ignoring: i != currentIndex,
             child: ExcludeSemantics(
               excluding: i != currentIndex,
-              child: TickerMode(
-                enabled: i == currentIndex,
-                child: AnimatedOpacity(
-                  opacity: i == currentIndex ? 1 : 0,
-                  duration: SmartRailMotion.of(context, SmartRailMotion.base),
-                  curve: SmartRailMotion.curve,
+              child: AnimatedOpacity(
+                opacity: i == currentIndex ? 1 : 0,
+                duration: SmartRailMotion.of(context, SmartRailMotion.base),
+                curve: SmartRailMotion.curve,
+                child: TickerMode(
+                  enabled: i == currentIndex,
                   child: children[i],
                 ),
               ),
