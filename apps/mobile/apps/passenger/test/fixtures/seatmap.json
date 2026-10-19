@@ -1,0 +1,10 @@
+{
+ "coaches": [
+  "A",
+  "B",
+  "C"
+ ],
+ "seatsPerCoach": 28,
+ "taken": [],
+ "yours": []
+}

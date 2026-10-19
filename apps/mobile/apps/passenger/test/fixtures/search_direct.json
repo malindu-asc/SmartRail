@@ -1,0 +1,246 @@
+{
+ "timeZone": "Asia/Colombo",
+ "asOfUtc": "2026-10-19T10:01:57.4581747+00:00",
+ "from": {
+  "code": "CEN",
+  "name": "Central"
+ },
+ "to": {
+  "code": "RIV",
+  "name": "Riverside"
+ },
+ "options": [
+  {
+   "transfers": 0,
+   "departureUtc": "2026-10-19T12:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:00:00+00:00",
+   "arrivalUtc": "2026-10-19T12:23:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T12:23:00+00:00",
+   "durationMinutes": 23,
+   "transfer": null,
+   "legs": [
+    {
+     "journeyId": "810ac15e-8447-4ebc-bf2d-806c71ef594d",
+     "trainNumber": "1004",
+     "routeCode": "MAIN",
+     "fromCode": "CEN",
+     "fromName": "Central",
+     "toCode": "RIV",
+     "toName": "Riverside",
+     "departureUtc": "2026-10-19T12:00:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T12:00:00+00:00",
+     "arrivalUtc": "2026-10-19T12:23:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T12:23:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 0,
+   "departureUtc": "2026-10-19T12:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:00:00+00:00",
+   "arrivalUtc": "2026-10-19T12:27:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T12:27:00+00:00",
+   "durationMinutes": 27,
+   "transfer": null,
+   "legs": [
+    {
+     "journeyId": "c0a2a5c4-22af-4a8e-adc0-c2e79301265d",
+     "trainNumber": "2004",
+     "routeCode": "HILL",
+     "fromCode": "CEN",
+     "fromName": "Central",
+     "toCode": "RIV",
+     "toName": "Riverside",
+     "departureUtc": "2026-10-19T12:00:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T12:00:00+00:00",
+     "arrivalUtc": "2026-10-19T12:27:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T12:27:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 0,
+   "departureUtc": "2026-10-19T14:30:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T14:30:00+00:00",
+   "arrivalUtc": "2026-10-19T14:53:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T14:53:00+00:00",
+   "durationMinutes": 23,
+   "transfer": null,
+   "legs": [
+    {
+     "journeyId": "62907d5f-20c0-4276-aeef-1ee7f51f9aee",
+     "trainNumber": "D101",
+     "routeCode": "MAIN",
+     "fromCode": "CEN",
+     "fromName": "Central",
+     "toCode": "RIV",
+     "toName": "Riverside",
+     "departureUtc": "2026-10-19T14:30:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T14:30:00+00:00",
+     "arrivalUtc": "2026-10-19T14:53:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T14:53:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 0,
+   "departureUtc": "2026-10-19T18:20:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T18:20:00+00:00",
+   "arrivalUtc": "2026-10-19T18:47:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T18:47:00+00:00",
+   "durationMinutes": 27,
+   "transfer": null,
+   "legs": [
+    {
+     "journeyId": "41b6b7b0-8a42-44af-8257-2e0a0566ce40",
+     "trainNumber": "D201",
+     "routeCode": "HILL",
+     "fromCode": "CEN",
+     "fromName": "Central",
+     "toCode": "RIV",
+     "toName": "Riverside",
+     "departureUtc": "2026-10-19T18:20:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T18:20:00+00:00",
+     "arrivalUtc": "2026-10-19T18:47:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T18:47:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 0,
+   "departureUtc": "2026-10-20T01:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T01:00:00+00:00",
+   "arrivalUtc": "2026-10-20T01:23:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T01:23:00+00:00",
+   "durationMinutes": 23,
+   "transfer": null,
+   "legs": [
+    {
+     "journeyId": "46170344-2cc3-4718-bb8d-714744a4f249",
+     "trainNumber": "1001",
+     "routeCode": "MAIN",
+     "fromCode": "CEN",
+     "fromName": "Central",
+     "toCode": "RIV",
+     "toName": "Riverside",
+     "departureUtc": "2026-10-20T01:00:00+00:00",
+     "expectedDepartureUtc": "2026-10-20T01:00:00+00:00",
+     "arrivalUtc": "2026-10-20T01:23:00+00:00",
+     "expectedArrivalUtc": "2026-10-20T01:23:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 0,
+   "departureUtc": "2026-10-20T01:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T01:00:00+00:00",
+   "arrivalUtc": "2026-10-20T01:27:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T01:27:00+00:00",
+   "durationMinutes": 27,
+   "transfer": null,
+   "legs": [
+    {
+     "journeyId": "5573a7cf-0eba-4a43-b8e0-c32f73d0436f",
+     "trainNumber": "2001",
+     "routeCode": "HILL",
+     "fromCode": "CEN",
+     "fromName": "Central",
+     "toCode": "RIV",
+     "toName": "Riverside",
+     "departureUtc": "2026-10-20T01:00:00+00:00",
+     "expectedDepartureUtc": "2026-10-20T01:00:00+00:00",
+     "arrivalUtc": "2026-10-20T01:27:00+00:00",
+     "expectedArrivalUtc": "2026-10-20T01:27:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 0,
+   "departureUtc": "2026-10-20T02:30:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T02:30:00+00:00",
+   "arrivalUtc": "2026-10-20T02:53:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T02:53:00+00:00",
+   "durationMinutes": 23,
+   "transfer": null,
+   "legs": [
+    {
+     "journeyId": "02f070ae-fe2a-4b25-a4a1-96f26584a1d1",
+     "trainNumber": "1002",
+     "routeCode": "MAIN",
+     "fromCode": "CEN",
+     "fromName": "Central",
+     "toCode": "RIV",
+     "toName": "Riverside",
+     "departureUtc": "2026-10-20T02:30:00+00:00",
+     "expectedDepartureUtc": "2026-10-20T02:30:00+00:00",
+     "arrivalUtc": "2026-10-20T02:53:00+00:00",
+     "expectedArrivalUtc": "2026-10-20T02:53:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 0,
+   "departureUtc": "2026-10-20T02:30:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T02:30:00+00:00",
+   "arrivalUtc": "2026-10-20T02:57:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T02:57:00+00:00",
+   "durationMinutes": 27,
+   "transfer": null,
+   "legs": [
+    {
+     "journeyId": "fd958b42-43ae-491e-a60f-3a715b9fdce0",
+     "trainNumber": "2002",
+     "routeCode": "HILL",
+     "fromCode": "CEN",
+     "fromName": "Central",
+     "toCode": "RIV",
+     "toName": "Riverside",
+     "departureUtc": "2026-10-20T02:30:00+00:00",
+     "expectedDepartureUtc": "2026-10-20T02:30:00+00:00",
+     "arrivalUtc": "2026-10-20T02:57:00+00:00",
+     "expectedArrivalUtc": "2026-10-20T02:57:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  }
+ ]
+}

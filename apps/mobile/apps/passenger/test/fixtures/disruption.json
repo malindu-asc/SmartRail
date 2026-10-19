@@ -1,0 +1,133 @@
+{
+ "disruption": {
+  "id": "c5beeb43-736a-4ea1-839f-01fa408da669",
+  "title": "Signal fault at Mill Lane",
+  "message": "A signal fault between Oak Park and Mill Lane is causing delays of up to 20 minutes.",
+  "severity": "Major",
+  "networkWide": false,
+  "stations": [
+   {
+    "code": "MIL",
+    "name": "Mill Lane"
+   },
+   {
+    "code": "OAK",
+    "name": "Oak Park"
+   }
+  ],
+  "updatedAtUtc": "2026-10-19T10:02:05.848778+00:00",
+  "expectedEndUtc": null
+ },
+ "journeys": [
+  {
+   "journeyId": "c0a2a5c4-22af-4a8e-adc0-c2e79301265d",
+   "trainNumber": "2004",
+   "stationCode": "OAK",
+   "destinationName": "Market Street",
+   "scheduledDepartureUtc": "2026-10-19T12:07:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:07:00+00:00",
+   "status": "Planned",
+   "delayMinutes": null,
+   "platform": "2"
+  },
+  {
+   "journeyId": "85c5b52b-e762-4592-ac9e-3be0a4b66e75",
+   "trainNumber": "1504",
+   "stationCode": "MIL",
+   "destinationName": "Central",
+   "scheduledDepartureUtc": "2026-10-19T12:09:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:09:00+00:00",
+   "status": "Planned",
+   "delayMinutes": null,
+   "platform": "1"
+  },
+  {
+   "journeyId": "810ac15e-8447-4ebc-bf2d-806c71ef594d",
+   "trainNumber": "1004",
+   "stationCode": "MIL",
+   "destinationName": "Riverside",
+   "scheduledDepartureUtc": "2026-10-19T12:15:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:15:00+00:00",
+   "status": "Planned",
+   "delayMinutes": null,
+   "platform": "1"
+  },
+  {
+   "journeyId": "07486c55-3580-4bab-91fc-926a3fd13696",
+   "trainNumber": "2504",
+   "stationCode": "OAK",
+   "destinationName": "Central",
+   "scheduledDepartureUtc": "2026-10-19T12:28:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:28:00+00:00",
+   "status": "Planned",
+   "delayMinutes": null,
+   "platform": "2"
+  },
+  {
+   "journeyId": "347a0321-bf76-406c-9d1f-2179e20b9d67",
+   "trainNumber": "D102",
+   "stationCode": "MIL",
+   "destinationName": "Central",
+   "scheduledDepartureUtc": "2026-10-19T14:39:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T14:39:00+00:00",
+   "status": "Planned",
+   "delayMinutes": null,
+   "platform": "1"
+  },
+  {
+   "journeyId": "62907d5f-20c0-4276-aeef-1ee7f51f9aee",
+   "trainNumber": "D101",
+   "stationCode": "MIL",
+   "destinationName": "Riverside",
+   "scheduledDepartureUtc": "2026-10-19T14:45:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T14:45:00+00:00",
+   "status": "Planned",
+   "delayMinutes": null,
+   "platform": "1"
+  },
+  {
+   "journeyId": "41b6b7b0-8a42-44af-8257-2e0a0566ce40",
+   "trainNumber": "D201",
+   "stationCode": "OAK",
+   "destinationName": "Market Street",
+   "scheduledDepartureUtc": "2026-10-19T18:27:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T18:27:00+00:00",
+   "status": "Planned",
+   "delayMinutes": null,
+   "platform": "2"
+  },
+  {
+   "journeyId": "5573a7cf-0eba-4a43-b8e0-c32f73d0436f",
+   "trainNumber": "2001",
+   "stationCode": "OAK",
+   "destinationName": "Market Street",
+   "scheduledDepartureUtc": "2026-10-20T01:07:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T01:07:00+00:00",
+   "status": "Planned",
+   "delayMinutes": null,
+   "platform": "2"
+  },
+  {
+   "journeyId": "006036df-bf90-49c7-afc6-e0804bbc7897",
+   "trainNumber": "1501",
+   "stationCode": "MIL",
+   "destinationName": "Central",
+   "scheduledDepartureUtc": "2026-10-20T01:09:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T01:09:00+00:00",
+   "status": "Planned",
+   "delayMinutes": null,
+   "platform": "1"
+  },
+  {
+   "journeyId": "46170344-2cc3-4718-bb8d-714744a4f249",
+   "trainNumber": "1001",
+   "stationCode": "MIL",
+   "destinationName": "Riverside",
+   "scheduledDepartureUtc": "2026-10-20T01:15:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T01:15:00+00:00",
+   "status": "Planned",
+   "delayMinutes": null,
+   "platform": "1"
+  }
+ ]
+}

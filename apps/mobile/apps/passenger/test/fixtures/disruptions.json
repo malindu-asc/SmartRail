@@ -1,0 +1,21 @@
+[
+ {
+  "id": "c5beeb43-736a-4ea1-839f-01fa408da669",
+  "title": "Signal fault at Mill Lane",
+  "message": "A signal fault between Oak Park and Mill Lane is causing delays of up to 20 minutes.",
+  "severity": "Major",
+  "networkWide": false,
+  "stations": [
+   {
+    "code": "MIL",
+    "name": "Mill Lane"
+   },
+   {
+    "code": "OAK",
+    "name": "Oak Park"
+   }
+  ],
+  "updatedAtUtc": "2026-10-19T10:02:05.848778+00:00",
+  "expectedEndUtc": null
+ }
+]
