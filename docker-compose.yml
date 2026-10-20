@@ -126,6 +126,8 @@ services:
       args:
         APP: console
     image: smartrail/console:${TAG:-local}
+    depends_on:
+      - api
     ports:
       - "3000:8080"
     restart: unless-stopped
