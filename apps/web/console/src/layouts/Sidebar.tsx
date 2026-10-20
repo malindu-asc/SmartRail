@@ -1,8 +1,9 @@
-import { LogOut, Train } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { isAdminConsole, sidebarItems, type NavItem } from '@/app/navigation'
 import { primaryRoleLabel } from '@/shared/auth'
 import { useAuth } from '@/shared/auth'
+import { Logo } from '@/shared/components/ui'
 import { cn, initials } from '@/shared/utils'
 
 interface SidebarProps {
@@ -19,9 +20,7 @@ export function Sidebar({ onSignOut }: SidebarProps) {
   return (
     <aside className={cn('sticky top-0 flex h-screen w-62 shrink-0 flex-col border-r', admin ? 'border-transparent bg-admin-nav text-admin-nav-fg' : 'border-line bg-surface text-fg')}>
       <div className="flex items-center gap-3 px-5 py-5">
-        <span className="flex size-9 items-center justify-center rounded-card bg-primary text-on-primary">
-          <Train aria-hidden className="size-5" />
-        </span>
+        <Logo className="h-9" />
         <div className="leading-tight">
           <p className="font-bold">SmartRail</p>
           <p className={cn('text-xs', admin ? 'text-admin-nav-fg/70' : 'text-fg-secondary')}>{admin ? 'Admin console' : 'Ops console'}</p>

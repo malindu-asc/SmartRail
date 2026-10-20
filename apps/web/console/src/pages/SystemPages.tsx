@@ -1,6 +1,7 @@
 import { Compass, LockKeyhole } from 'lucide-react'
 import { Link, Navigate } from 'react-router-dom'
 import { homePath, useAuth } from '@/shared/auth'
+import { Logo } from '@/shared/components/ui'
 
 /** "/": send each person to the home of their role. */
 export function HomeRedirect() {
@@ -14,7 +15,8 @@ export function NoAccessPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-page p-6">
       <div className="w-full max-w-md rounded-panel border border-line bg-surface p-8 text-center shadow-card">
-        <span className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-soft text-fg-secondary"><LockKeyhole aria-hidden className="size-6" /></span>
+        <Logo variant="full" className="mx-auto" />
+        <span className="mx-auto mb-4 mt-2 flex size-12 items-center justify-center rounded-full bg-soft text-fg-secondary"><LockKeyhole aria-hidden className="size-6" /></span>
         <h1 className="text-xl font-bold">This console is for staff</h1>
         <p className="mt-2 text-fg-secondary">Your account does not have a role that uses the operations console. If you should have access, ask a system administrator.</p>
         <button type="button" onClick={signOut} className="mt-6 h-10 rounded-control bg-primary px-4 font-semibold text-on-primary hover:bg-primary-pressed">Sign out</button>

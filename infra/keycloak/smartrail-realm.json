@@ -626,5 +626,6 @@
         }
       }
     ]
-  }
+  },
+  "loginTheme": "smartrail"
 }

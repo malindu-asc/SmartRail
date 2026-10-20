@@ -42,6 +42,7 @@ services:
       - "8080:8080"
     volumes:
       - ./infra/keycloak:/opt/keycloak/data/import:ro
+      - ./infra/keycloak-themes/smartrail:/opt/keycloak/themes/smartrail:ro
       - keycloak-data:/opt/keycloak/data/h2
     restart: unless-stopped
 

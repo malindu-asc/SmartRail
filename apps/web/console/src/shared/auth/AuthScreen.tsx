@@ -1,10 +1,12 @@
+import { Logo } from '@/shared/components/ui'
+
 /** Shown while signing in, or when sign-in failed. */
 export function AuthScreen({ failed }: { failed: string | null }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-page p-6">
       <div role="status" className="w-full max-w-sm rounded-panel border border-line bg-surface p-8 text-center shadow-card">
-        <div className="mx-auto mb-4 flex size-10 items-center justify-center rounded-card bg-primary text-on-primary font-bold">SR</div>
-        <h1 className="text-lg font-bold text-fg">SmartRail Ops console</h1>
+        <Logo variant="full" className="mx-auto" />
+        <h1 className="mt-2 text-lg font-bold text-fg">Ops console</h1>
         {failed ? (
           <>
             <p className="mt-2 text-fg-secondary">We could not sign you in. {failed}</p>
