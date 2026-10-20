@@ -40,7 +40,6 @@ export function PlatformNext() {
           <p className="d-calling">Calling at Oak Park, Mill Lane, Riverside</p>
           <div className="d-hero-meta">
             <StatusBadge status="on_time" label="On time" size="lg" />
-            <span className="d-dim">4 cars</span>
           </div>
         </div>
         <div className="d-countdown">
