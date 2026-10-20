@@ -463,3 +463,9 @@ body,
     animation: none;
   }
 }
+
+.d-countdown-now {
+  font-size: 64px;
+  line-height: 1.2;
+  padding: 14px 0;
+}
