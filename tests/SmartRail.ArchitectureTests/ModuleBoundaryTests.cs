@@ -6,7 +6,7 @@ namespace SmartRail.ArchitectureTests;
 // Fails the build when a layer or module boundary from the backend skill is broken.
 public class ModuleBoundaryTests
 {
-    private static readonly string[] Modules = ["Identity", "Network", "Journeys", "Operations", "Notifications"];
+    private static readonly string[] Modules = ["Identity", "Network", "Journeys", "Operations", "Notifications", "Ticketing"];
     private static readonly string[] Layers = ["Domain", "Application", "Infrastructure", "Api"];
 
     public static TheoryData<string> ModuleNames()

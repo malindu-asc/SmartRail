@@ -28,6 +28,15 @@ public interface IJourneyReader
         DateTimeOffset runningNotBeforeUtc,
         int count,
         CancellationToken cancellationToken);
+
+    // Journeys (not Completed, not Cancelled) on the given service dates that visit either station and have a stop
+    // at or after notBeforeUtc. The search joins them in memory.
+    Task<IReadOnlyList<JourneyReadModel>> GetSearchCandidatesAsync(
+        string fromStationCode,
+        string toStationCode,
+        IReadOnlyCollection<DateOnly> serviceDates,
+        DateTimeOffset notBeforeUtc,
+        CancellationToken cancellationToken);
 }
 
 public sealed record JourneyReadModel(

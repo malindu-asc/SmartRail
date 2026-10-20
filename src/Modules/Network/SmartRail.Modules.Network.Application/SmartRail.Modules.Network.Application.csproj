@@ -4,6 +4,7 @@
     <ProjectReference Include="..\SmartRail.Modules.Network.Domain\SmartRail.Modules.Network.Domain.csproj" />
     <ProjectReference Include="..\SmartRail.Modules.Network.Contracts\SmartRail.Modules.Network.Contracts.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\SmartRail.Application.Core\SmartRail.Application.Core.csproj" />
+    <ProjectReference Include="..\..\Identity\SmartRail.Modules.Identity.Contracts\SmartRail.Modules.Identity.Contracts.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

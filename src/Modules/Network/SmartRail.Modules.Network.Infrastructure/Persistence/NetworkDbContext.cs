@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SmartRail.Infrastructure.Core.Audit;
 using SmartRail.Infrastructure.Core.Persistence;
 using SmartRail.Modules.Network.Application.Abstractions;
 using SmartRail.Modules.Network.Domain.Languages;
@@ -25,6 +26,8 @@ public sealed class NetworkDbContext(DbContextOptions<NetworkDbContext> options)
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema(Schema);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(NetworkDbContext).Assembly);
+
+        modelBuilder.AddAuditEntries();   // this module's audit_entries table (REQ-OPS-011)
 
         // Network tables use snake_case column names (the outbox table owned by the base context is left alone).
         modelBuilder.UseSnakeCaseColumns("SmartRail.Modules.Network");

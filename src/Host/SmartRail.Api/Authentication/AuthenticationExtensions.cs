@@ -84,6 +84,8 @@ public static class AuthenticationExtensions
             .AddPolicy(Policies.Controller, policy => policy.RequireRole(Roles.Controller))
             .AddPolicy(Policies.Scheduler, policy => policy.RequireRole(Roles.Scheduler))
             .AddPolicy(Policies.Admin, policy => policy.RequireRole(Roles.Admin))
+            // One policy for every permission in the matrix (permission-matrix.md).
+            .AddPermissionPolicies()
             // Machines that send live data: a source key, never a user token.
             .AddPolicy(FeedSourceAuth.Policy, policy => policy
                 .AddAuthenticationSchemes(FeedSourceAuth.Scheme)

@@ -23,6 +23,75 @@ namespace SmartRail.Modules.Identity.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SmartRail.Infrastructure.Core.Audit.AuditEntry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("action");
+
+                    b.Property<string>("ActorRole")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("actor_role");
+
+                    b.Property<string>("ActorSubject")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("actor_subject");
+
+                    b.Property<string>("AfterState")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("after_state");
+
+                    b.Property<string>("BeforeState")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("before_state");
+
+                    b.Property<string>("CorrelationId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("correlation_id");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<string>("TargetId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("target_id");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("target_type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OccurredAt")
+                        .IsDescending();
+
+                    b.HasIndex("TargetType", "TargetId");
+
+                    b.ToTable("audit_entries", "identity");
+                });
+
             modelBuilder.Entity("SmartRail.Infrastructure.Core.Outbox.OutboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
@@ -59,6 +128,73 @@ namespace SmartRail.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasFilter("\"ProcessedOnUtc\" IS NULL AND \"DeadLetteredOnUtc\" IS NULL");
 
                     b.ToTable("outbox_messages", "identity");
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Identity.Domain.Devices.Device", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("LastHeartbeatAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<DateTimeOffset>("RegisteredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RegisteredBy")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RevokedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("RevokedReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("SoftwareVersion")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("StationCode")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying(5)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StationCode");
+
+                    b.ToTable("devices", "identity", t =>
+                        {
+                            t.HasCheckConstraint("ck_devices_status", "\"Status\" in ('Pending','Active','Revoked')");
+
+                            t.HasCheckConstraint("ck_devices_type", "\"Type\" in ('PlatformDisplay','ConcourseBoard','GateScanner','Terminal')");
+                        });
                 });
 
             modelBuilder.Entity("SmartRail.Modules.Identity.Domain.Feeds.FeedSource", b =>
@@ -114,6 +250,30 @@ namespace SmartRail.Modules.Identity.Infrastructure.Persistence.Migrations
                         {
                             t.HasCheckConstraint("ck_feed_sources_rank", "precedence_rank >= 1");
                         });
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Identity.Domain.Settings.SettingEntry", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("settings", "identity");
                 });
 #pragma warning restore 612, 618
         }

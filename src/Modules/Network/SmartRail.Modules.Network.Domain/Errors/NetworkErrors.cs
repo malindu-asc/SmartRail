@@ -117,4 +117,28 @@ public static class NetworkErrors
 
     public static Error EffectiveDateTaken(DateOnly date) =>
         Error.Conflict("Network.EffectiveDateTaken", $"Another version already takes effect on {date:yyyy-MM-dd}.");
+
+    public static Error VersionNotFound(Guid id) =>
+        Error.NotFound("Network.VersionNotFound", $"Timetable version '{id}' was not found.");
+
+    public static Error ServiceNotInVersion(Guid id) =>
+        Error.NotFound("Network.ServiceNotInVersion", $"Service '{id}' is not in this timetable version.");
+
+    public static Error TrainNumberTaken(string trainNumber) =>
+        Error.Conflict("Network.TrainNumberTaken", $"Train number '{trainNumber}' is already used in this version.");
+
+    public static Error CalendarNotFound(string code) =>
+        Error.NotFound("Network.CalendarNotFound", $"Calendar '{code}' was not found.");
+
+    public static Error EffectiveDateInPast =>
+        Error.Validation("Network.EffectiveDateInPast", "A new version takes effect after today, so journeys already running are not touched.");
+
+    public static Error NothingToBaseOn =>
+        Error.Conflict("Network.NothingToBaseOn", "There is no published version to start a draft from.");
+
+    public static Error DraftAlreadyOpen =>
+        Error.Conflict("Network.DraftAlreadyOpen", "A draft or a version in review already exists. Finish or publish it first.");
+
+    public static Error StopTimesMismatch =>
+        Error.Validation("Network.StopTimesMismatch", "Give a time for every stop of the service, in order.");
 }

@@ -32,6 +32,8 @@ public sealed class JourneyConfiguration : IEntityTypeConfiguration<Journey>
         builder.Property(j => j.PunctualityBand).HasConversion<string>().HasMaxLength(12);
         builder.Property(j => j.Confidence).HasConversion<string>().HasMaxLength(10).IsRequired();
         builder.Property(j => j.CancelReasonCode).HasMaxLength(30);
+        builder.Property(j => j.EndReasonCode).HasMaxLength(30);
+        builder.Property(j => j.ControllerNote).HasMaxLength(300);
         builder.Property(j => j.Version).IsConcurrencyToken();
 
         // Generation is idempotent: one journey per service and service date (REQ-LIVE-008).
@@ -155,5 +157,19 @@ public sealed class DriverAssignmentConfiguration : IEntityTypeConfiguration<Dri
         builder.HasIndex(a => a.JourneyId);
         builder.HasIndex(a => a.DutyId);
         // One duty on a journey at a time (so a handover closes the outgoing duty first): exclusion constraint in the migration.
+    }
+}
+
+public sealed class VehicleUnavailabilityConfiguration : IEntityTypeConfiguration<VehicleUnavailability>
+{
+    public void Configure(EntityTypeBuilder<VehicleUnavailability> builder)
+    {
+        builder.ToTable("vehicle_unavailability", t => t.HasCheckConstraint("ck_vehicle_unavailability_period", "\"to\" is null or \"to\" > \"from\""));
+        builder.HasKey(u => u.Id);
+        builder.Property(u => u.Id).ValueGeneratedNever();
+        builder.Property(u => u.Reason).IsRequired().HasMaxLength(200);
+        builder.Property(u => u.CreatedBy).IsRequired().HasMaxLength(64);
+        builder.HasOne<Vehicle>().WithMany().HasForeignKey(u => u.VehicleId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasIndex(u => new { u.VehicleId, u.From });
     }
 }
