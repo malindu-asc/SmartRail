@@ -202,24 +202,6 @@ public static class OpsJourneysEndpoints
         result.IsSuccess ? Results.NoContent() : ApiResults.Problem(result);
 }
 
-// A station master works on their own stations only (from the "stations" claim). Controllers and schedulers see the network.
-internal static class StationScope
-{
-    public sealed record Scope(string? Station, bool Forbidden);
-
-    public static Scope Resolve(ClaimsPrincipal user, string? requested)
-    {
-        var roles = user.FindAll("roles").Select(c => c.Value).ToList();
-        var wide = roles.Contains(Roles.Controller) || roles.Contains(Roles.Scheduler) || roles.Contains(Roles.Admin);
-        if (wide || !roles.Contains(Roles.StationMaster))
-            return new Scope(requested, false);
-
-        var own = user.FindAll("stations").Select(c => c.Value.ToUpperInvariant()).ToList();
-        var wanted = string.IsNullOrWhiteSpace(requested) ? own.FirstOrDefault() : requested.Trim().ToUpperInvariant();
-        return wanted is not null && own.Contains(wanted) ? new Scope(wanted, false) : new Scope(null, true);
-    }
-}
-
 public sealed record VersionRequest(int? ExpectedVersion);
 
 public sealed record CancelRequest(string? ReasonCode, string? Note, string? PassengerMessage, int? ExpectedVersion);

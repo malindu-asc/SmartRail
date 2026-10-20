@@ -151,6 +151,22 @@ public sealed class AdminApiTests(AdminApiFactory factory) : IClassFixture<Admin
     }
 
     [Fact]
+    public async Task A_station_master_sees_the_devices_of_their_own_station_only()
+    {
+        await Ok(await Admin.PostAsync("/api/admin/devices", Body(new { name = "Mill Lane display", type = "PlatformDisplay", stationCode = "MIL" })));
+        var other = await Ok(await Admin.PostAsync("/api/admin/devices", Body(new { name = "Central display", type = "PlatformDisplay", stationCode = "CEN" })));
+
+        var master = factory.CreateAuthenticatedClient(factory.Tokens.Issue(subject: "sm-1", userName: "sm-1", roles: ["station_master"], stations: ["MIL"]));
+
+        var own = await Ok(await master.GetAsync("/api/admin/devices"));
+        Assert.All(own.GetProperty("items").EnumerateArray(), d => Assert.Equal("MIL", d.GetProperty("stationCode").GetString()));
+        Assert.NotEmpty(own.GetProperty("items").EnumerateArray());
+
+        Assert.Equal(HttpStatusCode.Forbidden, (await master.GetAsync("/api/admin/devices?station=CEN")).StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, (await master.GetAsync($"/api/admin/devices/{other.GetProperty("id").GetGuid()}")).StatusCode);
+    }
+
+    [Fact]
     public async Task Security_settings_are_validated_saved_and_audited()
     {
         var current = await Ok(await Admin.GetAsync("/api/admin/security"));

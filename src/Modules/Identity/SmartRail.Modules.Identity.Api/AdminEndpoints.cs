@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -72,13 +73,26 @@ public static class AdminEndpoints
 
         // ---- devices ----
 
-        admin.MapGet("/devices", async (string? type, string? health, string? station, string? q, ISender sender, CancellationToken ct) =>
-                Respond(await sender.Send(new ListDevicesQuery(type, health, station, q), ct)))
+        // A station master reads the health of their own station's devices only.
+        admin.MapGet("/devices", async (ClaimsPrincipal user, string? type, string? health, string? station, string? q, ISender sender, CancellationToken ct) =>
+            {
+                var scope = StationScope.Resolve(user, station);
+                if (scope.Forbidden)
+                    return Results.Problem(statusCode: StatusCodes.Status403Forbidden, title: "Forbidden", detail: "A station master sees only their own stations.");
+
+                return Respond(await sender.Send(new ListDevicesQuery(type, health, scope.Station, q), ct));
+            })
             .RequirePermission(Permissions.DeviceHealthRead)
             .WithSummary("Displays, gates and terminals with last heartbeat and health; ?type=displays|gates|terminals");
 
-        admin.MapGet("/devices/{id:guid}", async (Guid id, ISender sender, CancellationToken ct) =>
-                Respond(await sender.Send(new GetDeviceQuery(id), ct)))
+        admin.MapGet("/devices/{id:guid}", async (ClaimsPrincipal user, Guid id, ISender sender, CancellationToken ct) =>
+            {
+                var result = await sender.Send(new GetDeviceQuery(id), ct);
+                if (result.IsSuccess && !StationScope.Allows(user, result.Value.StationCode))
+                    return Results.Problem(statusCode: StatusCodes.Status403Forbidden, title: "Forbidden", detail: "A station master sees only their own stations.");
+
+                return Respond(result);
+            })
             .RequirePermission(Permissions.DeviceHealthRead)
             .WithSummary("One device");
 
