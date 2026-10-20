@@ -410,21 +410,24 @@ body,
 
 
 /* ---------- motion ---------- */
-/* A screen fades in when it takes over; its parts then rise one after another (see Rise). */
+/* A screen fades up into place, all of it at once, when it takes over. */
 .d-enter {
   width: 1280px;
   height: 720px;
-  animation: d-fade 500ms ease-out both;
+  animation: d-rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
-@keyframes d-fade {
+@keyframes d-rise {
   from {
     opacity: 0;
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
+    transform: none;
   }
 }
 
+/* A train that arrives on the board later fades up on its own. */
 .rise {
   animation: rise 800ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }

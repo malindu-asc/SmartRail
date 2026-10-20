@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
 import { Icon } from './icons'
-import { Banner, Footer, Header, Rise, Stage, StatusBadge, type Status } from './parts'
+import { Banner, Footer, Header, Stage, StatusBadge, type Status } from './parts'
 
 /**
  * The station displays at high fidelity. Nothing here is wired to the API yet: the numbers are sample data so the design can be
  * judged. A real display reads the next departures for its platform or station and uses server time, never the device clock.
  *
- * Each screen brings its parts in one after another (see Rise), the most important first.
+ * A whole screen fades up once, together (see Gallery), as a real display does when it changes.
  */
 
 type Row = { time: string; to: string; status: Status; label: string }
 
-function MiniRow({ row, delay }: { row: Row; delay: number }) {
+function MiniRow({ row }: { row: Row }) {
   return (
-    <Rise className="d-mini" delay={delay}>
+    <div className="d-mini">
       <span className="d-mini-time">{row.time}</span>
       <span className="d-mini-to">{row.to}</span>
       <StatusBadge status={row.status} label={row.label} />
-    </Rise>
+    </div>
   )
 }
 
@@ -28,26 +28,26 @@ export function PlatformNext() {
       <Header title="Platform 2" time="14:18" />
       <section className="d-hero">
         <div className="d-hero-main">
-          <Rise delay={150} className="d-hero-line">
+          <div className="d-hero-line">
             <span className="d-hero-time">14:25</span>
             <span className="d-hero-to">Riverside</span>
-          </Rise>
-          <Rise delay={450}>
+          </div>
+          <div>
             <p className="d-calling">Calling at Oak Park, Mill Lane, Riverside</p>
-          </Rise>
-          <Rise delay={700} className="d-hero-meta">
+          </div>
+          <div className="d-hero-meta">
             <StatusBadge status="on_time" label="On time" size="lg" />
             <span className="d-dim">4 cars</span>
-          </Rise>
+          </div>
         </div>
-        <Rise delay={900} className="d-countdown">
+        <div className="d-countdown">
           <strong>7</strong>
           <span>min</span>
-        </Rise>
+        </div>
       </section>
-      <MiniRow row={{ time: '14:52', to: 'Riverside', status: 'on_time', label: 'On time' }} delay={1400} />
-      <MiniRow row={{ time: '15:20', to: 'Riverside', status: 'on_time', label: 'On time' }} delay={1900} />
-      <Footer tone="live" icon="check-circle" delay={2400}>
+      <MiniRow row={{ time: '14:52', to: 'Riverside', status: 'on_time', label: 'On time' }} />
+      <MiniRow row={{ time: '15:20', to: 'Riverside', status: 'on_time', label: 'On time' }} />
+      <Footer tone="live" icon="check-circle">
         Live · updated 14:18
       </Footer>
     </Stage>
@@ -62,23 +62,23 @@ export function PlatformDisrupted() {
       <Banner icon="arrow-lr">The 14:25 to Riverside now leaves from platform 5</Banner>
       <section className="d-hero">
         <div className="d-hero-main">
-          <Rise delay={700} className="d-hero-line">
+          <div className="d-hero-line">
             <span className="d-hero-time">14:31</span>
             <span className="d-hero-to">Hill Town</span>
-          </Rise>
-          <Rise delay={1100} className="d-hero-meta">
+          </div>
+          <div className="d-hero-meta">
             <StatusBadge status="cancelled" label="Cancelled" size="lg" />
             <span className="d-dim">signal fault</span>
-          </Rise>
-          <Rise delay={1600}>
+          </div>
+          <div>
             <p className="d-next-hint">
               <Icon name="arrow-lr" size={30} /> Next train to Hill Town: 15:05 from platform 3
             </p>
-          </Rise>
+          </div>
         </div>
       </section>
-      <MiniRow row={{ time: '14:52', to: 'Riverside', status: 'delayed', label: '+12 late' }} delay={2100} />
-      <Footer tone="alert" icon="alert-triangle" delay={2600}>
+      <MiniRow row={{ time: '14:52', to: 'Riverside', status: 'delayed', label: '+12 late' }} />
+      <Footer tone="alert" icon="alert-triangle">
         Signal fault at Mill Lane: delays up to 20 min · updated 14:12
       </Footer>
     </Stage>
@@ -143,32 +143,31 @@ export function Concourse() {
           </div>
           {/* Keyed by train, so a row that stays is not redrawn and one that arrives fades in. */}
           {rows.map((r, i) => (
-            <Rise
+            <div
               key={r.time + r.to}
-              // The first time the board shows, the rows come in one after another; later only the new row rises.
-              delay={first === 0 ? 300 + i * 450 : 0}
-              className={`d-tr ${r.status === 'cancelled' ? 'd-tr-cancelled' : ''} ${i === 0 && leaving ? 'd-tr-leaving' : ''}`}
+              // The board appears with the screen; only a train that arrives later fades in on its own.
+              className={`d-tr ${r.status === 'cancelled' ? 'd-tr-cancelled' : ''} ${i === 0 && leaving ? 'd-tr-leaving' : ''} ${first > 0 && i === WINDOW - 1 ? 'rise' : ''}`}
             >
               <span className="d-tr-time">{r.time}</span>
               <span>{r.to}</span>
               <span className="d-tr-plat">{r.plat}</span>
               <StatusBadge status={r.status} label={r.label} />
-            </Rise>
+            </div>
           ))}
         </div>
         <aside className="d-updates">
-          <Rise delay={3200}>
+          <div>
             <h2>Service updates</h2>
-          </Rise>
-          <Rise delay={3500}>
+          </div>
+          <div>
             <Update title="Signal fault at Mill Lane" detail="Delays up to 20 min · updated 14:12" />
-          </Rise>
-          <Rise delay={3900}>
+          </div>
+          <div>
             <Update title="Lift out of service, Oak Park" detail="Step-free route via platform 1" />
-          </Rise>
+          </div>
         </aside>
       </div>
-      <Footer tone="live" icon="check-circle" right="Page 1 of 2" delay={4300}>
+      <Footer tone="live" icon="check-circle" right="Page 1 of 2">
         Live · updated {clock}
       </Footer>
     </Stage>

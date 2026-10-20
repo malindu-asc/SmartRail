@@ -30,26 +30,6 @@ export function StatusBadge({
   )
 }
 
-/**
- * Fades its content up into place after `delay` ms. Screens use it to bring their parts in one after another, because a display does
- * not show everything at once: the eye is led from the train that matters to the ones after it.
- */
-export function Rise({
-  delay = 0,
-  className = '',
-  children,
-}: {
-  delay?: number
-  className?: string
-  children: ReactNode
-}) {
-  return (
-    <div className={`rise ${className}`} style={{ animationDelay: `${delay}ms` }}>
-      {children}
-    </div>
-  )
-}
-
 /** The top strip: the place on the left, the network time on the right. */
 export function Header({ title, time }: { title: string; time: string }) {
   return (
@@ -66,16 +46,14 @@ export function Footer({
   icon,
   children,
   right,
-  delay = 0,
 }: {
-  delay?: number
   tone: 'live' | 'alert'
   icon: IconName
   children: ReactNode
   right?: ReactNode
 }) {
   return (
-    <footer className={`d-footer d-footer-${tone} rise`} style={{ animationDelay: `${delay}ms` }}>
+    <footer className={`d-footer d-footer-${tone}`}>
       <Icon name={icon} size={26} />
       <span>{children}</span>
       {right && <span className="d-footer-right">{right}</span>}
@@ -86,7 +64,7 @@ export function Footer({
 /** A full-width notice under the header, used for a platform change. */
 export function Banner({ icon, children }: { icon: IconName; children: ReactNode }) {
   return (
-    <div className="d-banner rise">
+    <div className="d-banner">
       <Icon name={icon} size={44} />
       <span>{children}</span>
     </div>
