@@ -335,7 +335,7 @@
     },
     {
       "username": "controller",
-      "email": "controller@smartrail.test",
+      "email": "controller@gmail.com",
       "firstName": "Sarah",
       "lastName": "Perera",
       "enabled": true,
@@ -343,7 +343,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "Controller#123",
+          "value": "Controller12345",
           "temporary": false
         }
       ],
@@ -354,7 +354,7 @@
     },
     {
       "username": "scheduler",
-      "email": "scheduler@smartrail.test",
+      "email": "scheduler@gmail.com",
       "firstName": "Nimali",
       "lastName": "Perera",
       "enabled": true,
@@ -362,7 +362,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "Scheduler#123",
+          "value": "Scheduler12345",
           "temporary": false
         }
       ],
@@ -373,7 +373,7 @@
     },
     {
       "username": "admin",
-      "email": "admin@smartrail.test",
+      "email": "admin@gmail.com",
       "firstName": "James",
       "lastName": "Silva",
       "enabled": true,
@@ -381,7 +381,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "Admin#123",
+          "value": "Admin12345",
           "temporary": false
         }
       ],
@@ -392,7 +392,7 @@
     },
     {
       "username": "controller2",
-      "email": "controller2@smartrail.test",
+      "email": "controller2@gmail.com",
       "firstName": "Kamal",
       "lastName": "Rajapaksa",
       "enabled": true,
@@ -400,7 +400,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "Staff#123",
+          "value": "Controller212345",
           "temporary": false
         }
       ],
@@ -411,7 +411,7 @@
     },
     {
       "username": "stationmaster1",
-      "email": "stationmaster1@smartrail.test",
+      "email": "stationmaster1@gmail.com",
       "firstName": "Oshadi",
       "lastName": "Wijesinghe",
       "enabled": true,
@@ -419,7 +419,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "Staff#123",
+          "value": "Stationmaster112345",
           "temporary": false
         }
       ],
@@ -435,7 +435,7 @@
     },
     {
       "username": "stationmaster2",
-      "email": "stationmaster2@smartrail.test",
+      "email": "stationmaster2@gmail.com",
       "firstName": "Tharindu",
       "lastName": "Bandara",
       "enabled": true,
@@ -443,7 +443,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "Staff#123",
+          "value": "Stationmaster212345",
           "temporary": false
         }
       ],
@@ -459,7 +459,7 @@
     },
     {
       "username": "inspector",
-      "email": "inspector@smartrail.test",
+      "email": "inspector@gmail.com",
       "firstName": "Ishara",
       "lastName": "Inspector",
       "enabled": true,
@@ -467,7 +467,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "Staff#123",
+          "value": "Inspector12345",
           "temporary": false
         }
       ],
@@ -611,5 +611,18 @@
     "USER_DISABLED_BY_TEMPORARY_LOCKOUT"
   ],
   "adminEventsEnabled": true,
-  "adminEventsDetailsEnabled": false
+  "adminEventsDetailsEnabled": false,
+  "components": {
+    "org.keycloak.userprofile.UserProfileProvider": [
+      {
+        "providerId": "declarative-user-profile",
+        "subComponents": {},
+        "config": {
+          "kc.user.profile.config": [
+            "{\"unmanagedAttributePolicy\": \"ENABLED\"}"
+          ]
+        }
+      }
+    ]
+  }
 }
