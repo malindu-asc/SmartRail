@@ -6,8 +6,8 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Gallery />} />
+        <Route path="/display" element={<FullScreen />} />
         <Route path="/display/:id" element={<FullScreen />} />
-        <Route path="/:id" element={<Gallery />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

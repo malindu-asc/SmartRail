@@ -1,21 +1,11 @@
-import {
-  Concourse,
-  Pairing,
-  PlatformDisrupted,
-  PlatformEndOfService,
-  PlatformNext,
-  PlatformNoLive,
-  StationClosed,
-} from './screens'
+import { Concourse, PlatformDisrupted, PlatformNext } from './screens'
 
-/** Every display state, in the order the review page lists them. */
+/**
+ * The screens a display shows, in the order it cycles through them. `seconds` is how long each stays up. The no-live-data, closed and
+ * pairing states are decided by the backend and the device, so they are not part of this review.
+ */
 export const screens = [
-  { id: 'platform-next', group: 'Platform', title: 'Next train, on time', node: <PlatformNext />, board: 'Design 5' },
-  { id: 'platform-disrupted', group: 'Platform', title: 'Cancelled and platform changed', node: <PlatformDisrupted />, board: 'Design 6' },
-  { id: 'platform-no-live', group: 'Platform', title: 'No live information', node: <PlatformNoLive />, board: 'Design 7' },
-  { id: 'platform-end', group: 'Platform', title: 'No more trains today', node: <PlatformEndOfService />, board: 'New' },
-  { id: 'concourse', group: 'Concourse', title: 'Departures board', node: <Concourse />, board: 'Design 8' },
-  { id: 'concourse-no-live', group: 'Concourse', title: 'Timetable only', node: <Concourse stale />, board: 'New' },
-  { id: 'closed', group: 'Concourse', title: 'Station closed', node: <StationClosed />, board: 'New' },
-  { id: 'pairing', group: 'Device', title: 'Waiting to be paired', node: <Pairing />, board: 'New' },
+  { id: 'platform-next', group: 'Platform', title: 'Next train, on time', node: <PlatformNext />, board: 'Design 5', seconds: 9 },
+  { id: 'platform-disrupted', group: 'Platform', title: 'Cancelled and platform changed', node: <PlatformDisrupted />, board: 'Design 6', seconds: 9 },
+  { id: 'concourse', group: 'Concourse', title: 'Departures board', node: <Concourse />, board: 'Design 8', seconds: 16 },
 ] as const

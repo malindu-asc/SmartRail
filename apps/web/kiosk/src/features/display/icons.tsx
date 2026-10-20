@@ -27,31 +27,6 @@ const paths: Record<string, ReactNode> = {
       <path d="M12 10v4.5M12 17.5v.01" />
     </>
   ),
-  'wifi-off': (
-    <>
-      <path d="M3 3l18 18" />
-      <path d="M2 9a15 15 0 0 1 6-3.4M22 9a15 15 0 0 0-8.5-4M5.5 12.5a10 10 0 0 1 3.6-2M18.5 12.5a10 10 0 0 0-3.2-1.9M9 16a5 5 0 0 1 5.8-.8" />
-      <path d="M12 19.5v.01" />
-    </>
-  ),
-  volume: (
-    <>
-      <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" />
-      <path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" />
-    </>
-  ),
-  lock: (
-    <>
-      <rect x="5" y="11" width="14" height="9" rx="2" />
-      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-    </>
-  ),
-  accessible: (
-    <>
-      <circle cx="12" cy="4.5" r="1.8" />
-      <path d="M12 8v6h4.5l2 5M12 11h5M9 12.5a4.5 4.5 0 1 0 5.5 6.5" />
-    </>
-  ),
 }
 
 export type IconName = keyof typeof paths
