@@ -11,7 +11,8 @@ function readTheme(): Theme {
   } catch {
     // storage blocked: fall through
   }
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  // Light is the default, whatever the operating system prefers. Dark is opt-in with the toggle.
+  return 'light'
 }
 
 function apply(theme: Theme): void {
