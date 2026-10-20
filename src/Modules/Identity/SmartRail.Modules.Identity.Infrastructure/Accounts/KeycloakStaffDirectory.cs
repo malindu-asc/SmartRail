@@ -22,8 +22,14 @@ public sealed class StaffDirectoryOptions
 
 // Staff accounts live in Keycloak (users with a staff realm role). Nothing about people is copied into our database.
 internal sealed class KeycloakStaffDirectory(KeycloakAdminClient keycloak, IOptions<StaffDirectoryOptions> options, TimeProvider clock)
-    : IStaffDirectory, IStaffNames
+    : IStaffDirectory, IStaffNames, IStaffRoster
 {
+    async Task<IReadOnlyList<StaffPerson>> IStaffRoster.ListActiveAsync(string role, CancellationToken cancellationToken)
+    {
+        var all = await ListAsync(new StaffFilter(role, "Active", null, null, 0, 500), cancellationToken);
+        return all.IsFailure ? [] : all.Value.Select(a => new StaffPerson(a.Id, a.FullName)).OrderBy(p => p.Name).ToList();
+    }
+
     private const string NoLastName = "-";
     private static readonly TimeSpan NameCacheTime = TimeSpan.FromMinutes(10);
     private static readonly ConcurrentDictionary<string, (string Name, DateTimeOffset At)> Names = new();

@@ -175,6 +175,27 @@ public sealed class GetImpactQueryHandler(
     }
 }
 
+// ---- Who can be picked: the drivers a scheduler rosters, the controllers an incident is handed to ----
+
+public sealed record PersonView(string Subject, string Name);
+
+public sealed record ListPeopleQuery(string Role) : IQuery<IReadOnlyList<PersonView>>;
+
+public sealed class ListPeopleQueryHandler(IStaffRoster roster) : IQueryHandler<ListPeopleQuery, IReadOnlyList<PersonView>>
+{
+    private static readonly string[] Allowed = ["driver", "controller"];
+
+    public async Task<Result<IReadOnlyList<PersonView>>> Handle(ListPeopleQuery query, CancellationToken cancellationToken)
+    {
+        var role = query.Role.Trim().ToLowerInvariant();
+        if (!Allowed.Contains(role))
+            return Error.Validation("Operations.RoleNotListable", "Only drivers and controllers can be listed.");
+
+        var people = await roster.ListActiveAsync(role, cancellationToken);
+        return Result.Success<IReadOnlyList<PersonView>>(people.Select(p => new PersonView(p.Subject, p.Name)).ToList());
+    }
+}
+
 // ---- Audit log (REQ-OPS-011): one view over every module the caller may read ----
 
 public sealed record AuditEntryView(

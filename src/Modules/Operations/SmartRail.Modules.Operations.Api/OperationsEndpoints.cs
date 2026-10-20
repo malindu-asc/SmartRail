@@ -225,6 +225,10 @@ public static class OperationsEndpoints
             .RequirePermission(Permissions.PlanningRead)
             .WithSummary("Network dashboard: running, on time, delayed, cancelled, what needs attention, device health, active disruptions");
 
+        ops.MapGet("/people", async (string role, ISender sender, CancellationToken ct) => Respond(await sender.Send(new ListPeopleQuery(role), ct)))
+            .RequirePermission(Permissions.PlanningRead)
+            .WithSummary("Active drivers or controllers by name (to roster a driver or hand an incident over)");
+
         ops.MapGet("/journeys/{id:guid}/impact", async (Guid id, string action, int? stopSequence, ISender sender, CancellationToken ct) =>
                 Respond(await sender.Send(new GetImpactQuery(id, action, stopSequence), ct)))
             .RequirePermission(Permissions.PlanningRead)

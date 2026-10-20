@@ -60,6 +60,7 @@ public static class IdentityModule
         services.AddScoped<KeycloakStaffDirectory>();
         services.AddScoped<IStaffDirectory>(sp => sp.GetRequiredService<KeycloakStaffDirectory>());
         services.AddScoped<IStaffNames>(sp => sp.GetRequiredService<KeycloakStaffDirectory>());
+        services.AddScoped<IStaffRoster>(sp => sp.GetRequiredService<KeycloakStaffDirectory>());
 
         services.AddScoped<IDeviceStore, DeviceStore>();
         services.AddScoped<ISecuritySettingsStore, SecuritySettingsStore>();

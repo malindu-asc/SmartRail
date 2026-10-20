@@ -7,6 +7,14 @@ public interface IStaffNames
     Task<IReadOnlyDictionary<string, string>> GetNamesAsync(IEnumerable<string> subjects, CancellationToken cancellationToken);
 }
 
+// Active staff of one role, for pickers (who can take over an incident, which drivers can be rostered).
+public sealed record StaffPerson(string Subject, string Name);
+
+public interface IStaffRoster
+{
+    Task<IReadOnlyList<StaffPerson>> ListActiveAsync(string role, CancellationToken cancellationToken);
+}
+
 // How the display and gate devices are doing, for the dashboards.
 public interface IDeviceHealth
 {

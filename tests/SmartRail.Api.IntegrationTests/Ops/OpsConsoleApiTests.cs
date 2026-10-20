@@ -17,6 +17,12 @@ internal sealed class FakeStaffNames : IStaffNames
         Task.FromResult<IReadOnlyDictionary<string, string>>(subjects.Distinct().ToDictionary(s => s, s => $"Person {s}"));
 }
 
+internal sealed class FakeStaffRoster : IStaffRoster
+{
+    public Task<IReadOnlyList<StaffPerson>> ListActiveAsync(string role, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<StaffPerson>>(role == "driver" ? [new("drv-1", "Michael Fernando"), new("drv-2", "Anil Silva")] : [new("ctrl-a", "Sarah Perera")]);
+}
+
 // The real API on a real Postgres with the demo network, timetable and fleet: the controller, scheduler and driver consoles end to end.
 public class OpsApiFactory : JourneysApiFactory
 {
@@ -29,6 +35,8 @@ public class OpsApiFactory : JourneysApiFactory
         {
             services.RemoveAll<IStaffNames>();
             services.AddScoped<IStaffNames, FakeStaffNames>();
+            services.RemoveAll<IStaffRoster>();
+            services.AddScoped<IStaffRoster, FakeStaffRoster>();
         });
     }
 
@@ -152,6 +160,22 @@ public sealed class ControllerJourneyTests(OpsApiFactory factory) : OpsTestBase(
         Assert.True(dashboard.GetProperty("kpis").TryGetProperty("running", out _));
         Assert.True(dashboard.TryGetProperty("needsAttention", out _));
         Assert.True(dashboard.GetProperty("devices").TryGetProperty("total", out _));
+    }
+}
+
+public sealed class PeopleListTests(OpsApiFactory factory) : OpsTestBase(factory), IClassFixture<OpsApiFactory>
+{
+    [Fact]
+    public async Task The_scheduler_and_the_controller_list_drivers_and_controllers_but_nobody_else_is_listed()
+    {
+        var drivers = await Ok(await Scheduler().GetAsync("/api/ops/people?role=driver"));
+        Assert.Equal(2, drivers.GetArrayLength());
+
+        var controllers = await Ok(await Controller().GetAsync("/api/ops/people?role=controller"));
+        Assert.Equal("Sarah Perera", controllers[0].GetProperty("name").GetString());
+
+        Assert.Equal(HttpStatusCode.BadRequest, (await Controller().GetAsync("/api/ops/people?role=admin")).StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, (await Driver().GetAsync("/api/ops/people?role=driver")).StatusCode);
     }
 }
 
