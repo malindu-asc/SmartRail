@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/shared/api'
 import { useAction } from '@/shared/hooks'
-import type { AdminDashboard, DeviceFilters, DeviceList, RoleMatrix, SecuritySettings, SecurityView, StaffAccount, StaffInvite, UserFilters } from '../types'
+import type { AdminDashboard, DeviceFilters, DeviceList, RoleMatrix, StaffAccount, StaffInvite, UserFilters } from '../types'
 
 export const adminKeys = {
   all: ['admin'] as const,
@@ -9,7 +9,6 @@ export const adminKeys = {
   users: (filters: UserFilters) => [...adminKeys.all, 'users', filters] as const,
   roles: () => [...adminKeys.all, 'roles'] as const,
   devices: (filters: DeviceFilters) => [...adminKeys.all, 'devices', filters] as const,
-  security: () => [...adminKeys.all, 'security'] as const,
 }
 
 export function useAdminDashboard() {
@@ -29,10 +28,6 @@ export function useRoleMatrix() {
 
 export function useDevices(filters: DeviceFilters) {
   return useQuery({ queryKey: adminKeys.devices(filters), queryFn: () => api.get<DeviceList>('/admin/devices', { ...filters }), refetchInterval: 30_000 })
-}
-
-export function useSecurity() {
-  return useQuery({ queryKey: adminKeys.security(), queryFn: () => api.get<SecurityView>('/admin/security') })
 }
 
 const refresh = [adminKeys.all, ['audit']]
@@ -100,20 +95,3 @@ export function useRevokeDevice(id: string) {
   })
 }
 
-export function useSaveSecurity() {
-  return useAction({
-    mutationFn: (settings: SecuritySettings) => api.put('/admin/security', settings),
-    successMessage: 'Security settings saved.',
-    failureMessage: 'Could not save the settings.',
-    invalidate: refresh,
-  })
-}
-
-export function useCompleteAccessReview() {
-  return useAction({
-    mutationFn: () => api.post('/admin/security/access-review/complete'),
-    successMessage: 'Access review recorded.',
-    failureMessage: 'Could not record the review.',
-    invalidate: refresh,
-  })
-}

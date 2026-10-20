@@ -29,7 +29,6 @@ const AdminDashboardPage = page(() => import('@/pages/AdminPages'), 'AdminDashbo
 const UsersPage = page(() => import('@/pages/AdminPages'), 'UsersPage')
 const RolesPage = page(() => import('@/pages/AdminPages'), 'RolesPage')
 const DevicesPage = page(() => import('@/pages/AdminPages'), 'DevicesPage')
-const SecurityPage = page(() => import('@/pages/AdminPages'), 'SecurityPage')
 
 /**
  * The only place that says which URL shows which screen and who may open it. Each group is guarded by the permission the
@@ -91,9 +90,6 @@ export function AppRoutes() {
           </Route>
           <Route element={<RequirePermission permission={Permissions.DeviceHealthRead} />}>
             <Route path="devices" element={<DevicesPage />} />
-          </Route>
-          <Route element={<RequirePermission permission={Permissions.SecuritySettingsManage} />}>
-            <Route path="security" element={<SecurityPage />} />
           </Route>
           <Route element={<RequirePermission permission={Permissions.AuditReadAccess} />}>
             <Route path="audit" element={<AdminAuditPage />} />

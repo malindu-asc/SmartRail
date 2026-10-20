@@ -8,12 +8,10 @@ import {
   RegisterDeviceModal,
   RevokeDeviceModal,
   RolesMatrix,
-  SecurityForm,
   UsersTable,
   useAdminDashboard,
   useDevices,
   useRoleMatrix,
-  useSecurity,
   useUsers,
   type Device,
   type StaffAccount,
@@ -149,16 +147,6 @@ export function DevicesPage() {
 
       {registering && <RegisterDeviceModal open onClose={() => setRegistering(false)} />}
       {revoking && <RevokeDeviceModal key={revoking.id} device={revoking} onClose={() => setRevoking(null)} />}
-    </>
-  )
-}
-
-export function SecurityPage() {
-  const security = useSecurity()
-  return (
-    <>
-      <PageHeader title="Security" description="Sign-in protection, sessions, access review and device thresholds." />
-      {security.isPending ? <CardSkeleton lines={6} /> : security.isError ? <ErrorState error={security.error} onRetry={() => void security.refetch()} /> : <SecurityForm view={security.data} />}
     </>
   )
 }

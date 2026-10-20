@@ -49,13 +49,6 @@ export function AdminDashboardView({ data }: { data: AdminDashboard }) {
               ))}
             </ul>
           </Card>
-          <Card>
-            <CardHeader title="Access review" />
-            <p className="px-5 py-4 text-fg-secondary">
-              {data.accessReview.daysLeft === null ? 'No review recorded yet.' : data.accessReview.daysLeft <= 0 ? <strong className="text-cancelled">A review is due now.</strong> : <>Next review in <strong className="text-fg">{data.accessReview.daysLeft} days</strong>.</>}
-              {' '}<Link to="/admin/security" className="font-semibold text-primary hover:underline">Open security</Link>
-            </p>
-          </Card>
         </div>
       </div>
 

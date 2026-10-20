@@ -65,6 +65,8 @@ services:
       Diagnostics__Identity: "true"
       # Passenger accounts are created through Keycloak's admin API (SPEC-021). Development secret.
       Identity__Admin__BaseUrl: http://keycloak:8080
+      # Development: there is no email service, so an invite returns a one-time temporary password for the console to show.
+      Identity__Staff__ReturnTemporaryPassword: "true"
       # The catering menu (RailBite) is read over HTTP with its own key. If it is down only the menu says so.
       Catering__BaseUrl: http://catering:4000
       Catering__ApiKey: ${CATERING_API_KEY:-dev-catering-key-change-me}

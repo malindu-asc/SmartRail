@@ -21,7 +21,7 @@ describe('navigation by role', () => {
 
   it('gives the administrator only the admin screens, the access audit log and no operations', () => {
     const paths = labels('admin')
-    expect(paths).toEqual(['/admin', '/admin/users', '/admin/roles', '/admin/devices', '/admin/security', '/admin/audit'])
+    expect(paths).toEqual(['/admin', '/admin/users', '/admin/roles', '/admin/devices', '/admin/audit'])
     expect(isAdminConsole(sessionFor('admin').permissions)).toBe(true)
   })
 

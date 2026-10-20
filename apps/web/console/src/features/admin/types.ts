@@ -68,24 +68,6 @@ export interface DeviceFilters {
   q?: string
 }
 
-export interface SecuritySettings {
-  lockAfterFailures: number
-  lockMinutes: number
-  twoStepRequired: boolean
-  consoleIdleMinutes: number
-  driverAppLockMinutes: number
-  accessReviewDays: number
-  flagLeavers: boolean
-  deviceLateAfterSeconds: number
-  deviceOfflineAfterSeconds: number
-}
-
-export interface SecurityView {
-  settings: SecuritySettings
-  lastAccessReview: string | null
-  nextAccessReview: string | null
-}
-
 export interface AdminDashboard {
   staffAccounts: number
   rolesInUse: number

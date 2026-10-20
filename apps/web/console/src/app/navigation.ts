@@ -6,7 +6,6 @@ import {
   ClipboardList,
   FileClock,
   LayoutDashboard,
-  Lock,
   MessageSquare,
   Monitor,
   Route,
@@ -42,7 +41,6 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { to: '/admin/users', label: 'Users', icon: Users, permission: [Permissions.UserManage], group: 'admin' },
   { to: '/admin/roles', label: 'Roles and permissions', icon: ShieldCheck, permission: [Permissions.UserManage], group: 'admin' },
   { to: '/admin/devices', label: 'Devices', icon: Monitor, permission: [Permissions.DeviceHealthRead], group: 'admin' },
-  { to: '/admin/security', label: 'Security', icon: Lock, permission: [Permissions.SecuritySettingsManage], group: 'admin' },
   { to: '/admin/audit', label: 'Audit log', icon: FileClock, permission: [Permissions.AuditReadAccess], group: 'admin' },
 ]
 
