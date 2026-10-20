@@ -126,7 +126,11 @@ public static class OpsJourneysEndpoints
 
         ops.MapPost("/journeys/{id:guid}/assign", async (Guid id, AssignRequest r, ClaimsPrincipal user, IAuthorizationService authorization, ISender sender, CancellationToken ct) =>
             {
-                // A unit needs the unit permission and a driver the driver permission; the scheduler holds both.
+                // A unit needs the unit permission and a driver the driver permission; the scheduler holds both. Someone with neither is turned
+                // away whatever they send.
+                if (!(await authorization.AuthorizeAsync(user, Permissions.JourneyVehicleAssign)).Succeeded
+                    && !(await authorization.AuthorizeAsync(user, Permissions.JourneyDriverAssign)).Succeeded)
+                    return Results.Forbid();
                 if (r.UnitId is not null && !(await authorization.AuthorizeAsync(user, Permissions.JourneyVehicleAssign)).Succeeded)
                     return Results.Forbid();
                 if (r.DutyId is not null && !(await authorization.AuthorizeAsync(user, Permissions.JourneyDriverAssign)).Succeeded)

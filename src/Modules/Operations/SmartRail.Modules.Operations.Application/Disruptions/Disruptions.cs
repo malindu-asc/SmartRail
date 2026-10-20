@@ -196,6 +196,7 @@ public sealed class ListDisruptionsConsoleQueryHandler(IDisruptionStore store, I
             "awaiting" => all.Where(d => d.Status == DisruptionStatus.AwaitingApproval),
             "drafts" => all.Where(d => d.Status is DisruptionStatus.Draft or DisruptionStatus.Rejected),
             "resolved" => all.Where(d => d.Status is DisruptionStatus.Resolved or DisruptionStatus.Retracted),
+            "planned" => all.Where(d => d.StartsAtUtc > now && d.Status is not (DisruptionStatus.Resolved or DisruptionStatus.Retracted)),
             "all" => all,
             _ => all.Where(d => d.Status == DisruptionStatus.Published)
         };

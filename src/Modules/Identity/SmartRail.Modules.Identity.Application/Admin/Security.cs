@@ -193,7 +193,6 @@ public sealed class GetAdminDashboardQueryHandler(
             "user.unlock" => $"{target} unlocked",
             "device.register" => "Device registered",
             "device.revoke" => "Device revoked",
-            "device.pair" => "Device paired",
             "security.settings.update" => "Security settings changed",
             "access_review.complete" => "Access review completed",
             _ => row.Action

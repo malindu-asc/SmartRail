@@ -219,13 +219,15 @@ public static class OperationsEndpoints
     {
         var ops = app.MapGroup("/api/ops").WithTags(Tags.Console);
 
+        // Network-wide (devices, driver help requests, messages), so it is for the controller and the scheduler; a station master's own
+        // station view is SPEC-028.
         ops.MapGet("/dashboard", async (ISender sender, CancellationToken ct) => Respond(await sender.Send(new GetOpsDashboardQuery(), ct)))
-            .RequirePermission(Permissions.OpsRead)
+            .RequirePermission(Permissions.PlanningRead)
             .WithSummary("Network dashboard: running, on time, delayed, cancelled, what needs attention, device health, active disruptions");
 
         ops.MapGet("/journeys/{id:guid}/impact", async (Guid id, string action, int? stopSequence, ISender sender, CancellationToken ct) =>
                 Respond(await sender.Send(new GetImpactQuery(id, action, stopSequence), ct)))
-            .RequirePermission(Permissions.OpsRead)
+            .RequirePermission(Permissions.PlanningRead)
             .WithSummary("Who is affected before a cancel, terminate-short, platform change or interrupt is confirmed");
 
         // One audit view over every module. The operational log needs audit.read.operational, the access log audit.read.access.

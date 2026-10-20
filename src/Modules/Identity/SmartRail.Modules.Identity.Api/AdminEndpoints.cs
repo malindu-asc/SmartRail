@@ -94,7 +94,7 @@ public static class AdminEndpoints
         admin.MapPost("/devices/{id:guid}/revoke", async (Guid id, ReasonRequest request, ISender sender, CancellationToken ct) =>
                 NoContent(await sender.Send(new RevokeDeviceCommand(id, request.Reason ?? string.Empty), ct)))
             .RequirePermission(Permissions.DeviceRevoke)
-            .WithSummary("Revoke a device; its next request is refused");
+            .WithSummary("Revoke a device: it is taken off the register (the record stays for the audit trail)");
 
         // ---- security ----
 
