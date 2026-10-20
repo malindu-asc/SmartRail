@@ -483,17 +483,7 @@ public sealed class DemoScenarioSeeder(
         // ---- the device register (displays, gates, terminals) with how recently each was heard from ----
         if (!await identityDb.Devices.AnyAsync(ct))
         {
-            (string Name, DeviceType Type, string Station, string Location, int? HeardSecondsAgo)[] devices =
-            [
-                ("Central platform 1 display", DeviceType.PlatformDisplay, "CEN", "Platform 1", 12),
-                ("Central platform 2 display", DeviceType.PlatformDisplay, "CEN", "Platform 2", 20),
-                ("Central concourse board", DeviceType.ConcourseBoard, "CEN", "Main concourse", 8),
-                ("Mill Lane platform display", DeviceType.PlatformDisplay, "MIL", "Platform 1", 75),
-                ("Hill Town platform display", DeviceType.PlatformDisplay, "HIL", "Platform 1", 400),
-                ("Central gate 3", DeviceType.GateScanner, "CEN", "Gate 3", 15),
-                ("Market Street ticket terminal", DeviceType.Terminal, "MAR", "Ticket hall", 30),
-                ("Airport platform display", DeviceType.PlatformDisplay, "AIR", "Platform 1", null)
-            ];
+            var devices = DemoDevices;
 
             foreach (var d in devices)
             {
@@ -513,6 +503,18 @@ public sealed class DemoScenarioSeeder(
 
         return added;
     }
+
+    internal static readonly (string Name, DeviceType Type, string Station, string Location, int? HeardSecondsAgo)[] DemoDevices =
+    [
+        ("Central platform 1 display", DeviceType.PlatformDisplay, "CEN", "Platform 1", 12),
+        ("Central platform 2 display", DeviceType.PlatformDisplay, "CEN", "Platform 2", 20),
+        ("Central concourse board", DeviceType.ConcourseBoard, "CEN", "Main concourse", 8),
+        ("Mill Lane platform display", DeviceType.PlatformDisplay, "MIL", "Platform 1", 75),
+        ("Hill Town platform display", DeviceType.PlatformDisplay, "HIL", "Platform 1", 400),
+        ("Central gate 3", DeviceType.GateScanner, "CEN", "Gate 3", 15),
+        ("Market Street ticket terminal", DeviceType.Terminal, "MAR", "Ticket hall", 30),
+        ("Airport platform display", DeviceType.PlatformDisplay, "AIR", "Platform 1", null)
+    ];
 
     private static Guid StableId(string key) =>
         new(MD5.HashData(Encoding.UTF8.GetBytes($"smartrail:demo-scenarios:{key}")));
@@ -589,5 +591,20 @@ public sealed class DemoScenarioWorker(IServiceScopeFactory scopes, TimeProvider
 
         if (running.Count > 0)
             await db.SaveChangesAsync(ct);
+
+        await KeepDevicesAliveAsync(services.GetRequiredService<IdentityDbContext>(), now, ct);
+    }
+
+    // The register has no heartbeat intake (devices do not sign in here), so the demo's own devices are "heard from" again every
+    // 20 seconds with the same age they were seeded with: some Online, one Late, one Offline, one never heard from.
+    private static async Task KeepDevicesAliveAsync(IdentityDbContext identity, DateTimeOffset now, CancellationToken ct)
+    {
+        var names = DemoScenarioSeeder.DemoDevices.Where(d => d.HeardSecondsAgo is not null).ToDictionary(d => d.Name, d => d.HeardSecondsAgo!.Value);
+        var devices = await identity.Devices.Where(d => names.Keys.Contains(d.Name) && d.Status != DeviceStatus.Revoked).ToListAsync(ct);
+        foreach (var device in devices)
+            device.Heartbeat(now.AddSeconds(-names[device.Name]), "1.4.2");
+
+        if (devices.Count > 0)
+            await identity.SaveChangesAsync(ct);
     }
 }
