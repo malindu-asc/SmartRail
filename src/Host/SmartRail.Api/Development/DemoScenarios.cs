@@ -196,15 +196,14 @@ public sealed class DemoScenarioSeeder(
             var from = journey.ScheduledDepartureUtc.AddHours(-1);
             var to = journey.ScheduledArrivalUtc.AddHours(1);
 
-            // A driver cannot hold two overlapping duties (the fleet seeder may already have rostered the demo driver).
-            if (number == DriverTrain && await journeysDb.CrewDuties.AnyAsync(d => d.DriverSubject == DriverSubject && d.RosteredFrom < to && d.RosteredTo > from, ct))
-                driver = $"seed-driver-scenario-{number.ToLowerInvariant()}";
+            // The demo driver already works the MAIN chain's shifts (the fleet seeder), so F102 joins the shift that covers it.
+            var covering = number == DriverTrain
+                ? await journeysDb.CrewDuties.FirstOrDefaultAsync(d => d.DriverSubject == DriverSubject && d.RosteredFrom <= journey.ScheduledDepartureUtc && d.RosteredTo >= journey.ScheduledArrivalUtc, ct)
+                : null;
 
-            var duty = CrewDuty.Create(driver, today,
-                from, to,
-                StableId($"duty:{number}:{today:yyyy-MM-dd}"));
-            if (duty.IsFailure)
-                continue;
+            var duty = covering is not null
+                ? covering
+                : CrewDuty.Create(driver, today, journey.ScheduledDepartureUtc.AddHours(-1), journey.ScheduledArrivalUtc.AddHours(1), StableId($"duty:{number}:{today:yyyy-MM-dd}")).Value;
 
             // A trainset of its own: the regular one is already on the line with the timetable's trains.
             var code = $"DEMO-{number}";
@@ -216,9 +215,11 @@ public sealed class DemoScenarioSeeder(
                 trainsets++;
             }
 
-            journeysDb.CrewDuties.Add(duty.Value);
+            if (covering is null)
+                journeysDb.CrewDuties.Add(duty);
+
             journey.AssignVehicle(vehicle.Id, journey.ScheduledDepartureUtc, journey.ScheduledArrivalUtc, Actor);
-            journey.AssignDriver(duty.Value.Id, journey.ScheduledDepartureUtc, journey.ScheduledArrivalUtc, Actor);
+            journey.AssignDriver(duty.Id, journey.ScheduledDepartureUtc, journey.ScheduledArrivalUtc, Actor);
 
             journeysDb.Journeys.Add(journey);
             all.Add(journey);
