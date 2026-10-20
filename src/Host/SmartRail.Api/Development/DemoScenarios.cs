@@ -193,8 +193,15 @@ public sealed class DemoScenarioSeeder(
             var journey = created.Value;
             // F102 is driven by the demo driver, so the driver app has a train to start, run and finish.
             var driver = number == DriverTrain ? DriverSubject : $"seed-driver-scenario-{number.ToLowerInvariant()}";
+            var from = journey.ScheduledDepartureUtc.AddHours(-1);
+            var to = journey.ScheduledArrivalUtc.AddHours(1);
+
+            // A driver cannot hold two overlapping duties (the fleet seeder may already have rostered the demo driver).
+            if (number == DriverTrain && await journeysDb.CrewDuties.AnyAsync(d => d.DriverSubject == DriverSubject && d.RosteredFrom < to && d.RosteredTo > from, ct))
+                driver = $"seed-driver-scenario-{number.ToLowerInvariant()}";
+
             var duty = CrewDuty.Create(driver, today,
-                journey.ScheduledDepartureUtc.AddHours(-1), journey.ScheduledArrivalUtc.AddHours(1),
+                from, to,
                 StableId($"duty:{number}:{today:yyyy-MM-dd}"));
             if (duty.IsFailure)
                 continue;
