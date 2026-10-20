@@ -21,7 +21,14 @@ public sealed class SecureByDefaultTests(ApiFactory factory) : IClassFixture<Api
         "/api/network/services",
         // Journeys (SPEC-004): the journey by id and station boards are public. Manual journeys need the Scheduler role.
         "/api/journeys/{journeyId:guid}",
-        "/api/journeys/boards"
+        "/api/journeys/boards",
+        // Journey search (SPEC-016), published disruptions (SPEC-027) and ticket offers (SPEC-022) are public reads.
+        "/api/journeys/search",
+        "/api/operations/disruptions",
+        "/api/ticketing/offers",
+        // A passenger registers or asks for a new password before they can sign in (SPEC-021).
+        "/api/account/register",
+        "/api/account/forgot-password"
     ];
 
     [Fact]

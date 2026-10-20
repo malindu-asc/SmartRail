@@ -239,6 +239,11 @@ public sealed class DisruptionWorkflowTests(OpsApiFactory factory) : OpsTestBase
             startsAtUtc = start, expectedEndUtc = start.AddHours(8), reviewByUtc = start.AddHours(9), submit = true
         })));
         Assert.Equal("Published", planned.GetProperty("status").GetString());
+
+        // the scheduler's list holds only works that have not started; a notice for today is not among them
+        var list = await Ok(await scheduler.GetAsync("/api/ops/planned-works"));
+        Assert.Contains(list.GetProperty("items").EnumerateArray(), d => d.GetProperty("id").GetGuid() == planned.GetProperty("id").GetGuid());
+        Assert.All(list.GetProperty("items").EnumerateArray(), d => Assert.True(d.GetProperty("planned").GetBoolean() || d.GetProperty("status").GetString() != "Published"));
     }
 }
 
