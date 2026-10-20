@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react'
 import { Route, Routes } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { renderApp, sessionFor } from '@/test/utils'
+import type { RolePermissionsForTests } from '@/test/rolePermissions'
 import { Can } from './Can'
 import { homePath, hasAny, Permissions, primaryRoleLabel } from './permissions'
 import { RequirePermission } from './RequirePermission'
@@ -53,7 +54,7 @@ describe('<Can>', () => {
 })
 
 describe('<RequirePermission>', () => {
-  function guarded(role: Parameters<typeof renderApp>[1] extends infer O ? NonNullable<O>['role'] : never) {
+  function guarded(role: keyof typeof RolePermissionsForTests) {
     renderApp(
       <Routes>
         <Route element={<RequirePermission permission={Permissions.UserManage} />}>
