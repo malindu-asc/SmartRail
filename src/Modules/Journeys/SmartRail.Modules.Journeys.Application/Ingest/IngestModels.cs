@@ -4,7 +4,7 @@ using SmartRail.Modules.Journeys.Domain.Live;
 namespace SmartRail.Modules.Journeys.Application.Ingest;
 
 // The authenticated sender of a batch. Rank 1 is the most trusted source (source-precedence.md).
-public sealed record FeedSender(Guid Id, string Code, int Rank);
+public sealed record FeedSender(Guid Id, string Code, int Rank, EventSourceKind Kind = EventSourceKind.Feed);
 
 // The answer for one message of a batch. A batch is never rejected as a whole because one item is bad.
 public sealed record IngestItemResult(long Sequence, string Disposition, string? Reason = null, Guid? JourneyId = null);

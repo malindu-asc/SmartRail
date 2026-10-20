@@ -158,6 +158,7 @@ internal static class RoleMatrix
         [Permissions.JourneyStopEventRecord] = ("Record stop events", "Journeys"),
         [Permissions.JourneyDelayReasonRecord] = ("Record delay reasons", "Journeys"),
         [Permissions.AssistanceRequest] = ("Request assistance", "Journeys"),
+        [Permissions.DutyOwn] = ("See and work my own duty", "Journeys"),
         [Permissions.JourneyCancel] = ("Cancel a journey", "Journeys"),
         [Permissions.JourneyReinstate] = ("Reinstate a cancelled journey", "Journeys"),
         [Permissions.JourneyTerminateShort] = ("Terminate a journey short", "Journeys"),

@@ -31,6 +31,11 @@ public sealed class DemoFleetSeeder(
     public async Task SeedAsync(IReadOnlyList<DateOnly> dates, CancellationToken cancellationToken = default)
     {
         var vehicles = await EnsureVehiclesAsync(cancellationToken);
+
+        // Duties seeded before the demo driver took both shifts: hand the late shift over (demo data only).
+        await context.Database.ExecuteSqlRawAsync(
+            "UPDATE journeys.crew_duties SET driver_subject = {0} WHERE driver_subject = 'seed-driver-main-f-late'", [DemoDriverSubject], cancellationToken);
+
         var routeOrder = new Dictionary<string, string>();   // route code -> forward origin station code
         foreach (var code in RouteCodes)
         {
@@ -97,6 +102,7 @@ public sealed class DemoFleetSeeder(
     }
 
     // Early shift 05:30 to 14:00 local, late shift 14:00 to 00:30 the next day. A journey belongs to the shift it ends in.
+    // The demo driver works both shifts of the MAIN-F chain, so there is always a duty to sign on to while trying the driver app.
     private CrewDuty GetOrAddDuty(List<CrewDuty> duties, string chain, DateOnly date, Journey journey)
     {
         var earlyEnd = timeZone.ToUtc(date, (int)EarlyEnd.TotalMinutes);
@@ -104,7 +110,7 @@ public sealed class DemoFleetSeeder(
 
         var from = timeZone.ToUtc(date, (int)(early ? EarlyStart : EarlyEnd).TotalMinutes);
         var to = timeZone.ToUtc(date, (int)(early ? EarlyEnd : LateEnd).TotalMinutes);
-        var subject = early && chain == "MAIN-F" ? DemoDriverSubject : $"seed-driver-{chain.ToLowerInvariant()}-{(early ? "early" : "late")}";
+        var subject = chain == "MAIN-F" ? DemoDriverSubject : $"seed-driver-{chain.ToLowerInvariant()}-{(early ? "early" : "late")}";
 
         var duty = duties.FirstOrDefault(d => d.DriverSubject == subject && d.RosteredFrom == from);
         if (duty is not null)

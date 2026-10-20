@@ -108,7 +108,7 @@ public sealed class IngestStopEventsCommandHandler(
         JourneyEvent? replaces = null)
     {
         var journeyEvent = new JourneyEvent(
-            input.JourneyId, type, input.StopSequence, EventSourceKind.Feed, source.Id, source.Rank,
+            input.JourneyId, type, input.StopSequence, source.Kind, source.Id, source.Rank,
             input.OccurredAt, now, input.Sequence, disposition, reason, payload ?? "{}");
 
         if (supersededBy is not null)

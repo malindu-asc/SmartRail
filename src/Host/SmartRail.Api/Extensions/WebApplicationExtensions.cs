@@ -25,6 +25,7 @@ internal static class WebApplicationExtensions
         app.MapNetworkEndpoints();
         app.MapJourneysEndpoints();
         app.MapOpsJourneysEndpoints();
+        app.MapDriverEndpoints();
         app.MapOperationsEndpoints();
         app.MapTimetableVersionEndpoints();
         app.MapNotificationsEndpoints();

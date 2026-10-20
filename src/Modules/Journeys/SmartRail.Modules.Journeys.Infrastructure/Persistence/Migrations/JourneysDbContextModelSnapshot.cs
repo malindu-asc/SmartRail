@@ -424,6 +424,15 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("delay_minutes");
 
+                    b.Property<DateTimeOffset?>("DelayReasonAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("delay_reason_at");
+
+                    b.Property<string>("DelayReasonCode")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("delay_reason_code");
+
                     b.Property<string>("DestinationStationCode")
                         .IsRequired()
                         .HasMaxLength(5)

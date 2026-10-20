@@ -34,6 +34,7 @@ public sealed class JourneyConfiguration : IEntityTypeConfiguration<Journey>
         builder.Property(j => j.CancelReasonCode).HasMaxLength(30);
         builder.Property(j => j.EndReasonCode).HasMaxLength(30);
         builder.Property(j => j.ControllerNote).HasMaxLength(300);
+        builder.Property(j => j.DelayReasonCode).HasMaxLength(30);
         builder.Property(j => j.Version).IsConcurrencyToken();
 
         // Generation is idempotent: one journey per service and service date (REQ-LIVE-008).

@@ -123,4 +123,22 @@ public static class JourneysErrors
 
     public static Error DriverUnknown =>
         Error.Validation("Journeys.DriverUnknown", "That person is not a driver.");
+
+    public static Error DutyAlreadySignedOn =>
+        Error.Conflict("Journeys.DutyAlreadySignedOn", "You are already signed on to this duty, or it has ended.");
+
+    public static Error DutyNotCurrent =>
+        Error.Conflict("Journeys.DutyNotCurrent", "This duty is not current. You can sign on from 30 minutes before it starts until it ends.");
+
+    public static Error DutyNotSignedOn =>
+        Error.Conflict("Journeys.DutyNotSignedOn", "Sign on to your duty first.");
+
+    public static Error NotYourJourney =>
+        Error.NotFound("Journeys.NotYourJourney", "That journey is not on your duty.");
+
+    public static Error DelayReasonUnknown =>
+        Error.Validation("Journeys.DelayReasonUnknown", "Choose one of the delay reasons: signal fault, door fault, crew, passenger incident, track or other.");
+
+    public static Error StopDoesNotMatch(string expected) =>
+        Error.Conflict("Journeys.StopDoesNotMatch", $"That is not the stop the train is at. {expected}");
 }

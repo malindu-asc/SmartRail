@@ -220,3 +220,25 @@ public sealed record JourneyCompletedDomainEvent(Guid JourneyId, DateTimeOffset 
 public sealed record JourneyDelayChangedDomainEvent(Guid JourneyId, int? DelayMinutes, PunctualityBand? Band) : DomainEvent;
 
 public sealed record JourneyPlatformChangedDomainEvent(Guid JourneyId, int StopSequence, string StationCode, string Platform, string? PreviousPlatform) : DomainEvent;
+
+public static class DelayReasons
+{
+    public static readonly IReadOnlyList<string> All = ["signal_fault", "door_fault", "crew", "passenger_incident", "track", "other"];
+}
+
+public sealed partial class Journey
+{
+    // The driver says why the train is late. The controller sees it on the board; the last one wins.
+    public Result RecordDelayReason(string code, DateTimeOffset now)
+    {
+        if (!DelayReasons.All.Contains(code))
+            return JourneysErrors.DelayReasonUnknown;
+        if (JourneyLifecycleRules.IsFinal(Lifecycle) || Lifecycle == JourneyLifecycle.Cancelled)
+            return JourneysErrors.JourneyEnded(Lifecycle.ToString());
+
+        DelayReasonCode = code;
+        DelayReasonAt = now;
+        Touch();
+        return Result.Success();
+    }
+}

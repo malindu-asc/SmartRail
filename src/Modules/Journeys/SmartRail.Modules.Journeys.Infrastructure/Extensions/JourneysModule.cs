@@ -46,6 +46,7 @@ public static class JourneysModule
         // The controller and scheduler consoles (SPEC-031): reads, actions, planning, reports.
         services.AddScoped<IOpsJourneyReader, OpsJourneyReader>();
         services.AddScoped<IPlanningStore, PlanningStore>();
+        services.AddScoped<IDriverStore, DriverStore>();
         services.AddScoped<ITelemetryHold, TelemetryHold>();
         services.AddScoped<JourneyActions>();
         services.AddScoped<IOpsJourneyStats, OpsJourneyStats>();

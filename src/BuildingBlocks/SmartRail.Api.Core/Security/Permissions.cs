@@ -23,6 +23,9 @@ public static class Permissions
     public const string JourneyDataCorrect = "journey.data.correct";
     public const string AssistanceRequest = "assistance.request";
 
+    // A driver's own duty: see it, sign on and off, and work its journeys (never anyone else's).
+    public const string DutyOwn = "duty.own";
+
     // Planning, timetable, fleet
     public const string PlanningRead = "planning.read";
     public const string TimetableRead = "timetable.read";
@@ -63,7 +66,7 @@ public static class Permissions
     [
         JourneyRead, OpsRead, JourneyCancel, JourneyReinstate, JourneyTerminateShort, JourneyInterrupt, JourneyTerminateEmergency,
         JourneyPlatformChange, JourneyVehicleAssign, JourneyDriverAssign, JourneyStopEventRecord, JourneyDelayReasonRecord,
-        JourneyDataCorrect, AssistanceRequest, PlanningRead, TimetableRead, TimetableDraft, TimetableApprove,
+        JourneyDataCorrect, AssistanceRequest, DutyOwn, PlanningRead, TimetableRead, TimetableDraft, TimetableApprove,
         VehicleAvailabilitySet, StationInfoEdit, DisruptionCreate, DisruptionCreatePlanned, DisruptionPublish,
         DisruptionApproveNetworkWide, DisruptionRetract, IncidentDeclare, IncidentDeclareCritical, IncidentReassignOwner,
         MessageSendToDriver, MessageAcknowledge, UserManage, RoleAssign, SecuritySettingsManage, DeviceProvision, DeviceRevoke,
@@ -82,7 +85,7 @@ public static class RolePermissions
 
         [Roles.Driver] =
         [
-            Permissions.JourneyRead, Permissions.JourneyStopEventRecord, Permissions.JourneyDelayReasonRecord,
+            Permissions.JourneyRead, Permissions.DutyOwn, Permissions.JourneyStopEventRecord, Permissions.JourneyDelayReasonRecord,
             Permissions.AssistanceRequest, Permissions.MessageAcknowledge
         ],
 
