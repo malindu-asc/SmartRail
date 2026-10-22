@@ -35,7 +35,6 @@ var api = builder.AddProject<Projects.SmartRail_Api>("api")
     .WithEnvironment("Database__ApplyMigrationsOnStartup", "true")
     .WithEnvironment("Network__Seed__ReferenceData", "true")
     .WithEnvironment("Journeys__Generation__RunOnStartup", "true")
-    .WithEnvironment("Journeys__Seed__DemoFleet", "true")
     // Development feed sources for the simulator (SPEC-005). Never use these keys outside development.
     .WithEnvironment("Identity__FeedSources__Seed__0__Code", "SIM")
     .WithEnvironment("Identity__FeedSources__Seed__0__Name", "Development feed")

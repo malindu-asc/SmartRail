@@ -1,7 +1,9 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SmartRail.Modules.Journeys.Application.Abstractions;
 using SmartRail.Modules.Journeys.Domain.Crew;
 using SmartRail.Modules.Journeys.Domain.Fleet;
 using SmartRail.Modules.Journeys.Domain.Journeys;
@@ -10,16 +12,23 @@ using SmartRail.Modules.Network.Contracts;
 
 namespace SmartRail.Modules.Journeys.Infrastructure.Seeding;
 
-// Demo data (flag Journeys:Seed:DemoFleet): 8 trainsets (one per route and direction), an early and a late shift per
-// trainset and day, and an assignment for every journey that has none. Insert-only and idempotent.
+// Demo data (flag Journeys:Seed:DemoFleet): 8 trainsets (one per route and direction) on every journey, and the three demo
+// drivers of the Keycloak realm on three of them (an early and a late shift each). The other journeys keep no driver: the
+// scheduler assigns those in the console. Insert-only and idempotent.
 public sealed class DemoFleetSeeder(
     JourneysDbContext context,
     INetworkRoutes routes,
     INetworkTimeZone timeZone,
-    ILogger<DemoFleetSeeder> logger)
+    IConfiguration configuration,
+    ILogger<DemoFleetSeeder> logger) : IWeekPlanner
 {
-    // The demo driver user of the Keycloak realm. The other duties use placeholder subjects.
-    private const string DemoDriverSubject = "a1000000-0000-4000-8000-000000000002";
+    // The three demo drivers of the Keycloak realm (infra/keycloak/smartrail-realm.json) and the trainset each one drives.
+    private static readonly Dictionary<string, string> DriverByChain = new()
+    {
+        ["MAIN-F"] = "a1000000-0000-4000-8000-000000000002",
+        ["MAIN-R"] = "a1000000-0000-4000-8000-000000000010",
+        ["HILL-F"] = "a1000000-0000-4000-8000-000000000011"
+    };
     private const string Actor = "demo-seed";
 
     private static readonly string[] RouteCodes = ["MAIN", "HILL", "COAST", "NORTH"];
@@ -28,13 +37,11 @@ public sealed class DemoFleetSeeder(
     private static readonly TimeSpan EarlyEnd = new(14, 0, 0);
     private static readonly TimeSpan LateEnd = new(24, 30, 0);   // 00:30 the next day
 
-    public async Task SeedAsync(IReadOnlyList<DateOnly> dates, CancellationToken cancellationToken = default)
+    public Task<int> PlanAsync(IReadOnlyList<DateOnly> dates, CancellationToken cancellationToken = default) => SeedAsync(dates, cancellationToken);
+
+    public async Task<int> SeedAsync(IReadOnlyList<DateOnly> dates, CancellationToken cancellationToken = default)
     {
         var vehicles = await EnsureVehiclesAsync(cancellationToken);
-
-        // Duties seeded before the demo driver took both shifts: hand the late shift over (demo data only).
-        await context.Database.ExecuteSqlRawAsync(
-            "UPDATE journeys.crew_duties SET driver_subject = {0} WHERE driver_subject = 'seed-driver-main-f-late'", [DemoDriverSubject], cancellationToken);
 
         var routeOrder = new Dictionary<string, string>();   // route code -> forward origin station code
         foreach (var code in RouteCodes)
@@ -44,6 +51,8 @@ public sealed class DemoFleetSeeder(
                 routeOrder[code] = stations[0];
         }
 
+        // Tests only (Journeys:Seed:DemoFleetAllChains): a placeholder driver on every trainset, so every journey is Ready.
+        var allChains = configuration.GetValue<bool>("Journeys:Seed:DemoFleetAllChains");
         var assigned = 0;
         foreach (var date in dates)
         {
@@ -63,22 +72,29 @@ public sealed class DemoFleetSeeder(
                 var forward = journey.OriginStationCode == forwardOrigin;
                 var chain = $"{journey.RouteCode}-{(forward ? "F" : "R")}";
 
+                var changed = false;
                 if (!journey.HasVehicle)
+                {
                     journey.AssignVehicle(vehicles[chain].Id, journey.ScheduledDepartureUtc, journey.ScheduledArrivalUtc, Actor);
+                    changed = true;
+                }
 
-                if (!journey.HasDriver)
+                if (!journey.HasDriver && (DriverByChain.ContainsKey(chain) || allChains))
                 {
                     var duty = GetOrAddDuty(duties, chain, date, journey);
                     journey.AssignDriver(duty.Id, journey.ScheduledDepartureUtc, journey.ScheduledArrivalUtc, Actor);
+                    changed = true;
                 }
 
-                assigned++;
+                if (changed)
+                    assigned++;
             }
 
             await context.SaveChangesAsync(cancellationToken);
         }
 
         logger.LogInformation("Demo fleet seed: {Journeys} journeys assigned", assigned);
+        return assigned;
     }
 
     private async Task<Dictionary<string, Vehicle>> EnsureVehiclesAsync(CancellationToken ct)
@@ -102,7 +118,7 @@ public sealed class DemoFleetSeeder(
     }
 
     // Early shift 05:30 to 14:00 local, late shift 14:00 to 00:30 the next day. A journey belongs to the shift it ends in.
-    // The demo driver works both shifts of the MAIN-F chain, so there is always a duty to sign on to while trying the driver app.
+    // Each demo driver works both shifts of their trainset, so there is always a duty to sign on to while trying the driver app.
     private CrewDuty GetOrAddDuty(List<CrewDuty> duties, string chain, DateOnly date, Journey journey)
     {
         var earlyEnd = timeZone.ToUtc(date, (int)EarlyEnd.TotalMinutes);
@@ -110,13 +126,13 @@ public sealed class DemoFleetSeeder(
 
         var from = timeZone.ToUtc(date, (int)(early ? EarlyStart : EarlyEnd).TotalMinutes);
         var to = timeZone.ToUtc(date, (int)(early ? EarlyEnd : LateEnd).TotalMinutes);
-        var subject = chain == "MAIN-F" ? DemoDriverSubject : $"seed-driver-{chain.ToLowerInvariant()}-{(early ? "early" : "late")}";
+        var subject = DriverByChain.GetValueOrDefault(chain) ?? $"test-driver-{chain.ToLowerInvariant()}-{(early ? "early" : "late")}";
 
         var duty = duties.FirstOrDefault(d => d.DriverSubject == subject && d.RosteredFrom == from);
         if (duty is not null)
             return duty;
 
-        duty = CrewDuty.Create(subject, date, from, to, SeedId("duty", $"{subject}:{date:yyyy-MM-dd}")).Value;
+        duty = CrewDuty.Create(subject, date, from, to, SeedId("duty", $"{subject}:{date:yyyy-MM-dd}:{(early ? "early" : "late")}")).Value;
         context.CrewDuties.Add(duty);
         duties.Add(duty);
         return duty;

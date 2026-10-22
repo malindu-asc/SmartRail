@@ -92,6 +92,7 @@ public sealed class GetBoardQueryHandler(
             JourneyLifecycleRules.PublicStatus(r.Lifecycle),
             status.Confidence.ToString(),
             status.IsStale,
-            status.AgeSeconds);
+            status.AgeSeconds,
+            r.StopState == JourneyStopState.Arrived && r.ActualDepartureUtc is null);
     }
 }

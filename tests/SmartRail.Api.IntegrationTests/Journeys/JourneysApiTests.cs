@@ -26,6 +26,12 @@ public class JourneysApiFactory : NetworkApiFactory
 
     protected virtual bool DemoFleet => false;
 
+    // Drivers only see a day's duties once the scheduler approved the plan (production default); most tests switch this off.
+    protected virtual bool ApprovalRequired => false;
+
+    // A placeholder driver on every trainset, so every generated journey is Ready (the live feed only reaches Ready journeys).
+    protected virtual bool AllChainsDriven => false;
+
     // The clock the API reads. Tests move it to age the live data (Stale at 60 s, Unknown at 300 s).
     public AdjustableTimeProvider Clock { get; private set; } = null!;
 
@@ -37,6 +43,8 @@ public class JourneysApiFactory : NetworkApiFactory
             configuration.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Journeys:Seed:DemoFleet"] = DemoFleet ? "true" : "false",
+                ["Journeys:Seed:DemoFleetAllChains"] = AllChainsDriven ? "true" : "false",
+                ["Journeys:Planning:ApprovalRequired"] = ApprovalRequired ? "true" : "false",
 
                 // Two feed sources of different rank, for the precedence tests. Test keys only.
                 ["Identity:FeedSources:Seed:0:Code"] = FeedKeys.Primary.Code,
@@ -106,11 +114,15 @@ public sealed class LiveIngestApiFactory : JourneysApiFactory
     protected override DateTimeOffset Now => new(2026, 10, 14, 14, 0, 0, TimeSpan.Zero);
 
     protected override bool DemoFleet => true;
+
+    protected override bool AllChainsDriven => true;
 }
 
 // 00:05 on 14 October, network time: the 23:50 journeys of 13 October are still running.
 public sealed class PostMidnightApiFactory : JourneysApiFactory
 {
+    protected override bool AllChainsDriven => true;
+
     protected override DateTimeOffset Now => new(2026, 10, 13, 18, 35, 0, TimeSpan.Zero);
 }
 
@@ -195,6 +207,9 @@ public sealed class JourneyEndpointTests(JourneysApiFactory factory) : IClassFix
         Assert.All(times, t => Assert.True(t >= new DateTimeOffset(2026, 10, 14, 3, 0, 0, TimeSpan.Zero).AddMinutes(-1)));
         Assert.All(items, i => Assert.Equal("Planned", i.GetProperty("status").GetString()));
 
+        // Nothing has arrived yet, so no train is at the platform.
+        Assert.All(items, i => Assert.False(i.GetProperty("atPlatform").GetBoolean()));
+
         using var request = new HttpRequestMessage(HttpMethod.Get, $"/api/journeys/boards/{station}?count=5");
         request.Headers.IfNoneMatch.ParseAdd(response.Headers.ETag!.Tag);
         using var second = await client.SendAsync(request);
@@ -209,6 +224,34 @@ public sealed class JourneyEndpointTests(JourneysApiFactory factory) : IClassFix
         Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/api/journeys/boards/ZZZ")).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync("/api/journeys/boards/CEN?count=0")).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync("/api/journeys/boards/CEN?count=51")).StatusCode);
+    }
+
+    [Fact]
+    public async Task The_arrivals_board_is_public_and_sorted_and_names_where_each_train_started()
+    {
+        var (client, _) = await ArrangeAsync();
+
+        // Riverside is the end of the MAIN route, so trains arrive there and none of them is the first stop.
+        var json = await client.GetFromJsonAsync<JsonElement>("/api/journeys/boards/RIV/arrivals?count=5");
+        var items = json.GetProperty("items").EnumerateArray().ToList();
+
+        Assert.NotEmpty(items);
+        Assert.Equal("Riverside", json.GetProperty("station").GetProperty("name").GetString());
+
+        var times = items.Select(i => i.GetProperty("scheduledArrivalUtc").GetDateTimeOffset()).ToList();
+        Assert.Equal(times.Order().ToList(), times);
+        Assert.All(items, i => Assert.False(string.IsNullOrEmpty(i.GetProperty("originName").GetString())));
+        Assert.All(items, i => Assert.NotEqual("Riverside", i.GetProperty("originName").GetString()));
+        Assert.All(items, i => Assert.Equal("Planned", i.GetProperty("status").GetString()));
+    }
+
+    [Fact]
+    public async Task The_arrivals_board_rejects_an_unknown_station_and_a_bad_count()
+    {
+        var (client, _) = await ArrangeAsync();
+
+        Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/api/journeys/boards/ZZZ/arrivals")).StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync("/api/journeys/boards/RIV/arrivals?count=0")).StatusCode);
     }
 
     [Fact]
@@ -299,15 +342,21 @@ public sealed class JourneyEndpointTests(JourneysApiFactory factory) : IClassFix
 
 public sealed class DemoFleetTests(DemoFleetApiFactory factory) : IClassFixture<DemoFleetApiFactory>
 {
-    // With the demo fleet flag every generated journey has a vehicle and a driver, so it is Ready.
+    // With the demo fleet flag every generated journey has a trainset. The three demo drivers cover three trainsets, so those journeys
+    // are Ready; the rest wait for the scheduler to assign a driver and stay Planned.
     [Fact]
-    public async Task The_demo_fleet_makes_every_generated_journey_ready_and_a_second_run_changes_nothing()
+    public async Task The_demo_fleet_gives_every_journey_a_trainset_and_three_drivers_cover_three_of_them()
     {
         await factory.GenerateAsync();
 
         var states = await factory.WithDbAsync(db => db.Journeys.GroupBy(j => j.Lifecycle).Select(g => new { g.Key, Count = g.Count() }).ToListAsync());
-        Assert.Single(states);
-        Assert.Equal(JourneyLifecycle.Ready, states[0].Key);
+        Assert.Equal(2, states.Count);
+        Assert.Contains(states, s => s.Key == JourneyLifecycle.Ready && s.Count > 0);
+        Assert.Contains(states, s => s.Key == JourneyLifecycle.Planned && s.Count > 0);
+
+        var drivers = await factory.WithDbAsync(db => db.CrewDuties.Select(d => d.DriverSubject).Distinct().CountAsync());
+        Assert.Equal(3, drivers);
+        Assert.Equal(0, await factory.WithDbAsync(db => db.Journeys.CountAsync(j => !j.VehicleAssignments.Any())));
 
         var vehicles = await factory.WithDbAsync(db => db.Vehicles.CountAsync());
         Assert.Equal(8, vehicles);

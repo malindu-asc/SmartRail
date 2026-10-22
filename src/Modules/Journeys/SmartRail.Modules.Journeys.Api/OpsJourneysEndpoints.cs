@@ -104,6 +104,21 @@ public static class OpsJourneysEndpoints
             .RequirePermission(Permissions.PlanningRead)
             .WithSummary("Journeys that need a driver or unit, with suggestions, and units that are going out of service");
 
+        ops.MapGet("/planning/week", async (DateOnly? from, ISender sender, CancellationToken ct) =>
+                Respond(await sender.Send(new GetPlanningWeekQuery(from), ct)))
+            .RequirePermission(Permissions.PlanningRead)
+            .WithSummary("The week ahead: every journey per day with its driver, unit and whether it is covered");
+
+        ops.MapPost("/planning/generate", async (DateOnly? from, ISender sender, CancellationToken ct) =>
+                Respond(await sender.Send(new GeneratePlanCommand(from), ct)))
+            .RequirePermission(Permissions.JourneyDriverAssign)
+            .WithSummary("Fill in the drivers and units for the week from the predefined pattern; existing assignments are kept");
+
+        ops.MapPost("/planning/approve", async (DateOnly? from, ISender sender, CancellationToken ct) =>
+                Respond(await sender.Send(new ApprovePlanCommand(from), ct)))
+            .RequirePermission(Permissions.JourneyDriverAssign)
+            .WithSummary("Approve the week's plan; drivers see their duties for approved days only");
+
         ops.MapGet("/planning/assignments", async (DateOnly? date, ISender sender, CancellationToken ct) =>
                 Respond(await sender.Send(new GetPlanningAssignmentsQuery(date), ct)))
             .RequirePermission(Permissions.PlanningRead)

@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SmartRail.Modules.Journeys.Application.Abstractions;
 using SmartRail.Modules.Journeys.Domain.Crew;
 
 namespace SmartRail.Modules.Journeys.Infrastructure.Persistence;
 
-internal sealed class DriverStore(JourneysDbContext context) : IDriverStore
+internal sealed class DriverStore(JourneysDbContext context, IPlanApprovals approvals, IConfiguration configuration) : IDriverStore
 {
     public Task<CrewDuty?> GetDutyAsync(Guid dutyId, CancellationToken cancellationToken) =>
         context.CrewDuties.FirstOrDefaultAsync(d => d.Id == dutyId, cancellationToken);
@@ -14,6 +15,13 @@ internal sealed class DriverStore(JourneysDbContext context) : IDriverStore
         var duties = await context.CrewDuties.AsNoTracking()
             .Where(d => d.DriverSubject == driverSubject && d.ServiceDate >= from && d.ServiceDate <= to)
             .OrderBy(d => d.RosteredFrom).ToListAsync(cancellationToken);
+
+        // A day's duties only reach the driver once the scheduler has approved that day's plan (Journeys:Planning:ApprovalRequired).
+        if (configuration.GetValue("Journeys:Planning:ApprovalRequired", true))
+        {
+            var approved = await approvals.ApprovedAsync(from, to, cancellationToken);
+            duties = duties.Where(d => approved.Contains(d.ServiceDate)).ToList();
+        }
 
         var ids = duties.Select(d => d.Id).ToList();
         var journeys = await context.Journeys.AsNoTracking().AsSplitQuery()

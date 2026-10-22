@@ -175,6 +175,43 @@ public sealed class GetOpsRouteQueryHandler(
     }
 }
 
+// ---- The week ahead (the scheduler's planning view) ----
+
+public sealed record PlanningDay(DateOnly Date, int Journeys, int Unassigned, bool Approved, IReadOnlyList<OpsRouteJourney> Rows);
+
+public sealed record PlanningWeek(DateOnly From, IReadOnlyList<PlanningDay> Days);
+
+public sealed record GetPlanningWeekQuery(DateOnly? From) : IQuery<PlanningWeek>;
+
+// Seven days from the given day (today by default): every journey with its driver, unit and whether it is covered.
+public sealed class GetPlanningWeekQueryHandler(
+    IOpsJourneyReader reader, INetworkStations stations, IStaffNames staff, IPlanApprovals approvals, INetworkTimeZone timeZone, TimeProvider clock)
+    : IQueryHandler<GetPlanningWeekQuery, PlanningWeek>
+{
+    public async Task<Result<PlanningWeek>> Handle(GetPlanningWeekQuery query, CancellationToken cancellationToken)
+    {
+        var from = query.From ?? timeZone.Today();
+        var days = new List<PlanningDay>();
+        var approved = await approvals.ApprovedAsync(from, from.AddDays(6), cancellationToken);
+
+        for (var i = 0; i < 7; i++)
+        {
+            var date = from.AddDays(i);
+            var (day, names, drivers, duties, unavailable) = await RouteMath.LoadAsync(reader, stations, staff, date, clock, cancellationToken);
+            var rows = day.OrderBy(j => j.ScheduledDepartureUtc).Select(j =>
+            {
+                var (text, kind) = RouteMath.Assignment(j, day, duties, unavailable, timeZone);
+                return new OpsRouteJourney(j.Id, j.TrainNumber, j.ScheduledDepartureUtc, PlanningRules.Route(j, names), j.DriverSubject,
+                    j.DriverSubject is null ? null : drivers.GetValueOrDefault(j.DriverSubject), j.VehicleCode, text, kind);
+            }).ToList();
+
+            days.Add(new PlanningDay(date, rows.Count, rows.Count(r => r.Assignment.StartsWith("Needs", StringComparison.Ordinal)), approved.Contains(date), rows));
+        }
+
+        return new PlanningWeek(from, days);
+    }
+}
+
 // ---- Punctuality report (REQ-OPS-014) ----
 
 public sealed record PunctualityDay(DateOnly Date, int Journeys, int? OnTimePercent);

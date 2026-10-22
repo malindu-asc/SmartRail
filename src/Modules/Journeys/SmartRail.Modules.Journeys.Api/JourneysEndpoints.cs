@@ -46,6 +46,14 @@ public static class JourneysEndpoints
             .AllowAnonymous()
             .WithSummary("The next departures from a station");
 
+        group.MapGet("/boards/{stationCode}/arrivals", async (HttpContext http, string stationCode, int? count, string? lang, ISender sender, CancellationToken ct) =>
+            {
+                var result = await sender.Send(new GetArrivalsQuery(stationCode, count ?? 10, RequestedLanguage(http, lang)), ct);
+                return result.IsSuccess ? PublicCaching.Ok(http, result.Value, LiveMaxAgeSeconds) : ApiResults.Problem(result);
+            })
+            .AllowAnonymous()
+            .WithSummary("The next arrivals at a station, with where each train started");
+
         group.MapPost("/manual", async (CreateManualJourneyRequest request, ISender sender, CancellationToken ct) =>
             {
                 var result = await sender.Send(

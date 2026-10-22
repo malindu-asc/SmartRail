@@ -246,6 +246,27 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Crew.PlanApproval", b =>
+                {
+                    b.Property<DateOnly>("ServiceDate")
+                        .HasColumnType("date")
+                        .HasColumnName("service_date");
+
+                    b.Property<DateTimeOffset>("ApprovedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("approved_at");
+
+                    b.Property<string>("ApprovedBy")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("approved_by");
+
+                    b.HasKey("ServiceDate");
+
+                    b.ToTable("plan_approvals", "journeys");
+                });
+
             modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Fleet.Vehicle", b =>
                 {
                     b.Property<Guid>("Id")

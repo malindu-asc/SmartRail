@@ -59,6 +59,8 @@ public static class JourneysModule
         services.Configure<JourneyGenerationOptions>(configuration.GetSection(JourneyGenerationOptions.SectionName));
         services.AddScoped<JourneyGenerationRunner>();
         services.AddScoped<DemoFleetSeeder>();
+        services.AddScoped<IWeekPlanner>(sp => sp.GetRequiredService<DemoFleetSeeder>());
+        services.AddScoped<IPlanApprovals, PlanApprovals>();
         services.AddHostedService<JourneyGenerationWorker>();
 
         return services;
