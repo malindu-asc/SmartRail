@@ -237,15 +237,15 @@ public sealed class TimetableVersionTests
     }
 
     [Fact]
-    public void The_author_cannot_approve_their_own_version()
+    public void The_author_can_approve_their_own_version()
     {
         var (version, service, _) = VersionWithService();
         version.AddService(service);
         version.SubmitForReview();
 
         var result = version.Publish(new DateOnly(2026, 11, 1), "ALICE", DateTimeOffset.UtcNow);
-        Assert.Equal("Network.AuthorCannotApprove", result.Error.Code);
-        Assert.Equal(TimetableVersionStatus.InReview, version.Status);
+        Assert.True(result.IsSuccess);
+        Assert.Equal(TimetableVersionStatus.Published, version.Status);
     }
 
     [Fact]

@@ -189,24 +189,14 @@ public sealed class DisruptionWorkflowTests(OpsApiFactory factory) : OpsTestBase
     };
 
     [Fact]
-    public async Task A_network_wide_notice_waits_for_a_second_person_and_then_reaches_passengers()
+    public async Task A_network_wide_notice_publishes_at_once_and_a_wrong_one_can_be_retracted()
     {
         var author = Controller("ctrl-a");
         var created = await Ok(await author.PostAsync("/api/ops/disruptions", Body(Notice(true))));
         var id = created.GetProperty("id").GetGuid();
-        Assert.Equal("AwaitingApproval", created.GetProperty("status").GetString());
+        Assert.Equal("Published", created.GetProperty("status").GetString());
 
-        // passengers do not see it yet
-        var before = await Ok(await Factory.CreateClient().GetAsync("/api/operations/disruptions"));
-        Assert.DoesNotContain(before.EnumerateArray(), d => d.GetProperty("id").GetGuid() == id);
-
-        // the author cannot approve their own notice
-        var self = await author.PostAsync($"/api/ops/disruptions/{id}/approve", null);
-        Assert.False(self.IsSuccessStatusCode);
-
-        // a second controller approves
-        Assert.Equal(HttpStatusCode.NoContent, (await Controller("ctrl-b").PostAsync($"/api/ops/disruptions/{id}/approve", null)).StatusCode);
-
+        // passengers see it straight away, with no second approver
         var after = await Ok(await Factory.CreateClient().GetAsync("/api/operations/disruptions"));
         Assert.Contains(after.EnumerateArray(), d => d.GetProperty("id").GetGuid() == id);
 
@@ -217,17 +207,34 @@ public sealed class DisruptionWorkflowTests(OpsApiFactory factory) : OpsTestBase
     }
 
     [Fact]
-    public async Task Rejecting_needs_a_comment_and_sends_the_notice_back()
+    public async Task A_published_notice_leaves_the_public_list_by_itself_once_its_expected_end_has_passed()
     {
-        var created = await Ok(await Controller("ctrl-a").PostAsync("/api/ops/disruptions", Body(Notice(true))));
+        var author = Controller("ctrl-a");
+        var created = await Ok(await author.PostAsync("/api/ops/disruptions", Body(new
+        {
+            title = "Short delay", message = "Expect a few minutes of delay.", severity = "Minor", networkWide = false, stationCodes = new[] { "MIL" },
+            expectedEndUtc = Factory.Clock.GetUtcNow().AddHours(1), reviewByUtc = Factory.Clock.GetUtcNow().AddHours(6), submit = true
+        })));
         var id = created.GetProperty("id").GetGuid();
-        var other = Controller("ctrl-b");
 
-        Assert.Equal(HttpStatusCode.BadRequest, (await other.PostAsync($"/api/ops/disruptions/{id}/reject", Body(new { comment = " " }))).StatusCode);
-        Assert.Equal(HttpStatusCode.NoContent, (await other.PostAsync($"/api/ops/disruptions/{id}/reject", Body(new { comment = "Say which line" }))).StatusCode);
+        var during = await Ok(await Factory.CreateClient().GetAsync("/api/operations/disruptions"));
+        Assert.Contains(during.EnumerateArray(), d => d.GetProperty("id").GetGuid() == id);
 
-        var detail = await Ok(await other.GetAsync($"/api/ops/disruptions/{id}"));
-        Assert.Equal("Rejected", detail.GetProperty("status").GetString());
+        Factory.Clock.Advance(TimeSpan.FromHours(2));
+        try
+        {
+            // Passengers and the terminals no longer see it, with nobody removing it.
+            var after = await Ok(await Factory.CreateClient().GetAsync("/api/operations/disruptions"));
+            Assert.DoesNotContain(after.EnumerateArray(), d => d.GetProperty("id").GetGuid() == id);
+
+            // The controller still finds it in the console.
+            var detail = await Ok(await author.GetAsync($"/api/ops/disruptions/{id}"));
+            Assert.Equal("Published", detail.GetProperty("status").GetString());
+        }
+        finally
+        {
+            Factory.Clock.Advance(TimeSpan.FromHours(-2));
+        }
     }
 
     [Fact]
@@ -361,7 +368,7 @@ public sealed class AuditAccessTests(OpsApiFactory factory) : OpsTestBase(factor
 public sealed class TimetableWorkflowTests(OpsApiFactory factory) : OpsTestBase(factory), IClassFixture<OpsApiFactory>
 {
     [Fact]
-    public async Task A_draft_is_edited_reviewed_by_another_scheduler_and_replaces_the_version_in_force()
+    public async Task A_draft_is_edited_approved_and_replaces_the_version_in_force()
     {
         var author = Scheduler("sched-a");
         var versions = await Ok(await author.GetAsync("/api/ops/timetable/versions"));
@@ -391,12 +398,10 @@ public sealed class TimetableWorkflowTests(OpsApiFactory factory) : OpsTestBase(
 
         Assert.Equal(HttpStatusCode.NoContent, (await author.PostAsync($"/api/ops/timetable/versions/{draftId}/submit", null)).StatusCode);
 
-        // the author cannot approve their own version; a past date is refused
-        Assert.False((await author.PostAsync($"/api/ops/timetable/versions/{draftId}/approve", Body(new { effectiveFrom = "2027-01-04" }))).IsSuccessStatusCode);
-        var other = Scheduler("sched-b");
-        Assert.Equal(HttpStatusCode.BadRequest, (await other.PostAsync($"/api/ops/timetable/versions/{draftId}/approve", Body(new { effectiveFrom = "2020-01-01" }))).StatusCode);
+        // a past date is refused; the author then approves their own version (there is no second approver)
+        Assert.Equal(HttpStatusCode.BadRequest, (await author.PostAsync($"/api/ops/timetable/versions/{draftId}/approve", Body(new { effectiveFrom = "2020-01-01" }))).StatusCode);
 
-        Assert.Equal(HttpStatusCode.NoContent, (await other.PostAsync($"/api/ops/timetable/versions/{draftId}/approve", Body(new { effectiveFrom = "2027-01-04" }))).StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, (await author.PostAsync($"/api/ops/timetable/versions/{draftId}/approve", Body(new { effectiveFrom = "2027-01-04" }))).StatusCode);
 
         var after = await Ok(await author.GetAsync("/api/ops/timetable/versions"));
         var items = after.GetProperty("items").EnumerateArray().ToList();
@@ -408,7 +413,7 @@ public sealed class TimetableWorkflowTests(OpsApiFactory factory) : OpsTestBase(
 
         // the audit trail shows who published it
         var audit = await Ok(await Controller().GetAsync("/api/audit?kind=operational&action=timetable.publish"));
-        Assert.Contains(audit.EnumerateArray(), e => e.GetProperty("actorSubject").GetString() == "sched-b");
+        Assert.Contains(audit.EnumerateArray(), e => e.GetProperty("actorSubject").GetString() == "sched-a");
     }
 
     private static string? Shift(JsonElement stop, string property)

@@ -37,7 +37,7 @@ public sealed class DemoOpsSeedTests(OpsSeedFactory factory) : OpsTestBase(facto
         var controller = Controller("a1000000-0000-4000-8000-000000000006");
 
         var disruptions = await Ok(await controller.GetAsync("/api/ops/disruptions"));
-        Assert.True(disruptions.GetProperty("counts").GetProperty("awaitingApproval").GetInt32() >= 1);
+        Assert.True(disruptions.GetProperty("counts").GetProperty("active").GetInt32() >= 1);
 
         var incidents = await Ok(await controller.GetAsync("/api/ops/incidents?openOnly=true"));
         Assert.Contains(incidents.EnumerateArray(), i => i.GetProperty("title").GetString() == "Signal failure at Mill Lane");

@@ -94,7 +94,7 @@ public sealed class ListDisruptionsQueryHandler(IDisruptionStore store, INetwork
     {
         var now = clock.GetUtcNow();
         var list = new List<DisruptionSummary>();
-        foreach (var d in await store.ListPublishedAsync(cancellationToken))
+        foreach (var d in (await store.ListPublishedAsync(cancellationToken)).Where(d => !d.IsOver(now)))
             list.Add(await DisruptionViews.SummaryAsync(d, stations, query.Language, now, cancellationToken));
 
         return Result.Success<IReadOnlyList<DisruptionSummary>>(list);
@@ -235,7 +235,7 @@ public sealed class GetDisruptionConsoleQueryHandler(
 
         var history = new List<DisruptionHistoryEntry> { new(d.CreatedAtUtc, "Draft created", Person(d.CreatedBy)) };
         if (d.SubmittedAtUtc is { } submitted)
-            history.Add(new(submitted, d.NetworkWide ? "Submitted for approval" : "Published", Person(d.CreatedBy)));
+            history.Add(new(submitted, "Published", Person(d.CreatedBy)));
         if (d.RejectedBy is not null)
             history.Add(new(d.UpdatedAtUtc, $"Rejected: {d.RejectionComment}", Person(d.RejectedBy)));
         if (d.ApprovedBy is not null && d.PublishedAtUtc is { } published)
@@ -334,7 +334,7 @@ public sealed class SaveDisruptionCommandHandler(
 
             disruption = created.Value;
             store.Add(disruption);
-            action = command.Submit ? (disruption.NetworkWide ? "disruption.submit" : "disruption.publish") : "disruption.draft";
+            action = command.Submit ? "disruption.publish" : "disruption.draft";
         }
 
         audit.Record(new AuditRecord(actor, user.Roles.FirstOrDefault(), action, "disruption", disruption.Id.ToString(), null,
@@ -360,7 +360,7 @@ public sealed class SubmitDisruptionCommandHandler(IDisruptionStore store, IOper
         if (result.IsFailure)
             return result;
 
-        audit.Record(new AuditRecord(user.UserId ?? "unknown", user.Roles.FirstOrDefault(), d.NetworkWide ? "disruption.submit" : "disruption.publish", "disruption", d.Id.ToString(), null));
+        audit.Record(new AuditRecord(user.UserId ?? "unknown", user.Roles.FirstOrDefault(), "disruption.publish", "disruption", d.Id.ToString(), null));
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }

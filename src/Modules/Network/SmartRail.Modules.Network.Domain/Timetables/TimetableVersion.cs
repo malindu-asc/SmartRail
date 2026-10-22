@@ -80,13 +80,13 @@ public sealed class TimetableVersion : AuditableEntity
         return Result.Success();
     }
 
-    // The approver is a different person from the author (checked on the user, not the role).
+    // The scheduler who drafted a version may publish it too: there is no second approver.
     public Result Publish(DateOnly effectiveFrom, string approver, DateTimeOffset publishedAt)
     {
         if (Status != TimetableVersionStatus.InReview)
             return NetworkErrors.VersionWrongState(nameof(TimetableVersionStatus.InReview), Status.ToString());
 
-        if (string.IsNullOrWhiteSpace(approver) || string.Equals(approver.Trim(), Author, StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrWhiteSpace(approver))
             return NetworkErrors.AuthorCannotApprove;
 
         Status = TimetableVersionStatus.Published;

@@ -19,24 +19,9 @@ public sealed class DisruptionTests
     }
 
     [Fact]
-    public void A_network_wide_notice_waits_for_a_second_person()
+    public void A_network_wide_notice_also_publishes_at_once()
     {
-        var notice = Notice(true);
-        Assert.Equal(DisruptionStatus.AwaitingApproval, notice.Status);
-        Assert.True(notice.Approve("author", Now).IsFailure);
-        Assert.True(notice.Approve("someone-else", Now).IsSuccess);
-        Assert.Equal(DisruptionStatus.Published, notice.Status);
-    }
-
-    [Fact]
-    public void Rejecting_needs_a_comment_and_lets_the_author_send_it_again()
-    {
-        var notice = Notice(true);
-        Assert.True(notice.Reject("other", " ", Now).IsFailure);
-        Assert.True(notice.Reject("other", "Wording unclear", Now).IsSuccess);
-        Assert.Equal(DisruptionStatus.Rejected, notice.Status);
-        Assert.True(notice.Submit(Now).IsSuccess);
-        Assert.Equal(DisruptionStatus.AwaitingApproval, notice.Status);
+        Assert.Equal(DisruptionStatus.Published, Notice(true).Status);
     }
 
     [Fact]
@@ -52,7 +37,6 @@ public sealed class DisruptionTests
     public void A_live_network_wide_notice_cannot_be_edited_but_a_local_one_can()
     {
         var wide = Notice(true);
-        wide.Approve("other", Now);
         Assert.True(wide.Update("New", "Text", DisruptionSeverity.Minor, null, Now.AddHours(1), Now).IsFailure);
 
         var local = Notice(false);

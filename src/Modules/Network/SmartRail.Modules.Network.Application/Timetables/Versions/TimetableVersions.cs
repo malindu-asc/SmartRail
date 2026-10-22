@@ -114,11 +114,8 @@ internal static class VersionViews
     public static VersionActions Actions(TimetableVersion v, string? me)
     {
         var editable = v.Status is TimetableVersionStatus.Draft or TimetableVersionStatus.InReview;
-        var isAuthor = string.Equals(v.Author, me, StringComparison.OrdinalIgnoreCase);
-        var canApprove = v.Status == TimetableVersionStatus.InReview && !isAuthor;
-        return new VersionActions(
-            editable, v.Status == TimetableVersionStatus.Draft && v.Services.Count > 0, canApprove,
-            v.Status == TimetableVersionStatus.InReview && isAuthor ? "A different person must approve this version." : null);
+        var canApprove = v.Status == TimetableVersionStatus.InReview;
+        return new VersionActions(editable, v.Status == TimetableVersionStatus.Draft && v.Services.Count > 0, canApprove, null);
     }
 }
 

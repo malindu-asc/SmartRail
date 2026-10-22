@@ -104,15 +104,9 @@ public sealed class Disruption : Entity<Guid>
         RejectedBy = null;
         RejectionComment = null;
 
-        if (NetworkWide)
-        {
-            Status = DisruptionStatus.AwaitingApproval;
-        }
-        else
-        {
-            Status = DisruptionStatus.Published;
-            PublishedAtUtc = now;
-        }
+        // A controller's notice goes out at once, for one station or the whole network (no second approver).
+        Status = DisruptionStatus.Published;
+        PublishedAtUtc = now;
 
         return Result.Success();
     }
@@ -182,6 +176,10 @@ public sealed class Disruption : Entity<Guid>
 
     // It was wrong: it disappears from every client (REQ-PAX-009).
     public Result Retract(DateTimeOffset now) => Close(DisruptionStatus.Retracted, now);
+
+    // The notice has run its course: past its expected end, or past its review time when no end was given. Passengers and the
+    // station terminals stop seeing it by themselves; the controller still finds it in the console until they close it.
+    public bool IsOver(DateTimeOffset now) => Status == DisruptionStatus.Published && (ExpectedEndUtc ?? ReviewByUtc) <= now;
 
     public bool IsExpired(DateTimeOffset now) => Status == DisruptionStatus.Published && ReviewByUtc <= now;
 
