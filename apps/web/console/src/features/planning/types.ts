@@ -120,3 +120,27 @@ export interface SuggestionOutcome {
   applied: boolean
   error: string | null
 }
+
+export interface WeekJourney {
+  journeyId: string
+  trainNumber: string
+  departsUtc: string
+  route: string
+  driverName: string | null
+  unitCode: string | null
+  assignment: string
+  assignmentKind: string
+}
+
+export interface PlanningDay {
+  date: string
+  journeys: number
+  unassigned: number
+  approved: boolean
+  rows: WeekJourney[]
+}
+
+export interface PlanningWeek {
+  from: string
+  days: PlanningDay[]
+}

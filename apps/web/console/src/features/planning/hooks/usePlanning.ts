@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/shared/api'
 import { useAction } from '@/shared/hooks'
-import type { AssignmentOptions, CrewRow, PlanningNeeds, SuggestionOutcome, UnitAssignmentRow, UnitImpact, UnitRow } from '../types'
+import type { AssignmentOptions, CrewRow, PlanningNeeds, PlanningWeek, SuggestionOutcome, UnitAssignmentRow, UnitImpact, UnitRow } from '../types'
 
 export const planningKeys = {
   all: ['planning'] as const,
   needs: (date?: string) => [...planningKeys.all, 'needs', date ?? 'today'] as const,
+  week: (from?: string) => [...planningKeys.all, 'week', from ?? 'today'] as const,
   assignments: (date?: string) => [...planningKeys.all, 'assignments', date ?? 'today'] as const,
   units: (date?: string) => [...planningKeys.all, 'units', date ?? 'today'] as const,
   crew: (date?: string) => [...planningKeys.all, 'crew', date ?? 'today'] as const,
@@ -15,6 +16,10 @@ export const planningKeys = {
 
 export function usePlanningNeeds(date?: string) {
   return useQuery({ queryKey: planningKeys.needs(date), queryFn: () => api.get<PlanningNeeds>('/ops/planning/needs', { date }), refetchInterval: 20_000 })
+}
+
+export function usePlanningWeek(from?: string) {
+  return useQuery({ queryKey: planningKeys.week(from), queryFn: () => api.get<PlanningWeek>('/ops/planning/week', { from }), refetchInterval: 30_000 })
 }
 
 export function useAssignments(date?: string) {
@@ -51,6 +56,24 @@ export function useAssign(journeyId: string) {
       api.post(`/ops/journeys/${journeyId}/assign`, body),
     successMessage: 'Assignment saved.',
     failureMessage: 'Could not assign.',
+    invalidate: refresh,
+  })
+}
+
+export function useGeneratePlan() {
+  return useAction({
+    mutationFn: () => api.post<{ assigned: number }>('/ops/planning/generate'),
+    successMessage: 'Plan generated. Check it, change anything that needs it, then approve it.',
+    failureMessage: 'Could not generate the plan.',
+    invalidate: refresh,
+  })
+}
+
+export function useApprovePlan() {
+  return useAction({
+    mutationFn: () => api.post<{ days: number }>('/ops/planning/approve'),
+    successMessage: 'Plan approved. Drivers can now see their duties.',
+    failureMessage: 'Could not approve the plan.',
     invalidate: refresh,
   })
 }

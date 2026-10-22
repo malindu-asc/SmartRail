@@ -23,7 +23,7 @@ export function CreateDraftModal({ open, onClose, onCreated }: { open: boolean; 
       open={open}
       onClose={onClose}
       title="New timetable draft"
-      description="The draft starts as a copy of the timetable in force. Nothing changes for passengers until another scheduler approves it."
+      description="The draft starts as a copy of the timetable in force. Nothing changes for passengers until you approve it."
       confirmLabel="Create draft"
       pending={create.isPending}
       onConfirm={() => {
@@ -229,7 +229,7 @@ export function SubmitVersionModal({ versionId, label, open, onClose }: { versio
       open={open}
       onClose={onClose}
       title={`Send ${label} for review`}
-      description="A different scheduler must approve it. You can keep editing until they do."
+      description="You can keep editing until you approve it."
       confirmLabel="Send for review"
       pending={submit.isPending}
       onConfirm={() => submit.mutate(undefined, { onSuccess: onClose })}
@@ -237,7 +237,7 @@ export function SubmitVersionModal({ versionId, label, open, onClose }: { versio
   )
 }
 
-/** Approve a version in review as a different person, with the date it takes effect. */
+/** Approve a version in review, with the date it takes effect. */
 export function ApproveVersionModal({ versionId, label, open, onClose }: { versionId: string; label: string; open: boolean; onClose: () => void }) {
   const approve = useApproveVersion(versionId)
   // Suggest a week from now; the person can change it.

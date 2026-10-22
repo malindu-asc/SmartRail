@@ -5,7 +5,7 @@ import { StationChecklist } from '@/features/network'
 import { useDisableUser, useEnableUser, useInviteUser, useUnlockUser, useUpdateUser } from '../hooks/useAdmin'
 import type { StaffAccount, StaffInvite } from '../types'
 
-const STAFF_ROLES = [Roles.Controller, Roles.Scheduler, Roles.StationMaster, Roles.Driver, Roles.Inspector, Roles.Admin]
+const STAFF_ROLES = [Roles.Controller, Roles.Scheduler, Roles.Driver, Roles.Admin]
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 /** Invite a staff member with one role. They set their own password and two-step code. */

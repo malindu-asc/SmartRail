@@ -2,7 +2,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { EmergencyTerminateModal } from '@/features/incidents'
-import { DataCell, JourneyActions, JourneyStatus, PlatformCell, StopsTable, useJourney, useJourneyEvents } from '@/features/journeys'
+import { DataCell, JourneyActions, JourneyProgress, JourneyStatus, PlatformCell, StopsTable, useJourney, useJourneyEvents } from '@/features/journeys'
 import { SendMessageModal } from '@/features/messages'
 import { AssignModal } from '@/features/planning'
 import { Card, CardHeader, CardSkeleton, ErrorState, PageHeader, TableSkeleton } from '@/shared/components/ui'
@@ -51,6 +51,8 @@ export function JourneyDetailPage() {
                 </p>
               )}
             </Card>
+
+            <JourneyProgress stops={detail.stops} />
 
             <StopsTable stops={detail.stops} />
 

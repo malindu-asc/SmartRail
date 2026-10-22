@@ -13,7 +13,7 @@ export function KpiRow({ kpis }: { kpis: Kpis }) {
       <StatCard label="Delayed" value={kpis.delayed} tone="delayed" note={`${kpis.delayedOver15} over 15 min`} />
       <StatCard label="Cancelled" value={kpis.cancelled} tone="cancelled" note="today" />
       <StatCard label="No live data" value={kpis.noLiveData} note="for over 5 min" />
-      <StatCard label="Disruptions" value={kpis.disruptionsActive} note={`${kpis.disruptionsAwaitingApproval} awaiting approval`} />
+      <StatCard label="Disruptions" value={kpis.disruptionsActive} />
     </div>
   )
 }

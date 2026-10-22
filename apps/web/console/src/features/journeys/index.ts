@@ -1,6 +1,7 @@
 export { BoardTable } from './components/BoardTable'
 export { DataCell, JourneyStatus, PlatformCell } from './components/JourneyStatus'
 export { JourneyActions } from './components/JourneyActions'
+export { JourneyProgress } from './components/JourneyProgress'
 export { StopsTable } from './components/StopsTable'
 export { boardQueryOptions, journeyKeys, useBoard, useJourney, useJourneyEvents, useRoute, useRoutes } from './hooks/useJourneys'
 export type { BoardFilters, JourneyDetail, JourneyRow, RouteDetail, RouteSummary } from './types'

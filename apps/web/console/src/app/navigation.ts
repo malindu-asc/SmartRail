@@ -1,7 +1,6 @@
 import {
   Activity,
   AlertTriangle,
-  BarChart3,
   CalendarDays,
   ClipboardList,
   FileClock,
@@ -34,8 +33,6 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { to: '/planning', label: 'Planning', icon: CalendarDays, permission: [Permissions.PlanningRead], group: 'ops' },
   { to: '/incidents', label: 'Incidents', icon: Siren, permission: [Permissions.IncidentDeclare], group: 'ops' },
   { to: '/timetables', label: 'Timetables', icon: ClipboardList, permission: [Permissions.TimetableRead], group: 'ops' },
-  { to: '/reports', label: 'Reports', icon: BarChart3, permission: [Permissions.ReportRead], group: 'ops' },
-  { to: '/audit', label: 'Audit log', icon: FileClock, permission: [Permissions.AuditReadOperational], group: 'ops' },
 
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, permission: [Permissions.UserManage], group: 'admin' },
   { to: '/admin/users', label: 'Users', icon: Users, permission: [Permissions.UserManage], group: 'admin' },

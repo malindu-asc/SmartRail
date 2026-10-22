@@ -39,10 +39,8 @@ Sign in with the email and the password from `infra/keycloak/smartrail-realm.jso
 | controller@gmail.com | Network controller | Dashboard |
 | controller2@gmail.com | Network controller (second approver) | Dashboard |
 | scheduler@gmail.com | Scheduler | Dashboard |
-| stationmaster1@gmail.com | Station master, Oak Park | Live board |
-| stationmaster2@gmail.com | Station master, Central | Live board |
-| inspector@gmail.com | Ticket inspector | "This console is for staff" |
+| scheduler2@gmail.com | Scheduler (second approver) | Dashboard |
 
-Passenger and driver accounts (`passenger@smartrail.test`, `driver@smartrail.test`) are for the mobile apps; in the console they land on the no-access page.
+Passenger and driver accounts (`passenger@gmail.com`, `driver@gmail.com`, `driver2@gmail.com`, `driver3@gmail.com`) are for the mobile apps; in the console they land on the no-access page.
 
 A change to the realm file only applies to a new Keycloak volume (`docker compose down -v` wipes accounts made through the app).

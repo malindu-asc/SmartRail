@@ -43,7 +43,7 @@ export function VersionDetailView({ detail, routeCodes }: Props) {
                 {actions.canApprove ? (
                   <Button onClick={() => setDialog('approve')}>Approve</Button>
                 ) : (
-                  <span className="text-fg-secondary">{actions.approveBlockedReason ?? 'Waiting for a different scheduler.'}</span>
+                  <span className="text-fg-secondary">{actions.approveBlockedReason ?? 'Waiting for approval.'}</span>
                 )}
               </Can>
             )}

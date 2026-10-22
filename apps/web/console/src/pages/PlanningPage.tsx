@@ -9,6 +9,7 @@ import {
   RosterDutyModal,
   UnitImpactModal,
   UnitsTable,
+  WeekPlan,
   useAssignments,
   useCrew,
   usePlanningNeeds,
@@ -23,7 +24,7 @@ import { formatDateTime, todayIso } from '@/shared/utils'
 
 /** Every journey needs a driver and a unit. The scheduler plans and assigns; the controller can see the plan. */
 export function PlanningPage() {
-  const [tab, setTab] = useQueryParam('tab', 'needs')
+  const [tab, setTab] = useQueryParam('tab', 'week')
   const [date, setDate] = useQueryParam('date', todayIso())
   const needs = usePlanningNeeds(date)
   const units = useUnits(date)
@@ -55,12 +56,15 @@ export function PlanningPage() {
         value={tab}
         onChange={setTab}
         items={[
+          { value: 'week', label: 'Week' },
           { value: 'needs', label: 'Needs a driver or unit', count: open },
           { value: 'assignments', label: 'Assignments' },
           { value: 'units', label: 'Units' },
           { value: 'crew', label: 'Drivers' },
         ]}
       />
+
+      {tab === 'week' && <WeekPlan onAssign={setAssigning} />}
 
       {tab === 'needs' && (
         <div className="space-y-4">

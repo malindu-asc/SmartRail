@@ -10,21 +10,24 @@ interface Props {
   onClose: () => void
   /** Editing an existing draft or live local notice. */
   existing?: DisruptionDetail
+  /** Start the form from a driver's report: its text and the station it came from. The controller edits it before publishing. */
+  prefill?: { title: string; message: string; stations: string[] }
   /** The scheduler announces planned works: a start time is required and the notice is not live. */
   planned?: boolean
   onSaved?: (detail: DisruptionDetail) => void
 }
 
-function initial(existing?: DisruptionDetail, planned?: boolean) {
+function initial(existing?: DisruptionDetail, planned?: boolean, prefill?: Props['prefill']) {
   return {
-    title: existing?.title ?? '',
-    message: existing?.message ?? '',
+    title: existing?.title ?? prefill?.title ?? '',
+    message: existing?.message ?? prefill?.message ?? '',
     severity: (existing?.severity ?? 'Minor') as DisruptionSeverity,
     networkWide: existing?.networkWide ?? false,
-    stations: existing?.stations.map((s) => s.code) ?? [],
+    stations: existing?.stations.map((s) => s.code) ?? prefill?.stations ?? [],
     type: existing?.type ?? (planned ? 'Planned works' : ''),
     starts: existing?.startsAtUtc ? toLocalInput(new Date(existing.startsAtUtc)) : planned ? toLocalInput(new Date(Date.now() + 24 * 3_600_000)) : '',
-    ends: existing?.expectedEndUtc ? toLocalInput(new Date(existing.expectedEndUtc)) : '',
+    // A new notice ends by itself after an hour unless the controller says otherwise: it then leaves the apps and the terminals.
+    ends: existing?.expectedEndUtc ? toLocalInput(new Date(existing.expectedEndUtc)) : existing ? '' : toLocalInput(new Date(Date.now() + 3_600_000)),
     reviewBy: toLocalInput(new Date(existing?.reviewByUtc ?? Date.now() + 4 * 3_600_000)),
   }
 }
@@ -45,8 +48,8 @@ function validate(values: FormValues, planned: boolean, at: Date) {
 }
 
 /** Write a passenger notice: what, where, how bad and when to review it. A live preview shows what passengers will see. */
-export function DisruptionFormModal({ open, onClose, existing, planned = false, onSaved }: Props) {
-  const [form, setForm] = useState(() => initial(existing, planned))
+export function DisruptionFormModal({ open, onClose, existing, prefill, planned = false, onSaved }: Props) {
+  const [form, setForm] = useState(() => initial(existing, planned, prefill))
   const [submitted, setSubmitted] = useState(false)
   const save = useSaveDisruption({ id: existing?.id, planned })
   const preview = usePreviewDisruption()
@@ -102,12 +105,10 @@ export function DisruptionFormModal({ open, onClose, existing, planned = false, 
       onClose={onClose}
       size="lg"
       title={heading}
-      description={form.networkWide && !planned ? 'A network-wide notice waits for a different controller to approve it.' : undefined}
       footer={
         <>
           <Button variant="secondary" onClick={onClose} disabled={save.isPending}>Cancel</Button>
-          {!planned && <Button variant="secondary" onClick={() => send(false)} disabled={save.isPending}>Save draft</Button>}
-          <Button onClick={() => send(true)} loading={save.isPending}>{form.networkWide ? 'Send for approval' : planned ? 'Announce' : 'Publish now'}</Button>
+          <Button onClick={() => send(true)} loading={save.isPending}>{planned ? 'Announce' : 'Publish now'}</Button>
         </>
       }
     >
@@ -152,7 +153,7 @@ export function DisruptionFormModal({ open, onClose, existing, planned = false, 
           <Field label={planned ? 'Starts' : 'Starts (optional)'} error={submitted ? errors.starts : null}>
             {(props) => <TextInput {...props} type="datetime-local" value={form.starts} onChange={(event) => set('starts', event.target.value)} />}
           </Field>
-          <Field label="Expected end">
+          <Field label="Expected end (it disappears then)">
             {(props) => <TextInput {...props} type="datetime-local" value={form.ends} onChange={(event) => set('ends', event.target.value)} />}
           </Field>
           <Field label="Review by" error={submitted ? errors.reviewBy : null}>

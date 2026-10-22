@@ -7,7 +7,9 @@ const labels = (role: Parameters<typeof sessionFor>[0]) => sidebarItems(sessionF
 describe('navigation by role', () => {
   it('gives the controller the operations screens but no timetable editing and no administration', () => {
     const paths = labels('controller')
-    expect(paths).toEqual(expect.arrayContaining(['/dashboard', '/live-board', '/disruptions', '/driver-messages', '/incidents', '/audit', '/reports']))
+    expect(paths).toEqual(expect.arrayContaining(['/dashboard', '/live-board', '/disruptions', '/driver-messages', '/incidents']))
+    expect(paths).not.toContain('/reports')
+    expect(paths).not.toContain('/audit')
     expect(paths.some((path) => path.startsWith('/admin'))).toBe(false)
   })
 
@@ -25,8 +27,8 @@ describe('navigation by role', () => {
     expect(isAdminConsole(sessionFor('admin').permissions)).toBe(true)
   })
 
-  it('gives a station master the board, routes and reports only (their own stations are enforced by the API)', () => {
-    expect(labels('station_master')).toEqual(['/live-board', '/routes', '/reports'])
+  it('gives a station master the board and routes only (their own stations are enforced by the API)', () => {
+    expect(labels('station_master')).toEqual(['/live-board', '/routes'])
   })
 
   it('gives a driver or a passenger nothing', () => {

@@ -22,8 +22,6 @@ const IncidentsPage = page(() => import('@/pages/IncidentsPage'), 'IncidentsPage
 const IncidentDetailPage = page(() => import('@/pages/IncidentDetailPage'), 'IncidentDetailPage')
 const TimetablesPage = page(() => import('@/pages/TimetablesPage'), 'TimetablesPage')
 const TimetableDetailPage = page(() => import('@/pages/TimetableDetailPage'), 'TimetableDetailPage')
-const ReportsPage = page(() => import('@/pages/ReportsPage'), 'ReportsPage')
-const AuditPage = page(() => import('@/pages/AuditPage'), 'AuditPage')
 const AdminAuditPage = page(() => import('@/pages/AuditPage'), 'AdminAuditPage')
 const AdminDashboardPage = page(() => import('@/pages/AdminPages'), 'AdminDashboardPage')
 const UsersPage = page(() => import('@/pages/AdminPages'), 'UsersPage')
@@ -75,11 +73,9 @@ export function AppRoutes() {
         </Route>
 
         <Route element={<RequirePermission permission={Permissions.ReportRead} />}>
-          <Route path="reports" element={<ReportsPage />} />
         </Route>
 
         <Route element={<RequirePermission permission={Permissions.AuditReadOperational} />}>
-          <Route path="audit" element={<AuditPage />} />
         </Route>
 
         <Route path="admin">

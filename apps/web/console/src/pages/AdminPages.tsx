@@ -63,7 +63,7 @@ export function UsersPage() {
         <div className="w-48">
           <Select pill aria-label="Role" value={role} onChange={(event) => setRole(event.target.value)}>
             <option value="">All roles</option>
-            {[Roles.Controller, Roles.Scheduler, Roles.StationMaster, Roles.Driver, Roles.Inspector, Roles.Admin].map((r) => <option key={r} value={r}>{roleLabel(r)}</option>)}
+            {[Roles.Controller, Roles.Scheduler, Roles.Driver, Roles.Admin].map((r) => <option key={r} value={r}>{roleLabel(r)}</option>)}
           </Select>
         </div>
         <div className="w-40">

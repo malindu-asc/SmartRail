@@ -64,7 +64,7 @@ export function useRemoveService(versionId: string) {
 export function useSubmitVersion(versionId: string) {
   return useAction({
     mutationFn: () => api.post(`/ops/timetable/versions/${versionId}/submit`),
-    successMessage: 'Sent for review. A different scheduler must approve it.',
+    successMessage: 'Sent for review. Approve it to publish.',
     failureMessage: 'Could not send the draft for review.',
     invalidate: refresh,
   })

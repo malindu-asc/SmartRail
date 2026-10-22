@@ -70,4 +70,4 @@ export interface DisruptionBody {
   submit: boolean
 }
 
-export const DISRUPTION_TYPES = ['Infrastructure fault', 'Train fault', 'Weather', 'Staffing', 'Facilities', 'Planned works', 'Other'] as const
+export const DISRUPTION_TYPES = ['Infrastructure fault', 'Train fault', 'Weather', 'Staffing', 'Facilities', 'Other'] as const

@@ -5,7 +5,7 @@ import { CreateDraftModal, VersionsTable, useVersions } from '@/features/timetab
 import { Can, Permissions } from '@/shared/auth'
 import { Button, ErrorState, PageHeader, TableSkeleton } from '@/shared/components/ui'
 
-/** Timetable versions: the one in force, drafts and history. A new version needs a different person to approve it. */
+/** Timetable versions: the one in force, drafts and history. A new version is drafted, sent for review and approved. */
 export function TimetablesPage() {
   const navigate = useNavigate()
   const versions = useVersions()
@@ -15,7 +15,7 @@ export function TimetablesPage() {
     <>
       <PageHeader
         title="Timetables"
-        description="Published versions never change. To change a timetable, start a draft and have another scheduler approve it."
+        description="Published versions never change. To change a timetable, start a draft, send it for review and approve it."
         actions={
           <Can permission={Permissions.TimetableDraft}>
             <Button icon={<Plus aria-hidden className="size-4" />} onClick={() => setCreating(true)}>New draft</Button>

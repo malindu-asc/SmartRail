@@ -7,7 +7,7 @@ import { Button, ErrorState, PageHeader, TableSkeleton, Tabs } from '@/shared/co
 import { useQueryParam } from '@/shared/hooks'
 
 /**
- * Passenger notices. A controller sees Active, Awaiting approval, Drafts and Resolved and writes new ones; a scheduler sees only
+ * Passenger notices. A controller sees Active and Resolved and writes new ones; a scheduler sees only
  * planned works and announces new ones (REQ-OPS-016).
  */
 export function DisruptionsPage() {
@@ -37,9 +37,6 @@ export function DisruptionsPage() {
           onChange={setTab}
           items={[
             { value: 'active', label: 'Active', count: counts?.active },
-            { value: 'awaiting', label: 'Awaiting approval', count: counts?.awaitingApproval },
-            { value: 'drafts', label: 'Drafts', count: counts?.drafts },
-            { value: 'planned', label: 'Planned' },
             { value: 'resolved', label: 'Resolved', count: counts?.resolved },
           ]}
         />

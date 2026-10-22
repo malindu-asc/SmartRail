@@ -28,7 +28,7 @@ export function DriverMessagesPage() {
         onChange={setTab}
         items={[
           { value: 'messages', label: 'Messages', count: messages.data?.open },
-          { value: 'assistance', label: 'Assistance requests', count: assistance.data?.length },
+          { value: 'assistance', label: 'Driver reports', count: assistance.data?.length },
         ]}
       />
 
