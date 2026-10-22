@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_si.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,7 +93,10 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('si'),
+  ];
 
   /// No description provided for @appTitle.
   ///
@@ -105,6 +109,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get retry;
+
+  /// No description provided for @refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
 
   /// No description provided for @cancel.
   ///
@@ -151,7 +161,7 @@ abstract class AppLocalizations {
   /// No description provided for @tabMessages.
   ///
   /// In en, this message translates to:
-  /// **'Messages'**
+  /// **'Alerts'**
   String get tabMessages;
 
   /// No description provided for @tabMe.
@@ -160,41 +170,53 @@ abstract class AppLocalizations {
   /// **'Me'**
   String get tabMe;
 
-  /// No description provided for @offlineTitle.
+  /// No description provided for @syncedAt.
   ///
   /// In en, this message translates to:
-  /// **'You are offline'**
-  String get offlineTitle;
+  /// **'Synced {time}'**
+  String syncedAt(Object time);
 
-  /// No description provided for @offlineDetail.
+  /// No description provided for @offlineSynced.
   ///
   /// In en, this message translates to:
-  /// **'Actions cannot be sent until the connection is back.'**
-  String get offlineDetail;
+  /// **'Offline · last sync {time}'**
+  String offlineSynced(Object time);
 
-  /// No description provided for @signInTitle.
+  /// No description provided for @offlineNever.
   ///
   /// In en, this message translates to:
-  /// **'Driver sign in'**
-  String get signInTitle;
+  /// **'Offline'**
+  String get offlineNever;
 
-  /// No description provided for @signInWelcome.
+  /// No description provided for @signInHello.
   ///
   /// In en, this message translates to:
-  /// **'Sign in with the account your administrator gave you.'**
-  String get signInWelcome;
+  /// **'Welcome Back'**
+  String get signInHello;
 
-  /// No description provided for @emailLabel.
+  /// No description provided for @signInRole.
   ///
   /// In en, this message translates to:
-  /// **'Email'**
-  String get emailLabel;
+  /// **'Driver'**
+  String get signInRole;
 
-  /// No description provided for @emailHint.
+  /// No description provided for @signInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your organisation account to see today\'s duty.'**
+  String get signInSubtitle;
+
+  /// No description provided for @staffIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff ID or email'**
+  String get staffIdLabel;
+
+  /// No description provided for @staffIdHint.
   ///
   /// In en, this message translates to:
   /// **'name@railway.lk'**
-  String get emailHint;
+  String get staffIdHint;
 
   /// No description provided for @passwordLabel.
   ///
@@ -208,16 +230,28 @@ abstract class AppLocalizations {
   /// **'Your password'**
   String get passwordHint;
 
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your password? Contact control.'**
+  String get forgotPassword;
+
   /// No description provided for @signInButton.
   ///
   /// In en, this message translates to:
   /// **'Sign in'**
   String get signInButton;
 
+  /// No description provided for @safetyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety messages go by railway radio. This app is never the safety channel.'**
+  String get safetyNote;
+
   /// No description provided for @signInBadCredentials.
   ///
   /// In en, this message translates to:
-  /// **'That email or password is not right. Check them and try again.'**
+  /// **'That Staff ID or password is not right. Check them and try again.'**
   String get signInBadCredentials;
 
   /// No description provided for @signInNotDriver.
@@ -256,59 +290,17 @@ abstract class AppLocalizations {
   /// **'{from} to {to}'**
   String dutyRosterNoUnit(Object from, Object to);
 
-  /// No description provided for @dutyNoneTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'No duty today'**
-  String get dutyNoneTitle;
-
-  /// No description provided for @dutyNoneBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing is assigned to you today. The scheduler assigns duties. Pull down to check again.'**
-  String get dutyNoneBody;
-
-  /// No description provided for @dutyUpcoming.
-  ///
-  /// In en, this message translates to:
-  /// **'Your duty starts at {time}. You can sign on from 30 minutes before.'**
-  String dutyUpcoming(Object time);
-
-  /// No description provided for @dutyEnded.
-  ///
-  /// In en, this message translates to:
-  /// **'This duty has ended.'**
-  String get dutyEnded;
-
-  /// No description provided for @dutyHistoryEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No past duties in the last two weeks.'**
-  String get dutyHistoryEmpty;
-
-  /// No description provided for @dutyNeedsReview.
-  ///
-  /// In en, this message translates to:
-  /// **'This duty needs review by control.'**
-  String get dutyNeedsReview;
-
-  /// No description provided for @signOnButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign on to duty'**
-  String get signOnButton;
-
-  /// No description provided for @signOffButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign off duty'**
-  String get signOffButton;
-
-  /// No description provided for @signedOnAt.
+  /// No description provided for @signedOnChip.
   ///
   /// In en, this message translates to:
   /// **'Signed on {time}'**
-  String signedOnAt(Object time);
+  String signedOnChip(Object time);
+
+  /// No description provided for @noticeFromControl.
+  ///
+  /// In en, this message translates to:
+  /// **'Message from control'**
+  String get noticeFromControl;
 
   /// No description provided for @journeyNext.
   ///
@@ -334,6 +326,12 @@ abstract class AppLocalizations {
   /// **'Done'**
   String get journeyDone;
 
+  /// No description provided for @journeyRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'{origin} to {destination}'**
+  String journeyRoute(Object destination, Object origin);
+
   /// No description provided for @journeyCardLine.
   ///
   /// In en, this message translates to:
@@ -346,11 +344,107 @@ abstract class AppLocalizations {
   /// **'{stops} stops · arrives {time}'**
   String journeyCardNoPlatform(Object stops, Object time);
 
-  /// No description provided for @noticeFromControl.
+  /// No description provided for @journeyCardDone.
   ///
   /// In en, this message translates to:
-  /// **'Notice from control'**
-  String get noticeFromControl;
+  /// **'Arrived {time}'**
+  String journeyCardDone(Object time);
+
+  /// No description provided for @journeyCardDoneLate.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived {time} · {minutes} min late'**
+  String journeyCardDoneLate(Object minutes, Object time);
+
+  /// No description provided for @startJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Start {time} journey'**
+  String startJourney(Object time);
+
+  /// No description provided for @signOnButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign on to duty'**
+  String get signOnButton;
+
+  /// No description provided for @signOffButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign off duty'**
+  String get signOffButton;
+
+  /// No description provided for @dutyUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Your duty starts at {time}. You can sign on from 30 minutes before.'**
+  String dutyUpcoming(Object time);
+
+  /// No description provided for @dutyNoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No duty assigned'**
+  String get dutyNoneTitle;
+
+  /// No description provided for @dutyNoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact control to confirm your roster for today.'**
+  String get dutyNoneBody;
+
+  /// No description provided for @dutyNotCurrentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Duty not current'**
+  String get dutyNotCurrentTitle;
+
+  /// No description provided for @dutyNotCurrentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s duty shows when signal returns.'**
+  String get dutyNotCurrentBody;
+
+  /// No description provided for @dutyCantShowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We can\'t show today\'s duty yet'**
+  String get dutyCantShowTitle;
+
+  /// No description provided for @dutyCantShowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your paper duty sheet or the railway radio until this updates.'**
+  String get dutyCantShowBody;
+
+  /// No description provided for @dutyHistorySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own duties · last 30 days'**
+  String get dutyHistorySub;
+
+  /// No description provided for @dutyHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No past duties in the last 30 days.'**
+  String get dutyHistoryEmpty;
+
+  /// No description provided for @historyNeedsReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs review'**
+  String get historyNeedsReview;
+
+  /// No description provided for @historySignedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed off'**
+  String get historySignedOff;
+
+  /// No description provided for @historyLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} journeys'**
+  String historyLine(Object count);
 
   /// No description provided for @signOffTitle.
   ///
@@ -361,14 +455,26 @@ abstract class AppLocalizations {
   /// No description provided for @signOffBody.
   ///
   /// In en, this message translates to:
-  /// **'Only sign off when your shift is over. Journeys you have not finished stay with control.'**
+  /// **'All journeys are done and nothing is waiting to send.'**
   String get signOffBody;
+
+  /// No description provided for @signOffBodyUnfinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Some journeys are not finished. They stay with control.'**
+  String get signOffBodyUnfinished;
 
   /// No description provided for @signOffConfirm.
   ///
   /// In en, this message translates to:
   /// **'Sign off'**
   String get signOffConfirm;
+
+  /// No description provided for @staySignedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay signed on'**
+  String get staySignedOn;
 
   /// No description provided for @journeyTitle.
   ///
@@ -382,23 +488,35 @@ abstract class AppLocalizations {
   /// **'Help'**
   String get helpButton;
 
-  /// No description provided for @movingOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'Moving · one-tap actions only'**
-  String get movingOnly;
-
-  /// No description provided for @nextStop.
+  /// No description provided for @nextStopLabel.
   ///
   /// In en, this message translates to:
   /// **'NEXT STOP'**
-  String get nextStop;
+  String get nextStopLabel;
 
-  /// No description provided for @atStop.
+  /// No description provided for @atStopLabel.
   ///
   /// In en, this message translates to:
   /// **'AT STOP'**
-  String get atStop;
+  String get atStopLabel;
+
+  /// No description provided for @arrivingIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Arriving in about {minutes} min'**
+  String arrivingIn(Object minutes);
+
+  /// No description provided for @arrivingNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Arriving now'**
+  String get arrivingNow;
+
+  /// No description provided for @departsAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Departs {time}'**
+  String departsAt(Object time);
 
   /// No description provided for @scheduledAt.
   ///
@@ -406,11 +524,11 @@ abstract class AppLocalizations {
   /// **'Scheduled {time}'**
   String scheduledAt(Object time);
 
-  /// No description provided for @expectedAt.
+  /// No description provided for @arrivedDue.
   ///
   /// In en, this message translates to:
-  /// **'Expected {time}'**
-  String expectedAt(Object time);
+  /// **'Arrived {time} · due {due}'**
+  String arrivedDue(Object due, Object time);
 
   /// No description provided for @delayChip.
   ///
@@ -418,29 +536,29 @@ abstract class AppLocalizations {
   /// **'+{minutes} min'**
   String delayChip(Object minutes);
 
-  /// No description provided for @earlyChip.
-  ///
-  /// In en, this message translates to:
-  /// **'{minutes} min early'**
-  String earlyChip(Object minutes);
-
-  /// No description provided for @platformCoach.
+  /// No description provided for @platformLine.
   ///
   /// In en, this message translates to:
   /// **'Platform {platform}'**
-  String platformCoach(Object platform);
+  String platformLine(Object platform);
+
+  /// No description provided for @stopDeparted.
+  ///
+  /// In en, this message translates to:
+  /// **'Departed {time}'**
+  String stopDeparted(Object time);
+
+  /// No description provided for @stopPlatformHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform {platform} · here now'**
+  String stopPlatformHere(Object platform);
 
   /// No description provided for @stopHere.
   ///
   /// In en, this message translates to:
-  /// **'here now'**
+  /// **'Here now'**
   String get stopHere;
-
-  /// No description provided for @stopEstimate.
-  ///
-  /// In en, this message translates to:
-  /// **'Estimate · may change'**
-  String get stopEstimate;
 
   /// No description provided for @stopPlatformExpected.
   ///
@@ -448,11 +566,11 @@ abstract class AppLocalizations {
   /// **'Platform {platform} · expected'**
   String stopPlatformExpected(Object platform);
 
-  /// No description provided for @stopDeparted.
+  /// No description provided for @stopEstimate.
   ///
   /// In en, this message translates to:
-  /// **'Departed {time}'**
-  String stopDeparted(Object time);
+  /// **'Estimate · may change'**
+  String get stopEstimate;
 
   /// No description provided for @stopSkipped.
   ///
@@ -478,17 +596,35 @@ abstract class AppLocalizations {
   /// **'Departed {station}'**
   String departedFrom(Object station);
 
+  /// No description provided for @eventArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived {station}'**
+  String eventArrived(Object station);
+
+  /// No description provided for @eventDeparted.
+  ///
+  /// In en, this message translates to:
+  /// **'Departed {station}'**
+  String eventDeparted(Object station);
+
+  /// No description provided for @eventSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped {station}'**
+  String eventSkipped(Object station);
+
+  /// No description provided for @eventSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{event} saved'**
+  String eventSaved(Object event);
+
   /// No description provided for @delayReasonButton.
   ///
   /// In en, this message translates to:
   /// **'Delay reason'**
   String get delayReasonButton;
-
-  /// No description provided for @moreSkipStop.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip this stop'**
-  String get moreSkipStop;
 
   /// No description provided for @actionSaved.
   ///
@@ -565,38 +701,68 @@ abstract class AppLocalizations {
   /// No description provided for @skipTitle.
   ///
   /// In en, this message translates to:
-  /// **'Skip {station}?'**
+  /// **'Not stopping at {station}?'**
   String skipTitle(Object station);
 
   /// No description provided for @skipBody.
   ///
   /// In en, this message translates to:
-  /// **'Use this only when the train does not stop here. Passengers will see the stop as skipped.'**
+  /// **'Control is alerted straight away. Passengers are told only after control confirms or the train is seen passing.'**
   String get skipBody;
+
+  /// No description provided for @skipPlatformClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform closed'**
+  String get skipPlatformClosed;
+
+  /// No description provided for @skipInstructed.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructed by control'**
+  String get skipInstructed;
+
+  /// No description provided for @skipSafety.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety'**
+  String get skipSafety;
 
   /// No description provided for @skipConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Skip this stop'**
+  /// **'Report skipped stop'**
   String get skipConfirm;
+
+  /// No description provided for @mismatchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not saved'**
+  String get mismatchLabel;
 
   /// No description provided for @mismatchTitle.
   ///
   /// In en, this message translates to:
-  /// **'That is not the stop the train is at'**
+  /// **'That stop doesn\'t match'**
   String get mismatchTitle;
 
   /// No description provided for @mismatchBody.
   ///
   /// In en, this message translates to:
-  /// **'{expected}'**
-  String mismatchBody(Object expected);
+  /// **'{attempt} was not saved. The train is at {station}. Nothing on the journey has changed.'**
+  String mismatchBody(Object attempt, Object station);
 
-  /// No description provided for @mismatchRefresh.
+  /// No description provided for @mismatchRecord.
   ///
   /// In en, this message translates to:
-  /// **'Refresh the journey'**
-  String get mismatchRefresh;
+  /// **'Record {event}'**
+  String mismatchRecord(Object event);
+
+  /// No description provided for @mismatchHold.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold for control'**
+  String get mismatchHold;
 
   /// No description provided for @journeyCompleteTitle.
   ///
@@ -607,8 +773,37 @@ abstract class AppLocalizations {
   /// No description provided for @journeyCompleteBody.
   ///
   /// In en, this message translates to:
-  /// **'The train has arrived at {station}. Your events are saved.'**
-  String journeyCompleteBody(Object station);
+  /// **'{time} {route} · arrived {arrived}'**
+  String journeyCompleteBody(Object arrived, Object route, Object time);
+
+  /// No description provided for @journeyCompleteBodyLate.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} {route} · arrived {arrived}, {minutes} min late'**
+  String journeyCompleteBodyLate(
+    Object arrived,
+    Object minutes,
+    Object route,
+    Object time,
+  );
+
+  /// No description provided for @completeEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Events sent'**
+  String get completeEvents;
+
+  /// No description provided for @completeReasons.
+  ///
+  /// In en, this message translates to:
+  /// **'Delay reasons'**
+  String get completeReasons;
+
+  /// No description provided for @completeAcks.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages acknowledged'**
+  String get completeAcks;
 
   /// No description provided for @backToDuty.
   ///
@@ -619,20 +814,20 @@ abstract class AppLocalizations {
   /// No description provided for @messagesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Messages'**
+  /// **'Alerts'**
   String get messagesTitle;
 
-  /// No description provided for @messagesEmpty.
+  /// No description provided for @messagesSub.
   ///
   /// In en, this message translates to:
-  /// **'No messages from control.'**
-  String get messagesEmpty;
+  /// **'From control'**
+  String get messagesSub;
 
-  /// No description provided for @messageAckButton.
+  /// No description provided for @messageDelivered.
   ///
   /// In en, this message translates to:
-  /// **'Acknowledge'**
-  String get messageAckButton;
+  /// **'Delivered'**
+  String get messageDelivered;
 
   /// No description provided for @messageAcked.
   ///
@@ -640,23 +835,29 @@ abstract class AppLocalizations {
   /// **'Acknowledged {time}'**
   String messageAcked(Object time);
 
-  /// No description provided for @messageNeedsAck.
+  /// No description provided for @messageFrom.
   ///
   /// In en, this message translates to:
-  /// **'Needs your acknowledgement'**
-  String get messageNeedsAck;
+  /// **'Control · {time}'**
+  String messageFrom(Object time);
 
-  /// No description provided for @messageFromControl.
+  /// No description provided for @messageSheetFrom.
   ///
   /// In en, this message translates to:
-  /// **'Message from control'**
-  String get messageFromControl;
+  /// **'Message from control · {time}'**
+  String messageSheetFrom(Object time);
 
-  /// No description provided for @messageSent.
+  /// No description provided for @messageWaiting.
   ///
   /// In en, this message translates to:
-  /// **'Sent {time}'**
-  String messageSent(Object time);
+  /// **'Delivered {time} · waiting for your acknowledgement'**
+  String messageWaiting(Object time);
+
+  /// No description provided for @messageAckButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Acknowledge'**
+  String get messageAckButton;
 
   /// No description provided for @assistTitle.
   ///
@@ -667,20 +868,62 @@ abstract class AppLocalizations {
   /// No description provided for @assistBody.
   ///
   /// In en, this message translates to:
-  /// **'Control sees where you are and who you are. Say what is happening if you can.'**
+  /// **'Control sees your journey and last known position.'**
   String get assistBody;
 
-  /// No description provided for @assistNoteHint.
+  /// No description provided for @assistMedical.
   ///
   /// In en, this message translates to:
-  /// **'What is happening? (optional)'**
-  String get assistNoteHint;
+  /// **'Medical'**
+  String get assistMedical;
+
+  /// No description provided for @assistOvercrowding.
+  ///
+  /// In en, this message translates to:
+  /// **'Overcrowding'**
+  String get assistOvercrowding;
+
+  /// No description provided for @assistUnsafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsafe passenger situation'**
+  String get assistUnsafe;
+
+  /// No description provided for @assistOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get assistOther;
+
+  /// No description provided for @assistContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get assistContinue;
+
+  /// No description provided for @assistConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send request to control?'**
+  String get assistConfirmTitle;
+
+  /// No description provided for @assistConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} · {journey}. This does not change the journey. In an emergency, use the railway radio.'**
+  String assistConfirmBody(Object journey, Object type);
 
   /// No description provided for @assistSend.
   ///
   /// In en, this message translates to:
   /// **'Send request'**
   String get assistSend;
+
+  /// No description provided for @goBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get goBack;
 
   /// No description provided for @assistSentTitle.
   ///
@@ -691,8 +934,32 @@ abstract class AppLocalizations {
   /// No description provided for @assistSentBody.
   ///
   /// In en, this message translates to:
-  /// **'Control has your request and will contact you. Stay safe.'**
+  /// **'Control has your request and will decide what happens next. Stay on the railway radio.'**
   String get assistSentBody;
+
+  /// No description provided for @assistType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get assistType;
+
+  /// No description provided for @assistJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey'**
+  String get assistJourney;
+
+  /// No description provided for @assistSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get assistSent;
+
+  /// No description provided for @backToJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to journey'**
+  String get backToJourney;
 
   /// No description provided for @meTitle.
   ///
@@ -706,6 +973,24 @@ abstract class AppLocalizations {
   /// **'Driver'**
   String get meRole;
 
+  /// No description provided for @meDuty.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver · Duty {from} to {to}'**
+  String meDuty(Object from, Object to);
+
+  /// No description provided for @sharedPhoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared phone'**
+  String get sharedPhoneTitle;
+
+  /// No description provided for @sharedPhoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your saved duty and unsent events are cleared when you sign out.'**
+  String get sharedPhoneBody;
+
   /// No description provided for @signOutRow.
   ///
   /// In en, this message translates to:
@@ -715,13 +1000,13 @@ abstract class AppLocalizations {
   /// No description provided for @signOutTitle.
   ///
   /// In en, this message translates to:
-  /// **'Sign out?'**
+  /// **'Sign out of SmartRail?'**
   String get signOutTitle;
 
   /// No description provided for @signOutBody.
   ///
   /// In en, this message translates to:
-  /// **'You will need to sign in again to see your duty.'**
+  /// **'Your saved duty and any unsent events on this phone are cleared.'**
   String get signOutBody;
 
   /// No description provided for @signOutConfirm.
@@ -730,17 +1015,233 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get signOutConfirm;
 
-  /// No description provided for @signOutBlocked.
+  /// No description provided for @chooseLanguageTitle.
   ///
   /// In en, this message translates to:
-  /// **'Sign off your duty before signing out.'**
-  String get signOutBlocked;
+  /// **'Choose your language'**
+  String get chooseLanguageTitle;
 
-  /// No description provided for @notFoundTitle.
+  /// No description provided for @chooseLanguageBody.
   ///
   /// In en, this message translates to:
-  /// **'We could not find that page'**
-  String get notFoundTitle;
+  /// **'You can change this later in Me.'**
+  String get chooseLanguageBody;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageSinhala.
+  ///
+  /// In en, this message translates to:
+  /// **'සිංහල'**
+  String get languageSinhala;
+
+  /// No description provided for @meLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get meLanguage;
+
+  /// No description provided for @meHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get meHelpTitle;
+
+  /// No description provided for @techIssueRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a technical issue'**
+  String get techIssueRow;
+
+  /// No description provided for @emergencyRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contacts'**
+  String get emergencyRow;
+
+  /// No description provided for @techIssueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a technical issue'**
+  String get techIssueTitle;
+
+  /// No description provided for @techIssueBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell control about a problem with the app, your phone or the train\'s equipment. It is sent to control, not saved on your phone.'**
+  String get techIssueBody;
+
+  /// No description provided for @techApp.
+  ///
+  /// In en, this message translates to:
+  /// **'App problem'**
+  String get techApp;
+
+  /// No description provided for @techPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone or signal problem'**
+  String get techPhone;
+
+  /// No description provided for @techTrain.
+  ///
+  /// In en, this message translates to:
+  /// **'Train equipment fault'**
+  String get techTrain;
+
+  /// No description provided for @techOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get techOther;
+
+  /// No description provided for @techNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong? (optional)'**
+  String get techNoteHint;
+
+  /// No description provided for @techSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to control'**
+  String get techSend;
+
+  /// No description provided for @techSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to control'**
+  String get techSentTitle;
+
+  /// No description provided for @techSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Control has your report.'**
+  String get techSentBody;
+
+  /// No description provided for @emergencyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contacts'**
+  String get emergencyTitle;
+
+  /// No description provided for @emergencyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'In an emergency, use the railway radio first.'**
+  String get emergencyBody;
+
+  /// No description provided for @contactPolice.
+  ///
+  /// In en, this message translates to:
+  /// **'Police'**
+  String get contactPolice;
+
+  /// No description provided for @contactAmbulance.
+  ///
+  /// In en, this message translates to:
+  /// **'Ambulance (Suwa Seriya)'**
+  String get contactAmbulance;
+
+  /// No description provided for @contactFire.
+  ///
+  /// In en, this message translates to:
+  /// **'Fire and rescue'**
+  String get contactFire;
+
+  /// No description provided for @noticeNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network alert from control'**
+  String get noticeNetwork;
+
+  /// No description provided for @alertDirect.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct to you'**
+  String get alertDirect;
+
+  /// No description provided for @alertNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network alert'**
+  String get alertNetwork;
+
+  /// No description provided for @severityMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor'**
+  String get severityMinor;
+
+  /// No description provided for @severityMajor.
+  ///
+  /// In en, this message translates to:
+  /// **'Major'**
+  String get severityMajor;
+
+  /// No description provided for @severitySevere.
+  ///
+  /// In en, this message translates to:
+  /// **'Severe'**
+  String get severitySevere;
+
+  /// No description provided for @allStations.
+  ///
+  /// In en, this message translates to:
+  /// **'All stations'**
+  String get allStations;
+
+  /// No description provided for @alertSheetNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network alert · {time}'**
+  String alertSheetNetwork(Object time);
+
+  /// No description provided for @alertSheetPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to {places}'**
+  String alertSheetPlaces(Object places);
+
+  /// No description provided for @skipButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Not stopping here'**
+  String get skipButton;
+
+  /// No description provided for @alertsTabDirect.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct'**
+  String get alertsTabDirect;
+
+  /// No description provided for @alertsTabNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get alertsTabNetwork;
+
+  /// No description provided for @alertsEmptyDirect.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages for you from control.'**
+  String get alertsEmptyDirect;
+
+  /// No description provided for @alertsEmptyNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'No network alerts right now.'**
+  String get alertsEmptyNetwork;
 }
 
 class _AppLocalizationsDelegate
@@ -754,7 +1255,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'si'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -765,6 +1266,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'si':
+      return AppLocalizationsSi();
   }
 
   throw FlutterError(

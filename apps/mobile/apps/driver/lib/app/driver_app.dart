@@ -5,6 +5,7 @@ import 'package:smartrail_design_system/smartrail_design_system.dart';
 
 import '../core/routing/app_router.dart';
 import '../l10n/app_localizations.dart';
+import 'locale_provider.dart';
 
 /// The driver app: the driver theme (larger targets, for use on the move) and the router.
 class DriverApp extends ConsumerWidget {
@@ -15,7 +16,8 @@ class DriverApp extends ConsumerWidget {
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: SmartRailTheme.driver(),
-      supportedLocales: const [Locale('en')],
+      locale: ref.watch(localeProvider),
+      supportedLocales: supportedLanguages,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

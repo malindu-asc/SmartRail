@@ -1,5 +1,6 @@
 /// The paths of the driver app.
 abstract final class AppRoutes {
+  static const language = '/language';
   static const signIn = '/sign-in';
   static const duty = '/duty';
   static const messages = '/messages';

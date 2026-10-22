@@ -5,7 +5,7 @@ import 'package:smartrail_design_system/smartrail_design_system.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/auth_providers.dart';
 
-/// Driver sign in (design 00 and 41). Accounts are made by the administrator; there is no sign-up.
+/// Driver sign in (designs 00 and 41). Accounts are made by the administrator; there is no sign-up.
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
@@ -60,53 +60,81 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
     return Scaffold(
       backgroundColor: SmartRailColors.page,
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(SmartRailSpacing.lg),
-          children: [
-            const SizedBox(height: 24),
-            Center(child: Image.asset('assets/images/logo.png', height: 72)),
-            const SizedBox(height: 24),
-            Text(
-              l10n.signInTitle,
-              style: SmartRailType.headline.copyWith(
-                color: SmartRailColors.textPrimary,
+      body: Column(
+        children: [
+          Expanded(
+            child: SafeArea(
+              bottom: false,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(24, 56, 24, 24),
+                children: [
+                  Text(
+                    l10n.signInHello,
+                    style: SmartRailType.display.copyWith(
+                      color: SmartRailColors.textPrimary,
+                    ),
+                  ),
+                  Text(
+                    l10n.signInRole,
+                    style: SmartRailType.display.copyWith(
+                      color: SmartRailColors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    l10n.signInSubtitle,
+                    style: SmartRailType.body.copyWith(
+                      color: SmartRailColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  SmartRailTextField(
+                    label: l10n.staffIdLabel,
+                    hint: l10n.staffIdHint,
+                    controller: _email,
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: const [AutofillHints.username],
+                  ),
+                  const SizedBox(height: 16),
+                  SmartRailTextField(
+                    label: l10n.passwordLabel,
+                    hint: l10n.passwordHint,
+                    controller: _password,
+                    obscureText: true,
+                    autofillHints: const [AutofillHints.password],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.forgotPassword,
+                    style: SmartRailType.body14.copyWith(
+                      color: SmartRailColors.textSecondary,
+                    ),
+                  ),
+                  if (message != null) ...[
+                    const SizedBox(height: 16),
+                    InfoBanner(kind: BannerKind.warning, title: message),
+                  ],
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.signInWelcome,
-              style: SmartRailType.body14.copyWith(
-                color: SmartRailColors.textSecondary,
+          ),
+          StickyActionBar(
+            children: [
+              SmartRailButton(
+                label: l10n.signInButton,
+                onPressed: _busy ? null : _submit,
               ),
-            ),
-            const SizedBox(height: 24),
-            SmartRailTextField(
-              label: l10n.emailLabel,
-              hint: l10n.emailHint,
-              controller: _email,
-              keyboardType: TextInputType.emailAddress,
-              autofillHints: const [AutofillHints.email],
-            ),
-            const SizedBox(height: 16),
-            SmartRailTextField(
-              label: l10n.passwordLabel,
-              hint: l10n.passwordHint,
-              controller: _password,
-              obscureText: true,
-              autofillHints: const [AutofillHints.password],
-            ),
-            const SizedBox(height: 16),
-            if (message != null) ...[
-              InfoBanner(kind: BannerKind.warning, title: message),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
+              Text(
+                l10n.safetyNote,
+                textAlign: TextAlign.center,
+                style: SmartRailType.caption.copyWith(
+                  color: SmartRailColors.textSecondary,
+                ),
+              ),
             ],
-            SmartRailButton(
-              label: l10n.signInButton,
-              onPressed: _busy ? null : _submit,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

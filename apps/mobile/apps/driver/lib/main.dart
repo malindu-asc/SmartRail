@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/app_overrides.dart';
+import 'app/locale_provider.dart';
 import 'app/driver_app.dart';
 import 'features/auth/data/auth_data.dart';
 import 'features/auth/presentation/providers/auth_providers.dart';
@@ -10,6 +11,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Whoever was signed in last time still is, without asking again.
   final session = await SecureSessionStore().read();
+  // The language chosen on the first launch, if there was one.
+  final language = await SecureLanguageStore().read();
 
   runApp(
     ProviderScope(
@@ -18,6 +21,7 @@ Future<void> main() async {
       overrides: [
         ...appOverrides,
         initialSessionProvider.overrideWithValue(session),
+        initialLanguageProvider.overrideWithValue(language),
       ],
       child: const DriverApp(),
     ),

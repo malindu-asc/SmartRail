@@ -125,7 +125,8 @@ class SegmentedPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: SmartRailColors.bgSoft,
+        // A clearer grey than the page tint, so the track of the switch is easy to see.
+        color: const Color(0xFFDDE1E6),
         borderRadius: BorderRadius.circular(SmartRailRadius.pill),
       ),
       child: Row(

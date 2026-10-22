@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smartrail_api_client/smartrail_api_client.dart';
-import 'package:smartrail_design_system/smartrail_design_system.dart';
 
 import '../../features/messages/messages.dart';
 import '../../l10n/app_localizations.dart';
 
-/// The frame around the tabs: the offline banner when the API cannot be reached, and the Duty, Messages and Me tabs.
+/// The frame around the tabs: the Duty, Messages and Me tab bar. Whether the phone is offline is shown on each screen's top line.
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.shell});
 
@@ -16,33 +15,11 @@ class AppShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final online = ref.watch(reachabilityProvider).online;
-    final unread = ref.watch(unreadCountProvider);
+    final unread = ref.watch(unreadAlertsProvider);
 
     return ReachabilityLifecycle(
       child: Scaffold(
-        body: Column(
-          children: [
-            AnimatedSize(
-              duration: SmartRailMotion.of(context, SmartRailMotion.base),
-              curve: SmartRailMotion.curve,
-              alignment: Alignment.topCenter,
-              child: online
-                  ? const SizedBox(width: double.infinity)
-                  : SafeArea(
-                      bottom: false,
-                      child: Padding(
-                        padding: const EdgeInsets.all(SmartRailSpacing.lg),
-                        child: OfflineBanner(
-                          title: l10n.offlineTitle,
-                          detail: l10n.offlineDetail,
-                        ),
-                      ),
-                    ),
-            ),
-            Expanded(child: shell),
-          ],
-        ),
+        body: shell,
         bottomNavigationBar: NavigationBar(
           selectedIndex: shell.currentIndex,
           onDestinationSelected: (index) => shell.goBranch(
@@ -51,20 +28,20 @@ class AppShell extends ConsumerWidget {
           ),
           destinations: [
             NavigationDestination(
-              icon: const Icon(Icons.train_outlined),
-              selectedIcon: const Icon(Icons.train),
+              icon: const Icon(Icons.assignment_turned_in_outlined),
+              selectedIcon: const Icon(Icons.assignment_turned_in),
               label: l10n.tabDuty,
             ),
             NavigationDestination(
               icon: Badge(
                 isLabelVisible: unread > 0,
                 label: Text('$unread'),
-                child: const Icon(Icons.chat_bubble_outline),
+                child: const Icon(Icons.notifications_none),
               ),
               selectedIcon: Badge(
                 isLabelVisible: unread > 0,
                 label: Text('$unread'),
-                child: const Icon(Icons.chat_bubble),
+                child: const Icon(Icons.notifications),
               ),
               label: l10n.tabMessages,
             ),

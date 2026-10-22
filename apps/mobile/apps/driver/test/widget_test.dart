@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:smartrail_core/smartrail_core.dart';
 import 'package:driver_app/app/driver_app.dart';
+import 'package:driver_app/app/locale_provider.dart';
 import 'package:driver_app/features/auth/domain/auth_domain.dart';
 import 'package:driver_app/features/auth/presentation/providers/auth_providers.dart';
 import 'package:driver_app/features/duty/domain/duty_domain.dart';
@@ -75,17 +76,37 @@ class _NoMessages implements MessagesRepository {
 }
 
 void main() {
-  testWidgets('a signed-out driver sees sign in', (tester) async {
+  testWidgets('the first launch asks for a language, English or Sinhala only', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: DriverApp()));
     await tester.pumpAndSettle();
 
-    expect(find.text('Driver sign in'), findsOneWidget);
+    expect(find.text('Choose your language'), findsOneWidget);
+    expect(find.text('English'), findsOneWidget);
+    expect(find.text('සිංහල'), findsOneWidget);
+    expect(find.text('Tamil'), findsNothing);
+
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+    expect(find.text('Welcome Back'), findsOneWidget);
+  });
+
+  testWidgets('a signed-out driver who has chosen a language sees sign in', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [initialLanguageProvider.overrideWithValue(const Locale('en'))],
+        child: const DriverApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Welcome Back'), findsOneWidget);
   });
 
   testWidgets('a signed-in driver sees the duty and can sign on', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          initialLanguageProvider.overrideWithValue(const Locale('en')),
           initialSessionProvider.overrideWithValue(
             Session(
               accessToken: 'a',
