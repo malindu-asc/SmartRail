@@ -897,5 +897,6 @@
   "seatHoldNote": "Your seats are held for 10 minutes once you confirm.",
   "stationsAll": "All stations",
   "foodOrder": "Order food",
-  "foodPick": "Choose a station"
+  "foodPick": "Choose a station",
+  "ticketBackHome": "Back to home"
 }

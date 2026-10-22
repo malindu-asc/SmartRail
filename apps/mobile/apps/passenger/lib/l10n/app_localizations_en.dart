@@ -1163,4 +1163,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get foodPick => 'Choose a station';
+
+  @override
+  String get ticketBackHome => 'Back to home';
 }

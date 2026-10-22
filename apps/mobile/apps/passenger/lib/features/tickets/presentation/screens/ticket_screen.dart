@@ -30,6 +30,17 @@ class TicketScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: SmartRailColors.page,
       appBar: SmartRailAppBar(title: Text(l10n.ticketTitle)),
+      // Right after buying, the person can go home from here; the back arrow alone only went back through the booking.
+      bottomNavigationBar: created
+          ? StickyActionBar(
+              children: [
+                SmartRailButton(
+                  label: l10n.ticketBackHome,
+                  onPressed: () => context.go(AppRoutes.home),
+                ),
+              ],
+            )
+          : null,
       body: ticket.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => FailureView(

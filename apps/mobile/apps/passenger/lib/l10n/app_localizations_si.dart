@@ -1160,4 +1160,7 @@ class AppLocalizationsSi extends AppLocalizations {
 
   @override
   String get foodPick => 'ස්ථානයක් තෝරන්න';
+
+  @override
+  String get ticketBackHome => 'මුල් පිටුවට ආපසු';
 }

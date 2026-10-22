@@ -2016,6 +2016,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose a station'**
   String get foodPick;
+
+  /// No description provided for @ticketBackHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to home'**
+  String get ticketBackHome;
 }
 
 class _AppLocalizationsDelegate

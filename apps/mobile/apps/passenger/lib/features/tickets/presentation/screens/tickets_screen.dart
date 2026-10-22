@@ -145,104 +145,131 @@ class _Signed extends ConsumerWidget {
 
     // Design 24: nobody has a ticket at all, so there is no Active / Past switch, just the empty state and More actions.
     if (!past && active != null && active.isEmpty) {
-      return RefreshIndicator(
-        onRefresh: () async => ref.invalidate(ticketListProvider),
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-          children: [
-            title,
-            const SizedBox(height: 16),
-            _Empty(title: l10n.ticketsEmptyTitle, body: l10n.ticketsEmptyBody),
-            const SizedBox(height: 16),
-            SmartRailButton(
-              label: l10n.ticketsBuy,
-              onPressed: () => context.go(AppRoutes.plan),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.ticketsMoreActions,
-              style: SmartRailType.heading16.copyWith(
-                color: SmartRailColors.textPrimary,
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Align(alignment: Alignment.centerLeft, child: title),
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async => ref.invalidate(ticketListProvider),
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                children: [
+                  _Empty(
+                    title: l10n.ticketsEmptyTitle,
+                    body: l10n.ticketsEmptyBody,
+                  ),
+                  const SizedBox(height: 16),
+                  SmartRailButton(
+                    label: l10n.ticketsBuy,
+                    onPressed: () => context.go(AppRoutes.plan),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.ticketsMoreActions,
+                    style: SmartRailType.heading16.copyWith(
+                      color: SmartRailColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  RowsCard(
+                    children: [
+                      ActionRow(
+                        icon: AppIcons.plus,
+                        label: l10n.ticketsAddWithCode,
+                        onTap: () => showAddTicketSheet(context),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            RowsCard(
-              children: [
-                ActionRow(
-                  icon: AppIcons.plus,
-                  label: l10n.ticketsAddWithCode,
-                  onTap: () => showAddTicketSheet(context),
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+        ],
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: () async => ref.invalidate(ticketListProvider),
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-        children: [
-          title,
-          const SizedBox(height: 14),
-          SegmentedPill(
-            left: l10n.ticketsActive,
-            right: l10n.ticketsPast,
-            rightSelected: past,
-            onChanged: onSegment,
-          ),
-          const SizedBox(height: 14),
-          ...tickets.when(
-            loading: () => [const Skeleton(width: double.infinity, height: 76)],
-            error: (error, _) => [
-              FailureView(
-                error: error,
-                onRetry: () => ref.invalidate(ticketListProvider(past)),
+    // The title and the Active / Past switch stay at the top; only the tickets below them scroll.
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              title,
+              const SizedBox(height: 14),
+              SegmentedPill(
+                left: l10n.ticketsActive,
+                right: l10n.ticketsPast,
+                rightSelected: past,
+                onChanged: onSegment,
               ),
             ],
-            data: (list) => list.isEmpty
-                ? [
-                    _Empty(
-                      title: l10n.ticketsEmptyTitle,
-                      body: l10n.ticketsNonePast,
-                    ),
-                  ]
-                : [
-                    for (var i = 0; i < list.length; i++) ...[
-                      if (i > 0) const SizedBox(height: 14),
-                      AppearIn(
-                        index: i,
-                        child: TicketCard(
-                          ticket: list[i],
-                          onTap: () => _open(context, list[i]),
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 16),
-                    Center(
-                      child: TextButton.icon(
-                        onPressed: () => showAddTicketSheet(context),
-                        icon: const SvgIcon(
-                          AppIcons.plus,
-                          size: 18,
-                          color: SmartRailColors.primaryPressed,
-                        ),
-                        label: Text(
-                          l10n.ticketsAddWithCode,
-                          style: SmartRailType.label14.copyWith(
-                            color: SmartRailColors.primaryPressed,
-                          ),
-                        ),
-                      ),
+          ),
+        ),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () async => ref.invalidate(ticketListProvider),
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              children: [
+                ...tickets.when(
+                  loading: () => [
+                    const Skeleton(width: double.infinity, height: 76),
+                  ],
+                  error: (error, _) => [
+                    FailureView(
+                      error: error,
+                      onRetry: () => ref.invalidate(ticketListProvider(past)),
                     ),
                   ],
+                  data: (list) => list.isEmpty
+                      ? [
+                          _Empty(
+                            title: l10n.ticketsEmptyTitle,
+                            body: l10n.ticketsNonePast,
+                          ),
+                        ]
+                      : [
+                          for (var i = 0; i < list.length; i++) ...[
+                            if (i > 0) const SizedBox(height: 14),
+                            AppearIn(
+                              index: i,
+                              child: TicketCard(
+                                ticket: list[i],
+                                onTap: () => _open(context, list[i]),
+                              ),
+                            ),
+                          ],
+                          const SizedBox(height: 16),
+                          Center(
+                            child: TextButton.icon(
+                              onPressed: () => showAddTicketSheet(context),
+                              icon: const SvgIcon(
+                                AppIcons.plus,
+                                size: 18,
+                                color: SmartRailColors.primaryPressed,
+                              ),
+                              label: Text(
+                                l10n.ticketsAddWithCode,
+                                style: SmartRailType.label14.copyWith(
+                                  color: SmartRailColors.primaryPressed,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
