@@ -299,7 +299,7 @@
   "users": [
     {
       "username": "passenger",
-      "email": "passenger@smartrail.test",
+      "email": "passenger@gmail.com",
       "firstName": "Pasan",
       "lastName": "Passenger",
       "enabled": true,
@@ -307,7 +307,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "Passenger#123",
+          "value": "Passenger12345",
           "temporary": false
         }
       ],
@@ -318,7 +318,7 @@
     },
     {
       "username": "driver",
-      "email": "driver@smartrail.test",
+      "email": "driver@gmail.com",
       "firstName": "Dilan",
       "lastName": "Driver",
       "enabled": true,
@@ -326,7 +326,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "Driver#123",
+          "value": "Driver12345",
           "temporary": false
         }
       ],
@@ -374,6 +374,25 @@
       "id": "a1000000-0000-4000-8000-000000000005"
     },
     {
+      "username": "scheduler2",
+      "email": "scheduler2@gmail.com",
+      "firstName": "Ruwan",
+      "lastName": "Jayawardena",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Scheduler212345",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "scheduler"
+      ],
+      "id": "a1000000-0000-4000-8000-000000000015"
+    },
+    {
       "username": "admin",
       "email": "admin@gmail.com",
       "firstName": "James",
@@ -412,83 +431,16 @@
       "id": "a1000000-0000-4000-8000-000000000006"
     },
     {
-      "username": "stationmaster1",
-      "email": "stationmaster1@gmail.com",
-      "firstName": "Oshadi",
-      "lastName": "Wijesinghe",
+      "username": "driver2",
+      "email": "driver2@gmail.com",
+      "firstName": "Mahesh",
+      "lastName": "Driver",
       "enabled": true,
       "emailVerified": true,
       "credentials": [
         {
           "type": "password",
-          "value": "Stationmaster112345",
-          "temporary": false
-        }
-      ],
-      "realmRoles": [
-        "station_master"
-      ],
-      "id": "a1000000-0000-4000-8000-000000000007",
-      "attributes": {
-        "station_codes": [
-          "OAK"
-        ]
-      }
-    },
-    {
-      "username": "stationmaster2",
-      "email": "stationmaster2@gmail.com",
-      "firstName": "Tharindu",
-      "lastName": "Bandara",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "Stationmaster212345",
-          "temporary": false
-        }
-      ],
-      "realmRoles": [
-        "station_master"
-      ],
-      "id": "a1000000-0000-4000-8000-000000000008",
-      "attributes": {
-        "station_codes": [
-          "CEN"
-        ]
-      }
-    },
-    {
-      "username": "inspector",
-      "email": "inspector@gmail.com",
-      "firstName": "Ishara",
-      "lastName": "Inspector",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "Inspector12345",
-          "temporary": false
-        }
-      ],
-      "realmRoles": [
-        "inspector"
-      ],
-      "id": "a1000000-0000-4000-8000-000000000009"
-    },
-    {
-      "username": "michael",
-      "email": "michael@smartrail.test",
-      "firstName": "Michael",
-      "lastName": "Fernando",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "Staff#123",
+          "value": "Driver212345",
           "temporary": false
         }
       ],
@@ -498,16 +450,16 @@
       "id": "a1000000-0000-4000-8000-000000000010"
     },
     {
-      "username": "anil",
-      "email": "anil@smartrail.test",
+      "username": "driver3",
+      "email": "driver3@gmail.com",
       "firstName": "Anil",
-      "lastName": "Silva",
+      "lastName": "Driver",
       "enabled": true,
       "emailVerified": true,
       "credentials": [
         {
           "type": "password",
-          "value": "Staff#123",
+          "value": "Driver312345",
           "temporary": false
         }
       ],
@@ -515,68 +467,6 @@
         "driver"
       ],
       "id": "a1000000-0000-4000-8000-000000000011"
-    },
-    {
-      "username": "jayasuriya",
-      "email": "jayasuriya@smartrail.test",
-      "firstName": "R.",
-      "lastName": "Jayasuriya",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "Staff#123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": [
-        "driver"
-      ],
-      "id": "a1000000-0000-4000-8000-000000000012"
-    },
-    {
-      "username": "gunasekara",
-      "email": "gunasekara@smartrail.test",
-      "firstName": "T.",
-      "lastName": "Gunasekara",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "Staff#123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": [
-        "driver"
-      ],
-      "id": "a1000000-0000-4000-8000-000000000013",
-      "attributes": {
-        "employment_end": [
-          "2026-10-10"
-        ]
-      }
-    },
-    {
-      "username": "nperera",
-      "email": "nperera@smartrail.test",
-      "firstName": "N.",
-      "lastName": "Perera",
-      "enabled": false,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "Staff#123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": [
-        "driver"
-      ],
-      "id": "a1000000-0000-4000-8000-000000000014"
     },
     {
       "username": "service-account-smartrail-identity-admin",

@@ -86,11 +86,9 @@ Authority is split by accountability. The administrator decides who can do what 
 | Username | Role | Notes |
 |---|---|---|
 | `controller`, `controller2` | Network controller | Two, so a network-wide notice has a second approver |
-| `scheduler` | Scheduler | A second scheduler is created through the administrator console to try the timetable approval |
+| `scheduler`, `scheduler2` | Scheduler | Two, so a timetable draft has a different approver |
 | `admin` | System administrator | |
-| `stationmaster1`, `stationmaster2` | Station master | Different stations, for the scope test |
-| `driver`, `michael`, `anil`, `jayasuriya`, `gunasekara`, `nperera` | Driver | `driver` drives train F102 in the demo |
-| `inspector` | Ticket inspector | |
+| `driver`, `driver2`, `driver3` | Driver | The three demo drivers; the demo fleet seed gives each one a trainset |
 | `passenger` | Passenger | |
 
 ## 3. Where every app feature comes from
@@ -321,7 +319,9 @@ Each `audit_entries` table is append-only through a PostgreSQL trigger.
 
 ## 8. Seeded demo data and a test walk-through
 
-With the stack running in development (`Demo:Scenarios:Enabled`), the API seeds on start:
+The base demo seed is small: the fictional network and timetable, eight trainsets, three drivers, and today's journeys assigned to them (`Journeys:Seed:DemoFleet`). Everything else (users, notices, driver messages, assignments for the rest of the week) is created through the apps.
+
+Optionally, `Demo:Scenarios:Enabled=true` (off by default, not used in the demo) adds test data for trying every screen. The API then seeds on start:
 
 - Trains in many states (finished early and late, running on time and 12 minutes late, one with no live data, cancelled, platform changes) with tickets on them.
 - Notices: five published (one of them network-wide), one resolved, one **waiting for approval** (written by `controller2`, so `controller` can approve it), **planned works** (starts in two days, by the scheduler), and a **draft**.

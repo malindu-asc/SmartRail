@@ -74,9 +74,12 @@ services:
       Database__ApplyMigrationsOnStartup: "true"
       Network__Seed__ReferenceData: "true"
       Journeys__Generation__RunOnStartup: "true"
-      Journeys__Seed__DemoFleet: "true"
-      # Development only: late, cancelled and silent trains, tickets and notices for trying every screen.
-      Demo__Scenarios__Enabled: "true"
+      # No pre-assigned drivers: the scheduler generates the week's plan in the console (Planning, Week), then approves it.
+      Journeys__Planning__ApprovalRequired: "true"
+      # Demo only: a driver taps at each stop, minutes apart, so keep the last estimate for longer before a train falls back to "Scheduled".
+      # The defaults are 60 and 300 seconds (a live feed sends positions every few seconds).
+      Journeys__Live__StaleAfterSeconds: "900"
+      Journeys__Live__UnknownAfterSeconds: "1800"
       # Development feed sources for the simulator (SPEC-005). Never use these keys outside development.
       Identity__FeedSources__Seed__0__Code: "SIM"
       Identity__FeedSources__Seed__0__Name: "Development feed"
