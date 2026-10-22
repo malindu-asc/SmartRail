@@ -14,7 +14,7 @@ public sealed class TimetableVersionConfiguration : IEntityTypeConfiguration<Tim
         {
             t.HasCheckConstraint("ck_timetable_versions_status", "status in ('Draft', 'InReview', 'Published', 'Superseded')");
             t.HasCheckConstraint("ck_timetable_versions_effective", "status in ('Draft', 'InReview') or effective_from is not null");
-            t.HasCheckConstraint("ck_timetable_versions_approver", "status not in ('Published', 'Superseded') or (approved_by is not null and approved_by <> author)");
+            t.HasCheckConstraint("ck_timetable_versions_approver", "status not in ('Published', 'Superseded') or approved_by is not null");
         });
 
         builder.HasKey(v => v.Id);

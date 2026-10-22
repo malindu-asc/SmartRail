@@ -46,6 +46,28 @@ public sealed class TimetableVersion : AuditableEntity
         return Result.Success();
     }
 
+    public Result RemoveService(Guid serviceId)
+    {
+        if (Status is not (TimetableVersionStatus.Draft or TimetableVersionStatus.InReview))
+            return NetworkErrors.VersionNotEditable(Status.ToString());
+
+        var service = _services.FirstOrDefault(s => s.Id == serviceId);
+        if (service is null)
+            return NetworkErrors.ServiceNotInVersion(serviceId);
+
+        _services.Remove(service);
+        return Result.Success();
+    }
+
+    public Result ChangeServiceTimes(Guid serviceId, IReadOnlyList<ServiceStopTime> times)
+    {
+        if (Status is not (TimetableVersionStatus.Draft or TimetableVersionStatus.InReview))
+            return NetworkErrors.VersionNotEditable(Status.ToString());
+
+        var service = _services.FirstOrDefault(s => s.Id == serviceId);
+        return service is null ? NetworkErrors.ServiceNotInVersion(serviceId) : service.ChangeTimes(times);
+    }
+
     public Result SubmitForReview()
     {
         if (Status != TimetableVersionStatus.Draft)
@@ -58,13 +80,13 @@ public sealed class TimetableVersion : AuditableEntity
         return Result.Success();
     }
 
-    // The approver is a different person from the author (checked on the user, not the role).
+    // The scheduler who drafted a version may publish it too: there is no second approver.
     public Result Publish(DateOnly effectiveFrom, string approver, DateTimeOffset publishedAt)
     {
         if (Status != TimetableVersionStatus.InReview)
             return NetworkErrors.VersionWrongState(nameof(TimetableVersionStatus.InReview), Status.ToString());
 
-        if (string.IsNullOrWhiteSpace(approver) || string.Equals(approver.Trim(), Author, StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrWhiteSpace(approver))
             return NetworkErrors.AuthorCannotApprove;
 
         Status = TimetableVersionStatus.Published;

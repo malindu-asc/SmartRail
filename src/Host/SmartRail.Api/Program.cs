@@ -1,6 +1,7 @@
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 using SmartRail.Api.Authentication;
+using SmartRail.Api.Development;
 using SmartRail.Api.Core;
 using SmartRail.Api.Extensions;
 using SmartRail.Application.Core;
@@ -11,6 +12,7 @@ using SmartRail.Modules.Journeys.Infrastructure.Extensions;
 using SmartRail.Modules.Network.Infrastructure.Extensions;
 using SmartRail.Modules.Notifications.Infrastructure.Extensions;
 using SmartRail.Modules.Operations.Infrastructure.Extensions;
+using SmartRail.Modules.Ticketing.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,7 @@ builder.Services.AddNetworkModule(builder.Configuration);
 builder.Services.AddJourneysModule(builder.Configuration);
 builder.Services.AddOperationsModule(builder.Configuration);
 builder.Services.AddNotificationsModule(builder.Configuration);
+builder.Services.AddTicketingModule(builder.Configuration);
 
 // Once, for every module: MediatR handlers, validators, pipeline behaviours, integration-event handlers.
 builder.Services.AddApplicationCore(
@@ -28,7 +31,8 @@ builder.Services.AddApplicationCore(
     NetworkModule.ApplicationAssembly,
     JourneysModule.ApplicationAssembly,
     OperationsModule.ApplicationAssembly,
-    NotificationsModule.ApplicationAssembly);
+    NotificationsModule.ApplicationAssembly,
+    TicketingModule.ApplicationAssembly);
 
 builder.Services.AddInfrastructureCore(builder.Configuration);
 builder.Services.AddApiCore();
@@ -63,6 +67,14 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
+// Off by default. Development scenarios: trains that are late, cancelled or silent, tickets and notices to match (see DemoScenarios.cs).
+var demoScenarios = builder.Configuration.GetValue<bool>("Demo:Scenarios:Enabled");
+if (demoScenarios)
+{
+    builder.Services.AddScoped<DemoScenarioSeeder>();
+    builder.Services.AddHostedService<DemoScenarioWorker>();
+}
+
 var app = builder.Build();
 
 app.UseExceptionHandler();
@@ -96,6 +108,13 @@ if (app.Configuration.GetValue<bool>("Network:Seed:ReferenceData"))
 if (app.Configuration.GetSection("Identity:FeedSources:Seed").GetChildren().Any())
 {
     await app.SeedFeedSourcesAsync();
+}
+
+// Applies the scenarios again, for example after a new day's trains were generated.
+if (demoScenarios)
+{
+    app.MapPost("/api/dev/scenarios/apply", async (DemoScenarioSeeder seeder, CancellationToken ct) =>
+        Results.Ok(await seeder.ApplyAsync(ct))).AllowAnonymous();
 }
 
 app.UseAuthentication();

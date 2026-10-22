@@ -2,7 +2,10 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SmartRail.Application.Core.Abstractions;
+using SmartRail.Infrastructure.Core.Audit;
 using SmartRail.Infrastructure.Core.Outbox;
+using SmartRail.Modules.Journeys.Application.Ops;
 using SmartRail.Infrastructure.Core.Persistence;
 using SmartRail.Modules.Journeys.Application.Abstractions;
 using SmartRail.Modules.Journeys.Contracts;
@@ -35,8 +38,20 @@ public static class JourneysModule
         services.AddScoped<JourneyReader>();
         services.AddScoped<IJourneyReader>(sp => sp.GetRequiredService<JourneyReader>());
         services.AddScoped<IJourneyLookup>(sp => sp.GetRequiredService<JourneyReader>());
+        services.AddScoped<IJourneySearch, SmartRail.Modules.Journeys.Application.Queries.Search.JourneySearch>();
+        services.AddScoped<IAffectedJourneys, SmartRail.Modules.Journeys.Application.Queries.GetBoard.AffectedJourneys>();
         services.AddScoped<IJourneysAuditLog, JourneysAuditLog>();
         services.AddScoped<IIngestStore, IngestStore>();
+
+        // The controller and scheduler consoles (SPEC-031): reads, actions, planning, reports.
+        services.AddScoped<IOpsJourneyReader, OpsJourneyReader>();
+        services.AddScoped<IPlanningStore, PlanningStore>();
+        services.AddScoped<IDriverStore, DriverStore>();
+        services.AddScoped<ITelemetryHold, TelemetryHold>();
+        services.AddScoped<JourneyActions>();
+        services.AddScoped<IOpsJourneyStats, OpsJourneyStats>();
+        services.AddScoped<IJourneyControl, JourneyControl>();
+        services.AddScoped<IAuditSource>(sp => new AuditSource<JourneysDbContext>(sp.GetRequiredService<JourneysDbContext>(), "journeys", false));
 
         // The numbers behind live data (Journeys:Live): stale and unknown thresholds, dwell, speed ceiling.
         services.AddSingleton(configuration.GetSection("Journeys:Live").Get<LiveRules>() ?? LiveRules.Default);
@@ -44,6 +59,8 @@ public static class JourneysModule
         services.Configure<JourneyGenerationOptions>(configuration.GetSection(JourneyGenerationOptions.SectionName));
         services.AddScoped<JourneyGenerationRunner>();
         services.AddScoped<DemoFleetSeeder>();
+        services.AddScoped<IWeekPlanner>(sp => sp.GetRequiredService<DemoFleetSeeder>());
+        services.AddScoped<IPlanApprovals, PlanApprovals>();
         services.AddHostedService<JourneyGenerationWorker>();
 
         return services;

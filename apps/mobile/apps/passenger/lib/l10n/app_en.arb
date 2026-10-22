@@ -1,0 +1,902 @@
+{
+  "@@locale": "en",
+  "appTitle": "SmartRail",
+  "tabHome": "Home",
+  "tabPlan": "Plan",
+  "tabTickets": "Tickets",
+  "tabAlerts": "Alerts",
+  "tabMe": "Me",
+  "onbSkip": "Skip",
+  "onbNext": "Next",
+  "onbDone": "Go to app",
+  "onb1Title": "Know before you go",
+  "onb1Body": "Live departures, delays and platform changes for every station.",
+  "onb2Title": "Follow your journey",
+  "onb2Body": "Get an alert when your platform changes or your train is delayed.",
+  "onb3Title": "Honest about old data",
+  "onb3Body": "When we can't confirm a time, we say so instead of guessing.",
+  "greetingMorning": "Good morning",
+  "greetingAfternoon": "Good afternoon",
+  "greetingEvening": "Good evening",
+  "homeWhereTo": "Where to today?",
+  "fromLabel": "From",
+  "toLabel": "To",
+  "chooseStation": "Choose a station",
+  "findTrains": "Find trains",
+  "homeFollowedStations": "Followed stations",
+  "homeFollowEmptyTitle": "No followed stations yet",
+  "homeFollowEmptyBody": "Follow a station to see its next train here.",
+  "homeFindStation": "Find a station",
+  "homeFollowedJourneys": "Followed journeys",
+  "stationsTitle": "Stations",
+  "stationsSearchLabel": "Station name or code",
+  "stationsSearchHint": "For example Central or CEN",
+  "stationsResults": "Results",
+  "stationsRecent": "Recent",
+  "stationsEmptyTitle": "No stations match",
+  "stationsEmptyBody": "Try the name or the short code, for example CEN.",
+  "stationsIntro": "Search for a station to see its live departures.",
+  "freshLive": "Live · updated {time}",
+  "@freshLive": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "freshStale": "As of {time}",
+  "@freshStale": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "freshSaved": "Saved {time}",
+  "@freshSaved": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "departuresToday": "Today",
+  "departuresEmptyTitle": "No more trains today",
+  "departuresEmptyBody": "Check again tomorrow or look at another station.",
+  "inMinutes": "in {n} min",
+  "@inMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "platformN": "Platform {p}",
+  "@platformN": {
+    "placeholders": {
+      "p": {
+        "type": "String"
+      }
+    }
+  },
+  "platformTba": "Platform to be announced",
+  "chipOnTime": "On time",
+  "chipDelayed": "+{n} min",
+  "@chipDelayed": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "chipCancelled": "Cancelled",
+  "chipPlatformChanged": "Platform changed",
+  "chipNoLiveData": "No live data",
+  "scheduledOnly": "Scheduled",
+  "scheduledNoUpdate": "Scheduled · no update since {time}",
+  "@scheduledNoUpdate": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "expectedAt": "Expected {time}",
+  "@expectedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "followStation": "Follow station",
+  "followingStation": "Following",
+  "indicativeNote": "Times are provided for information. Listen for station announcements.",
+  "trainNumber": "Train {n}",
+  "@trainNumber": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "journeyHeader": "{time} to {destination}",
+  "@journeyHeader": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "journeyTitle": "{origin} to {destination}",
+  "@journeyTitle": {
+    "placeholders": {
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "headlineRunningOnTime": "Running · on time",
+  "headlineDelayed": "Delayed · +{n} min",
+  "@headlineDelayed": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "headlineNoLive": "No live data since {time}",
+  "@headlineNoLive": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "headlineNoLiveEver": "No live data yet",
+  "headlineCancelled": "Cancelled",
+  "headlineScheduled": "Scheduled · not departed yet",
+  "headlineCompleted": "Journey complete",
+  "detailLive": "Live · updated {time}",
+  "@detailLive": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "detailLiveDeparted": "Live · updated {updated} · Departed {station} at {time}",
+  "@detailLiveDeparted": {
+    "placeholders": {
+      "updated": {
+        "type": "String"
+      },
+      "station": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "detailLastKnown": "Last known: departed {station} {time}",
+  "@detailLastKnown": {
+    "placeholders": {
+      "station": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "detailNoLiveBody": "Showing the timetable. Times are not live. Listen for station announcements.",
+  "detailDelayedBody": "Expected {expected} at {station} instead of {scheduled}.",
+  "@detailDelayedBody": {
+    "placeholders": {
+      "expected": {
+        "type": "String"
+      },
+      "station": {
+        "type": "String"
+      },
+      "scheduled": {
+        "type": "String"
+      }
+    }
+  },
+  "detailCancelledBody": "This train will not run. Look for another train or contact the call centre.",
+  "detailScheduledBody": "This train has not left yet. Times are the timetable.",
+  "platformBannerTitle": "Platform {p}",
+  "@platformBannerTitle": {
+    "placeholders": {
+      "p": {
+        "type": "String"
+      }
+    }
+  },
+  "platformBannerBody": "Platform changed at {station}",
+  "@platformBannerBody": {
+    "placeholders": {
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "wordDepartedOnTime": "Departed {time} · on time",
+  "@wordDepartedOnTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "wordDepartedLate": "Departed {time} · {n} min late",
+  "@wordDepartedLate": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "wordArrivedOnTime": "Arrived {time} · on time",
+  "@wordArrivedOnTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "wordArrivedLate": "Arrived {time} · {n} min late",
+  "@wordArrivedLate": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "wordArrivedEarly": "Arrived {time} · {n} min early",
+  "@wordArrivedEarly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "wordAtPlatform": "At the platform since {time}",
+  "@wordAtPlatform": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "wordExpectedOnTime": "Expected {time} · on time",
+  "@wordExpectedOnTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "wordExpected": "Expected {time}",
+  "@wordExpected": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "wordEstimate": "Estimate · may change",
+  "wordScheduled": "Scheduled",
+  "wordSkipped": "Not stopping",
+  "estimatesNote": "Times after {station} are estimates and may change.",
+  "@estimatesNote": {
+    "placeholders": {
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "followJourney": "Follow this journey",
+  "followingJourney": "Following",
+  "snackFollowingJourney": "You are following this journey",
+  "snackUnfollowedJourney": "You stopped following this journey",
+  "snackFollowingStation": "You are following this station",
+  "snackUnfollowedStation": "You stopped following this station",
+  "undo": "Undo",
+  "errorTitle": "Something went wrong",
+  "errorNetwork": "We could not reach SmartRail. Check your connection and try again.",
+  "errorNotFound": "We could not find that. It may no longer exist.",
+  "errorGeneric": "Please try again in a moment.",
+  "retry": "Try again",
+  "comingTitlePlan": "Plan a journey",
+  "comingBodyPlan": "Choose two stations and see the trains between them, with a change if needed. This arrives in the next update. Until then you can look at any station's live departures.",
+  "comingTitleTickets": "Tickets",
+  "comingBodyTickets": "Your tickets will be here, and they will keep working without a connection. This arrives in an upcoming update.",
+  "comingTitleAlerts": "Alerts",
+  "comingBodyAlerts": "Platform changes, delays and cancellations for the journeys and stations you follow will appear here. This arrives in an upcoming update.",
+  "comingSoon": "Coming soon",
+  "comingSeeDepartures": "See live departures",
+  "meTitle": "Me",
+  "language": "Language",
+  "languageEnglish": "English",
+  "languageSinhala": "සිංහල",
+  "meAbout": "SmartRail shows live railway information. Times are for information.",
+  "notFoundTitle": "Page not found",
+  "notFoundBody": "That page does not exist.",
+  "notFoundAction": "Go to home",
+  "offlineTitle": "No connection",
+  "offlineDetail": "Showing the last information from {time}",
+  "@offlineDetail": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineNever": "No information has been received yet.",
+  "planTitle": "Plan a journey",
+  "planLeaveNow": "Leave now",
+  "planLeaveAt": "Leave at {time}",
+  "@planLeaveAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "planPickTime": "Choose a time",
+  "planSearch": "Search trains",
+  "resultsTitle": "{from} to {to}",
+  "@resultsTitle": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsDirect": "Direct",
+  "resultsChange": "1 change",
+  "resultsDuration": "{n} min",
+  "@resultsDuration": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsChangeAt": "Change at {station}",
+  "@resultsChangeAt": {
+    "placeholders": {
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsWait": "{n} min to change",
+  "@resultsWait": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsAtRiskTitle": "Connection at risk",
+  "resultsAtRiskBody": "Only {n} min to change at {station}. You may miss the second train.",
+  "@resultsAtRiskBody": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsTrainLeg": "Train {number} · {from} to {to}",
+  "@resultsTrainLeg": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsArrives": "Arrives {time}",
+  "@resultsArrives": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsEmptyTitle": "No trains found",
+  "resultsEmptyBody": "There are no direct trains or trains with one change in the next hours. Try a later time.",
+  "resultsLater": "Try later",
+  "loginTitle": "Log in",
+  "loginWelcome": "Welcome back",
+  "emailLabel": "Email",
+  "emailHint": "Enter your email",
+  "passwordLabel": "Password",
+  "passwordHint": "Enter your password",
+  "forgotPassword": "Forgot password?",
+  "forgotSent": "If that email has an account, we sent a link to reset the password.",
+  "loginNoAccountNeeded": "You do not need an account to see departures, delays and platform changes.",
+  "loginNew": "New here?",
+  "loginCreate": "Create profile",
+  "loginBadCredentials": "That email and password do not match, or the account is locked for a few minutes.",
+  "createTitle": "Create profile",
+  "fullNameLabel": "Full name",
+  "fullNameHint": "Jane Perera",
+  "passwordNewHint": "At least 8 characters",
+  "agreeTerms": "I agree to the terms and the privacy notice.",
+  "errName": "Enter your full name.",
+  "errEmail": "Enter a valid email address.",
+  "errPassword": "The password needs at least 8 characters.",
+  "errTerms": "Please agree to continue.",
+  "errAccountExists": "An account with this email already exists. Try logging in.",
+  "meLogIn": "Log in or create a profile",
+  "meLogInBody": "Needed for tickets. Browsing trains never needs an account.",
+  "meTextSize": "Text size",
+  "textSizeNormal": "Normal",
+  "textSizeLarge": "Large",
+  "textSizeLarger": "Larger",
+  "meNotifications": "Notifications",
+  "stateOn": "On",
+  "stateOff": "Off",
+  "meDownloadData": "Download my data",
+  "meDeleteData": "Delete my data",
+  "meCallCentre": "Contact the call centre",
+  "meSignOut": "Sign out",
+  "downloadTitle": "Your data",
+  "downloadCopy": "Copy",
+  "downloadCopied": "Copied to the clipboard",
+  "downloadFailed": "We could not get your data. Try again.",
+  "deleteTitle": "Delete your data?",
+  "deleteBody": "This can't be undone. We remove your name, email, saved stations and followed journeys. Ticket and payment records are kept as the law requires.",
+  "deleteConfirm": "Delete my data",
+  "cancel": "Cancel",
+  "deleteDone": "Your data was deleted.",
+  "callCentreTitle": "Call centre",
+  "callCentreBody": "For questions about tickets or journeys, call the railway's call centre.",
+  "callCentreNumber": "Number: {number}",
+  "@callCentreNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "callCentreNoNumber": "The number is shown here once the railway sets it.",
+  "close": "Close",
+  "ticketsTitle": "Tickets",
+  "ticketsActive": "Active",
+  "ticketsPast": "Past",
+  "ticketsEmptyTitle": "Nothing here yet",
+  "ticketsEmptyBody": "You don't have any tickets. Plan a journey to buy one.",
+  "ticketsBuy": "Buy a ticket",
+  "ticketsAdd": "Add ticket",
+  "ticketsSignInTitle": "Log in to see your tickets",
+  "ticketsSignInBody": "Tickets belong to your profile, so they are safe if you change phone.",
+  "ticketsRoute": "{from} to {to}",
+  "@ticketsRoute": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketsWhen": "Today {time}",
+  "@ticketsWhen": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketsWhenDate": "{date} {time}",
+  "@ticketsWhenDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketsCoachSeat": "Coach {coach} · Seat {seat}",
+  "@ticketsCoachSeat": {
+    "placeholders": {
+      "coach": {
+        "type": "String"
+      },
+      "seat": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketsCoachSeats": "Coach {coach} · Seats {seats}",
+  "@ticketsCoachSeats": {
+    "placeholders": {
+      "coach": {
+        "type": "String"
+      },
+      "seats": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketValid": "Valid",
+  "ticketAffected": "Affected",
+  "ticketPast": "Used",
+  "ticketAffectedTitle": "This train was cancelled",
+  "ticketAffectedBody": "Your ticket can no longer be used because the railway cancelled the train. Find another train, or contact the call centre.",
+  "ticketStatus": "Status",
+  "ticketFindAnother": "Find another train",
+  "chooseTitle": "{from} to {to}",
+  "@chooseTitle": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseSummary": "Today · {who}",
+  "@chooseSummary": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "travellersAdults": "{n, plural, =1{1 adult} other{{n} adults}}",
+  "@travellersAdults": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "travellersChildren": "{n, plural, =1{1 child} other{{n} children}}",
+  "@travellersChildren": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "travellersSeniors": "{n, plural, =1{1 senior} other{{n} seniors}}",
+  "@travellersSeniors": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "chooseDirect": "{n} min · direct",
+  "@chooseDirect": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "chooseSeatRequired": "Seat required",
+  "chooseNoSeat": "No seat needed",
+  "chooseNoTrains": "No trains to book",
+  "chooseNoTrainsBody": "There are no direct trains in the next hours. Try another time or station.",
+  "chooseNote": "A delay never creates a new ticket. Your ticket stays on the same train.",
+  "chooseNoPayment": "No payment is taken in this version. The fare is shown for information.",
+  "continueLabel": "Continue",
+  "whoTitle": "Who is travelling?",
+  "whoAdult": "Adult",
+  "whoAdultHint": "12 and over",
+  "whoChild": "Child",
+  "whoChildHint": "5 to 11",
+  "whoSenior": "Senior",
+  "whoSeniorHint": "60 and over",
+  "whoHelp": "I need help at the station",
+  "whoHelpHint": "Staff will be told. It does not change the price.",
+  "whoConfirm": "Confirm",
+  "seatTitle": "Choose a seat",
+  "seatTitleMany": "Choose {n} seats",
+  "@seatTitleMany": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "seatCoach": "Coach {c}",
+  "@seatCoach": {
+    "placeholders": {
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "seatFree": "Free",
+  "seatTaken": "Taken",
+  "seatYours": "Yours",
+  "seatSelected": "{n} of {total} chosen",
+  "@seatSelected": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "seatConfirm": "Confirm seat",
+  "seatConfirmMany": "Confirm seats",
+  "seatLabelFree": "Seat {n}, free",
+  "@seatLabelFree": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "seatLabelTaken": "Seat {n}, taken",
+  "@seatLabelTaken": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "seatLabelYours": "Seat {n}, yours",
+  "@seatLabelYours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "seatGone": "Someone just took a seat. Please choose again.",
+  "reviewTitle": "Review",
+  "reviewFare": "Fare",
+  "reviewTotal": "Total",
+  "reviewConfirm": "Confirm booking",
+  "reviewHold": "Seats held until {time}",
+  "@reviewHold": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewExpired": "Your seats were released. Please choose them again.",
+  "ticketTitle": "Ticket",
+  "ticketOffline": "Works offline. Last checked with SmartRail at {time}.",
+  "@ticketOffline": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketBookingNumber": "Booking number {code}",
+  "@ticketBookingNumber": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "ticketBooked": "Your booking is confirmed.",
+  "addTitle": "Add ticket",
+  "addNumberLabel": "Booking or ticket number",
+  "addNumberHint": "Enter your booking number",
+  "addNumberHelp": "8 characters. It is on your confirmation.",
+  "addContactLabel": "Email used at purchase",
+  "addContactHint": "Enter the email you used",
+  "addNotFound": "We could not find a ticket with those details.",
+  "addDone": "Ticket added",
+  "alertsTitle": "Alerts",
+  "alertsToday": "Today",
+  "alertsEarlier": "Earlier",
+  "alertsNote": "Alerts are only shown for journeys and stations you follow.",
+  "alertsOff": "Alerts are off. Turn them on in Me.",
+  "alertsEmptyTitle": "No alerts yet",
+  "alertsEmptyBody": "When a train you follow is delayed, cancelled or changes platform, you will see it here.",
+  "alertsClear": "Clear all",
+  "alertPlatformTitle": "Platform changed",
+  "alertPlatformBody": "{origin} to {destination} now leaves from platform {now} (was {was}).",
+  "@alertPlatformBody": {
+    "placeholders": {
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      },
+      "now": {
+        "type": "String"
+      },
+      "was": {
+        "type": "String"
+      }
+    }
+  },
+  "alertPlatformBodyNew": "{origin} to {destination} now leaves from platform {now}.",
+  "@alertPlatformBodyNew": {
+    "placeholders": {
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      },
+      "now": {
+        "type": "String"
+      }
+    }
+  },
+  "alertCancelledTitle": "Cancelled",
+  "alertCancelledBody": "The {time} {origin} to {destination} is cancelled.",
+  "@alertCancelledBody": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "alertDelayTitle": "Delay",
+  "alertDelayBody": "{origin} to {destination} now expected {time} (+{n} min).",
+  "@alertDelayBody": {
+    "placeholders": {
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "alertCorrectionTitle": "Correction",
+  "alertCorrectionBody": "The {time} {origin} to {destination} is running. An earlier message said it was cancelled.",
+  "@alertCorrectionBody": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "origin": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "disruptionTitle": "Disruption",
+  "disruptionUpdated": "Updated {time}",
+  "@disruptionUpdated": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "disruptionStations": "Affected stations",
+  "disruptionJourneys": "Affected journeys",
+  "disruptionFollow": "Follow updates",
+  "disruptionFollowed": "You are following the affected stations.",
+  "disruptionNetworkWide": "This affects the whole network.",
+  "disruptionExpectedEnd": "We expect this to clear by {time}.",
+  "@disruptionExpectedEnd": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "disruptionGone": "This disruption is over",
+  "disruptionGoneBody": "It was resolved or withdrawn. Departure boards show the trains as they are now.",
+  "severityMinor": "Minor",
+  "severityMajor": "Major",
+  "severitySevere": "Severe",
+  "foodTitle": "Food at {station}",
+  "@foodTitle": {
+    "placeholders": {
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "foodAll": "All",
+  "foodOrderNote": "Ordering and payment are handled by the catering provider.",
+  "foodCall": "Call to order",
+  "foodUnavailable": "Menu unavailable right now",
+  "foodUnavailableBody": "Trains and tickets are not affected. Try again in a moment.",
+  "foodNone": "No food at this station",
+  "foodLink": "Food at this station",
+  "foodArrive": "Arrive {time}",
+  "@foodArrive": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "planWhenTitle": "Date and time",
+  "planLaterToday": "Later today",
+  "planTomorrow": "Tomorrow",
+  "planTomorrowAt": "Tomorrow {time}",
+  "planTimeNote": "Timetables use local time ({zone}).",
+  "@planTomorrowAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@planTimeNote": {
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+  "createdLogIn": "Your profile was created. Please log in.",
+  "planDepart": "Depart",
+  "planArrive": "Arrive",
+  "planRecent": "Recent",
+  "foodMenuHint": "Menu and prices · call to order",
+  "resultsFilter": "Filter",
+  "resultsDirectOnly": "Direct trains only",
+  "ticketsMoreActions": "More actions",
+  "ticketsAddWithCode": "Add ticket with booking code",
+  "ticketsNonePast": "Tickets you have used will appear here.",
+  "ticketReference": "Ticket",
+  "seatHoldNote": "Your seats are held for 10 minutes once you confirm.",
+  "stationsAll": "All stations",
+  "foodOrder": "Order food",
+  "foodPick": "Choose a station",
+  "ticketBackHome": "Back to home"
+}

@@ -16,6 +16,7 @@ public sealed record BoardStation(string Code, string Name);
 // ScheduledDepartureUtc never changes. ExpectedDepartureUtc is what clients show: the actual time once the train has left,
 // the live estimate while live data is fresh, otherwise the scheduled time. It is never earlier than scheduled
 // (REQ-LIVE-012). Confidence and EstimateSource are never null (REQ-LIVE-003). DelayMinutes is null whenever it is hidden.
+// AtPlatform is true while the train has arrived at this station and not yet left.
 public sealed record BoardItem(
     Guid JourneyId,
     string TrainNumber,
@@ -32,7 +33,8 @@ public sealed record BoardItem(
     string Status,
     string Confidence,
     bool IsStale,
-    int? AgeSeconds);
+    int? AgeSeconds,
+    bool AtPlatform);
 
 public sealed class GetBoardQueryValidator : AbstractValidator<GetBoardQuery>
 {

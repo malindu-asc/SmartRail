@@ -21,6 +21,9 @@ public interface INetworkTimeZone
 public interface INetworkStations
 {
     Task<IReadOnlyDictionary<string, string>> GetNamesAsync(IEnumerable<string> stationCodes, string? language, CancellationToken cancellationToken);
+
+    // The platform codes of a station that can be used (available ones), in order. Null when the station is unknown.
+    Task<IReadOnlyList<string>?> GetPlatformsAsync(string stationCode, CancellationToken cancellationToken);
 }
 
 // Route facts for other modules.
@@ -28,4 +31,7 @@ public interface INetworkRoutes
 {
     // The station codes of an active route in forward order, passing points included. Null when the route is unknown.
     Task<IReadOnlyList<string>?> GetStationCodesAsync(string routeCode, CancellationToken cancellationToken);
+
+    // The codes of every active route.
+    Task<IReadOnlyList<string>> ListCodesAsync(CancellationToken cancellationToken);
 }

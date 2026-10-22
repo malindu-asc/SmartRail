@@ -45,6 +45,14 @@ public sealed partial class Journey : AuditableEntity
     public int? EndedAtStopSequence { get; private set; }
     public string? CancelReasonCode { get; private set; }
 
+    // Why the journey was interrupted or ended early (terminated short or emergency), and the controller's note for passengers.
+    public string? EndReasonCode { get; private set; }
+    public string? ControllerNote { get; private set; }
+
+    // Why the train is late, as the driver last said it (signal_fault, door_fault, crew, passenger_incident, track, other).
+    public string? DelayReasonCode { get; private set; }
+    public DateTimeOffset? DelayReasonAt { get; private set; }
+
     // Optimistic concurrency (REQ-OPS-010): the domain bumps it on every change.
     public int Version { get; private set; }
 

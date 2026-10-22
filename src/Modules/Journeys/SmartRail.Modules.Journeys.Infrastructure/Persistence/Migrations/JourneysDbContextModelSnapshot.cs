@@ -246,6 +246,27 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Crew.PlanApproval", b =>
+                {
+                    b.Property<DateOnly>("ServiceDate")
+                        .HasColumnType("date")
+                        .HasColumnName("service_date");
+
+                    b.Property<DateTimeOffset>("ApprovedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("approved_at");
+
+                    b.Property<string>("ApprovedBy")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("approved_by");
+
+                    b.HasKey("ServiceDate");
+
+                    b.ToTable("plan_approvals", "journeys");
+                });
+
             modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Fleet.Vehicle", b =>
                 {
                     b.Property<Guid>("Id")
@@ -336,6 +357,54 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Fleet.VehicleUnavailability", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("EndedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ended_at");
+
+                    b.Property<DateTimeOffset>("From")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("from");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("reason");
+
+                    b.Property<DateTimeOffset?>("To")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("to");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("vehicle_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleId", "From");
+
+                    b.ToTable("vehicle_unavailability", "journeys", t =>
+                        {
+                            t.HasCheckConstraint("ck_vehicle_unavailability_period", "\"to\" is null or \"to\" > \"from\"");
+                        });
+                });
+
             modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Journeys.Journey", b =>
                 {
                     b.Property<Guid>("Id")
@@ -352,6 +421,11 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)")
                         .HasColumnName("confidence");
+
+                    b.Property<string>("ControllerNote")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("controller_note");
 
                     b.Property<DateTimeOffset>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone")
@@ -371,11 +445,25 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("delay_minutes");
 
+                    b.Property<DateTimeOffset?>("DelayReasonAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("delay_reason_at");
+
+                    b.Property<string>("DelayReasonCode")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("delay_reason_code");
+
                     b.Property<string>("DestinationStationCode")
                         .IsRequired()
                         .HasMaxLength(5)
                         .HasColumnType("character varying(5)")
                         .HasColumnName("destination_station_code");
+
+                    b.Property<string>("EndReasonCode")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("end_reason_code");
 
                     b.Property<DateTimeOffset?>("EndedAt")
                         .HasColumnType("timestamp with time zone")
@@ -821,6 +909,15 @@ namespace SmartRail.Modules.Journeys.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SmartRail.Modules.Journeys.Domain.Fleet.Vehicle", null)
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SmartRail.Modules.Journeys.Domain.Fleet.VehicleUnavailability", b =>
+                {
                     b.HasOne("SmartRail.Modules.Journeys.Domain.Fleet.Vehicle", null)
                         .WithMany()
                         .HasForeignKey("VehicleId")

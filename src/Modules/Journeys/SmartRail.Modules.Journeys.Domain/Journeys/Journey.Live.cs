@@ -104,6 +104,20 @@ public sealed partial class Journey
         return new StopEventOutcome(inferred, departedNow, completedNow, delayChanged);
     }
 
+    // Moves a stop to another platform before or while the train runs. Scheduled times are untouched.
+    public Result ChangePlatform(int stopSequence, string platformCode, string changedBy, DateTimeOffset now)
+    {
+        var stop = _stops.FirstOrDefault(s => s.Sequence == stopSequence);
+        if (stop is null)
+            return JourneysErrors.StopNotFound(stopSequence);
+
+        var previous = stop.PlatformCode;
+        stop.ChangePlatform(platformCode.Trim(), changedBy, now);
+        Touch();
+        RaiseDomainEvent(new JourneyPlatformChangedDomainEvent(Id, stopSequence, stop.StationCode, stop.PlatformCode!, previous));
+        return Result.Success();
+    }
+
     // An accepted position proves the feed is alive for this journey. It moves the running sub-state, nothing else.
     public Result RecordPosition(DateTimeOffset now)
     {
@@ -204,3 +218,27 @@ public sealed record JourneyDepartedDomainEvent(Guid JourneyId, DateTimeOffset A
 public sealed record JourneyCompletedDomainEvent(Guid JourneyId, DateTimeOffset At) : DomainEvent;
 
 public sealed record JourneyDelayChangedDomainEvent(Guid JourneyId, int? DelayMinutes, PunctualityBand? Band) : DomainEvent;
+
+public sealed record JourneyPlatformChangedDomainEvent(Guid JourneyId, int StopSequence, string StationCode, string Platform, string? PreviousPlatform) : DomainEvent;
+
+public static class DelayReasons
+{
+    public static readonly IReadOnlyList<string> All = ["signal_fault", "door_fault", "crew", "passenger_incident", "track", "other"];
+}
+
+public sealed partial class Journey
+{
+    // The driver says why the train is late. The controller sees it on the board; the last one wins.
+    public Result RecordDelayReason(string code, DateTimeOffset now)
+    {
+        if (!DelayReasons.All.Contains(code))
+            return JourneysErrors.DelayReasonUnknown;
+        if (JourneyLifecycleRules.IsFinal(Lifecycle) || Lifecycle == JourneyLifecycle.Cancelled)
+            return JourneysErrors.JourneyEnded(Lifecycle.ToString());
+
+        DelayReasonCode = code;
+        DelayReasonAt = now;
+        Touch();
+        return Result.Success();
+    }
+}

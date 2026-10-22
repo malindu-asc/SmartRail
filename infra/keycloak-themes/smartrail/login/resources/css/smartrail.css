@@ -1,0 +1,77 @@
+/* Brand colour (Figma: brand/primary) */
+:root {
+  --pf-v5-global--primary-color--100: #118167;
+  --pf-v5-global--primary-color--200: #0b5f4b;
+  --pf-v5-global--active-color--100: #118167;
+  --pf-v5-global--link--Color: #118167;
+  --pf-v5-global--link--Color--hover: #0b5f4b;
+}
+
+/* Replace the text header with the logo */
+#kc-header-wrapper {
+  font-size: 0;
+  line-height: 0;
+  padding: 0;
+}
+#kc-header-wrapper::before {
+  content: "";
+  display: block;
+  width: 220px;
+  height: 116px;
+  margin: 0 auto 8px;
+  background: url("../img/logo.png") center / contain no-repeat;
+}
+
+/* Light page like the console */
+.login-pf body,
+body {
+  background: #fafafa;
+}
+.pf-v5-c-login {
+  background: #fafafa;
+}
+.pf-v5-c-login__main {
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgb(15 20 18 / 0.05);
+  border-radius: 16px;
+}
+.pf-v5-c-button.pf-m-primary {
+  background-color: #118167;
+}
+.pf-v5-c-button.pf-m-primary:hover {
+  background-color: #0b5f4b;
+}
+
+/* Always light, like the console, even when the browser prefers dark */
+.pf-v5-theme-dark,
+:root.pf-v5-theme-dark {
+  color-scheme: light;
+  --pf-v5-global--BackgroundColor--100: #ffffff;
+  --pf-v5-global--BackgroundColor--200: #f3f4f6;
+  --pf-v5-global--BackgroundColor--300: #e5e7eb;
+  --pf-v5-global--Color--100: #0f1412;
+  --pf-v5-global--Color--200: #4b5563;
+  --pf-v5-global--BorderColor--100: #d1d5db;
+  --pf-v5-global--BorderColor--200: #e5e7eb;
+  --pf-v5-global--palette--black-900: #ffffff;
+}
+.pf-v5-theme-dark .pf-v5-c-login__main,
+.pf-v5-theme-dark .pf-v5-c-form-control,
+.pf-v5-theme-dark .pf-v5-c-login__main-body {
+  background-color: #ffffff;
+  color: #0f1412;
+}
+.pf-v5-theme-dark .pf-v5-c-form-control input,
+.pf-v5-theme-dark input {
+  color: #0f1412;
+  background-color: #ffffff;
+}
+.pf-v5-theme-dark .pf-v5-c-title,
+.pf-v5-theme-dark .pf-v5-c-form__label-text,
+.pf-v5-theme-dark h1 {
+  color: #0f1412;
+}
+.pf-v5-theme-dark .pf-v5-c-button.pf-m-control {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}

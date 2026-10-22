@@ -1,0 +1,33 @@
+{
+ "exportedAtUtc": "2026-10-19T10:02:06.228735+00:00",
+ "profile": {
+  "id": "1aad1559-3df3-4d5a-8214-a6a61a5c4225",
+  "fullName": "Smoke Test",
+  "email": "smoke8027@example.com"
+ },
+ "data": {
+  "tickets": [
+   {
+    "reference": "SR-9155-9717",
+    "bookingCode": "DG4FKTY3",
+    "trainNumber": "4004",
+    "serviceDate": "2026-10-19",
+    "fromStationCode": "MAR",
+    "toStationCode": "AIR",
+    "departureUtc": "2026-10-19T12:00:00+00:00",
+    "arrivalUtc": "2026-10-19T12:22:00+00:00",
+    "adults": 2,
+    "children": 0,
+    "seniors": 0,
+    "needsHelp": true,
+    "fareTotal": 360.0,
+    "currency": "LKR",
+    "seats": [
+     "B13",
+     "B14"
+    ],
+    "contactEmail": "smoke8027@example.com"
+   }
+  ]
+ }
+}

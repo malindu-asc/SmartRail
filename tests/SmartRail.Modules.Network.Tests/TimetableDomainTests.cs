@@ -237,15 +237,15 @@ public sealed class TimetableVersionTests
     }
 
     [Fact]
-    public void The_author_cannot_approve_their_own_version()
+    public void The_author_can_approve_their_own_version()
     {
         var (version, service, _) = VersionWithService();
         version.AddService(service);
         version.SubmitForReview();
 
         var result = version.Publish(new DateOnly(2026, 11, 1), "ALICE", DateTimeOffset.UtcNow);
-        Assert.Equal("Network.AuthorCannotApprove", result.Error.Code);
-        Assert.Equal(TimetableVersionStatus.InReview, version.Status);
+        Assert.True(result.IsSuccess);
+        Assert.Equal(TimetableVersionStatus.Published, version.Status);
     }
 
     [Fact]
@@ -271,5 +271,39 @@ public sealed class TimetableVersionTests
         var draft = TimetableVersion.CreateDraft("Empty", "alice").Value;
         Assert.Equal("Network.VersionHasNoServices", draft.SubmitForReview().Error.Code);
         Assert.Equal("Network.VersionWrongState", draft.Publish(new DateOnly(2026, 11, 1), "bob", DateTimeOffset.UtcNow).Error.Code);
+    }
+
+    [Fact]
+    public void Times_of_a_service_can_change_in_a_draft_and_stay_valid()
+    {
+        var (version, service, _) = VersionWithService();
+        version.AddService(service);
+
+        Assert.True(version.ChangeServiceTimes(service.Id, [new ServiceStopTime(null, 490), new ServiceStopTime(497, null)]).IsSuccess);
+        Assert.Equal(490, service.Stops.First(s => s.Sequence == 1).DepartureMinutes);
+        Assert.Equal(497, service.Stops.First(s => s.Sequence == 2).ArrivalMinutes);
+
+        // going backwards or a wrong number of stops is refused and nothing changes
+        Assert.True(version.ChangeServiceTimes(service.Id, [new ServiceStopTime(null, 500), new ServiceStopTime(400, null)]).IsFailure);
+        Assert.True(version.ChangeServiceTimes(service.Id, [new ServiceStopTime(null, 500)]).IsFailure);
+        Assert.Equal(490, service.Stops.First(s => s.Sequence == 1).DepartureMinutes);
+    }
+
+    [Fact]
+    public void A_service_can_be_removed_from_a_draft_but_not_from_a_published_version()
+    {
+        var (version, service, _) = VersionWithService();
+        version.AddService(service);
+        version.SubmitForReview();
+        version.Publish(new DateOnly(2026, 11, 1), "bob", DateTimeOffset.UtcNow);
+
+        Assert.Equal("Network.VersionNotEditable", version.RemoveService(service.Id).Error.Code);
+        Assert.Equal("Network.VersionNotEditable", version.ChangeServiceTimes(service.Id, [new ServiceStopTime(null, 490), new ServiceStopTime(497, null)]).Error.Code);
+
+        var (draft, other, _) = VersionWithService();
+        draft.AddService(other);
+        Assert.True(draft.RemoveService(other.Id).IsSuccess);
+        Assert.Empty(draft.Services);
+        Assert.Equal("Network.ServiceNotInVersion", draft.RemoveService(other.Id).Error.Code);
     }
 }

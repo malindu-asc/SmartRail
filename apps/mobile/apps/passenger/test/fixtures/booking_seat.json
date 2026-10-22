@@ -1,0 +1,29 @@
+{
+ "summary": {
+  "id": "ec7e3312-e914-44da-8c3b-8ae66bd0b6e8",
+  "reference": "SR-9155-9717",
+  "fromCode": "MAR",
+  "fromName": "Market Street",
+  "toCode": "AIR",
+  "toName": "Airport",
+  "departureUtc": "2026-10-19T12:00:00+00:00",
+  "arrivalUtc": "2026-10-19T12:22:00+00:00",
+  "timeZone": "Asia/Colombo",
+  "state": "Valid",
+  "passengers": 2,
+  "seats": [
+   "B13",
+   "B14"
+  ]
+ },
+ "bookingCode": "DG4FKTY3",
+ "trainNumber": "4004",
+ "journeyId": "8396a65d-32c5-4a82-aa82-1f7c3ebccbbc",
+ "adults": 2,
+ "children": 0,
+ "seniors": 0,
+ "needsHelp": true,
+ "currency": "LKR",
+ "fareTotal": 360,
+ "qrPayload": "SR1.ec7e3312e91444da8c3b8ae66bd0b6e8.1792498920.UakfQdU392rbepeMbXooY4gj489DblCox-HplrXJ1KI"
+}

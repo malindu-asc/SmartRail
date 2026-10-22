@@ -23,6 +23,75 @@ namespace SmartRail.Modules.Network.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SmartRail.Infrastructure.Core.Audit.AuditEntry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("action");
+
+                    b.Property<string>("ActorRole")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("actor_role");
+
+                    b.Property<string>("ActorSubject")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("actor_subject");
+
+                    b.Property<string>("AfterState")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("after_state");
+
+                    b.Property<string>("BeforeState")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("before_state");
+
+                    b.Property<string>("CorrelationId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("correlation_id");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<string>("TargetId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("target_id");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("target_type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OccurredAt")
+                        .IsDescending();
+
+                    b.HasIndex("TargetType", "TargetId");
+
+                    b.ToTable("audit_entries", "network");
+                });
+
             modelBuilder.Entity("SmartRail.Infrastructure.Core.Outbox.OutboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
@@ -542,7 +611,7 @@ namespace SmartRail.Modules.Network.Infrastructure.Persistence.Migrations
 
                     b.ToTable("timetable_versions", "network", t =>
                         {
-                            t.HasCheckConstraint("ck_timetable_versions_approver", "status not in ('Published', 'Superseded') or (approved_by is not null and approved_by <> author)");
+                            t.HasCheckConstraint("ck_timetable_versions_approver", "status not in ('Published', 'Superseded') or approved_by is not null");
 
                             t.HasCheckConstraint("ck_timetable_versions_effective", "status in ('Draft', 'InReview') or effective_from is not null");
 

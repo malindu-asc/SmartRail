@@ -6,6 +6,7 @@ using SmartRail.Api.Core;
 using SmartRail.Modules.Network.Application.Routes.GetRoute;
 using SmartRail.Modules.Network.Application.Routes.GetRoutes;
 using SmartRail.Modules.Network.Application.Stations.GetStation;
+using SmartRail.Modules.Network.Application.Stations.GetStationMenu;
 using SmartRail.Modules.Network.Application.Stations.GetStations;
 using SmartRail.Modules.Network.Application.Timetables.GetService;
 using SmartRail.Modules.Network.Application.Timetables.GetStationTimetable;
@@ -25,6 +26,13 @@ public static class NetworkEndpoints
                 return result.IsSuccess ? PublicCaching.Ok(http, result.Value) : ApiResults.Problem(result);
             })
             .WithSummary("List stations, optionally filtered by name or code");
+
+        group.MapGet("/stations/{code}/menu", async (HttpContext http, string code, string? lang, ISender sender, CancellationToken ct) =>
+            {
+                var result = await sender.Send(new GetStationMenuQuery(code, RequestedLanguage(http, lang)), ct);
+                return result.IsSuccess ? PublicCaching.Ok(http, result.Value, 60) : ApiResults.Problem(result);
+            })
+            .WithSummary("The food menu at a station, from the catering provider");
 
         group.MapGet("/stations/{code}", async (HttpContext http, string code, string? lang, ISender sender, CancellationToken ct) =>
             {

@@ -1,0 +1,26 @@
+{
+ "summary": {
+  "id": "d28e77b1-2f68-49b8-a350-62b4e2eeaced",
+  "reference": "SR-4393-6017",
+  "fromCode": "CEN",
+  "fromName": "Central",
+  "toCode": "RIV",
+  "toName": "Riverside",
+  "departureUtc": "2026-10-19T12:00:00+00:00",
+  "arrivalUtc": "2026-10-19T12:23:00+00:00",
+  "timeZone": "Asia/Colombo",
+  "state": "Valid",
+  "passengers": 1,
+  "seats": []
+ },
+ "bookingCode": "W4F8E7NJ",
+ "trainNumber": "1004",
+ "journeyId": "810ac15e-8447-4ebc-bf2d-806c71ef594d",
+ "adults": 1,
+ "children": 0,
+ "seniors": 0,
+ "needsHelp": false,
+ "currency": "LKR",
+ "fareTotal": 190,
+ "qrPayload": "SR1.d28e77b12f6849b8a35062b4e2eeaced.1792498980.w0elT3UiAe1UzkXqgxj37o66MZsxPzDQkJdVE6bR5uY"
+}

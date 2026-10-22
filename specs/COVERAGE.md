@@ -1,6 +1,6 @@
 # Spec coverage
 
-> Generated 2026-10-16 by `tools/docs/check_spec_coverage.py` from `specs/coverage-map.csv`. Edit the CSV, not this file.
+> Generated 2026-10-20 by `tools/docs/check_spec_coverage.py` from `specs/coverage-map.csv`. Edit the CSV, not this file.
 
 Every requirement with MVP set to Yes or Thin is owned by exactly one spec: the spec that finishes it. A spec may touch other requirements on the way (a data field in one spec, its behaviour in another); the note says so.
 
@@ -19,29 +19,30 @@ Every requirement with MVP set to Yes or Thin is owned by exactly one spec: the 
 | SPEC-005 | Live feed ingest, delay, confidence (Live, Stale, Unknown), source precedence | Verifying | 9 |
 | SPEC-006 | Simulator scenarios through the real ingest endpoint | Planned | 5 |
 | SPEC-007 | Departure board and journey timeline API, realtime push | Planned | 3 |
-| SPEC-008 | Flutter foundation: shared packages, app shell, router, localization | Planned | 3 |
+| SPEC-008 | Flutter foundation: shared packages, app shell, router, localization | In progress | 3 |
 | SPEC-009 | Passenger app: departures board and journey timeline with staleness | Planned | 6 |
-| SPEC-010 | Live network board and controller journey actions with reasons and audit: cancel, terminate short, interrupt, resume, reinstate, platform change, driver messages, concurrent-edit detection | Planned | 7 |
+| SPEC-010 | Live network board and controller journey actions with reasons and audit: cancel, terminate short, interrupt, resume, reinstate, platform change, driver messages, concurrent-edit detection | In progress (API in SPEC-031) | 7 |
 | SPEC-011 | Driver app and driver events: duty, stop events, delay reasons, offline queue, replay and reconciliation vs the feed, control message delivery, orphaned events, crew handover | Planned | 11 |
-| SPEC-012 | Assignments (vehicle, driver), vehicle unavailability, unassigned alerts, vehicle failure cascade, roles administration, device health and revocation, staff account protection | Planned | 5 |
+| SPEC-012 | Assignments (vehicle, driver), vehicle unavailability, unassigned alerts, vehicle failure cascade, roles administration, device health and revocation, staff account protection | In progress (API in SPEC-031) | 5 |
 | SPEC-013 | Platform display (kiosk) | Planned | 8 |
 | SPEC-014 | Station search and route stops in the passenger app | Planned | 0 |
-| SPEC-015 | Timetable versioning workflow: draft, review, approve, publish (API and console) | Planned | 1 |
-| SPEC-016 | Journey search A to B with one transfer (REQ-PAX-006) | Planned | 1 |
+| SPEC-015 | Timetable versioning workflow: draft, review, approve, publish (API and console) | In progress (API in SPEC-031) | 1 |
+| SPEC-016 | Journey search A to B with one transfer (REQ-PAX-006) | In progress | 1 |
 | SPEC-017 | Public rate limiting (REQ-SEC-002) and permission-matrix tests (REQ-SEC-003) | Planned | 7 |
 | SPEC-018 | Web foundation: shared packages, design tokens, auth, routing, data layer (console and kiosk) | Planned | 0 |
 | SPEC-019 | Station terminal: destination search, station information, idle reset, lockdown, offline mode | Planned | 5 |
 | SPEC-020 | Notifications: follow a journey, push, inbox, notification event matrix, ticket auto-follow | Proposed | 5 |
-| SPEC-021 | Passenger accounts: register, sign in, recover tickets on a new device, delete account and device data, sign-in protection | Proposed | 5 |
-| SPEC-022 | Ticketing core: tickets bound to a journey, sales window, fares and categories, ticket states, cancellation affects tickets, signed QR with offline display | Proposed | 9 |
+| SPEC-021 | Passenger accounts: register, sign in, recover tickets on a new device, delete account and device data, sign-in protection | In progress | 5 |
+| SPEC-022 | Ticketing core: tickets bound to a journey, sales window, fares and categories, ticket states, cancellation affects tickets, signed QR with offline display | In progress | 9 |
 | SPEC-023 | Payments: provider-neutral port with a fake default, idempotent confirmation, authentic callbacks, issue only after payment, unpaid orders expire | Proposed | 5 |
 | SPEC-024 | Refunds: full refund after a railway cancellation, refund as its own record, no double refunds, automatic retry | Proposed | 5 |
 | SPEC-025 | Ticket inspector mode in the staff app: server-side validation, rejection reasons, past-the-destination, online-only | Proposed | 6 |
 | SPEC-026 | Gate scanning: gate device, board and exit scans, retries, excess fare, missing exit, offline, scan log | Proposed | 10 |
-| SPEC-027 | Disruptions and incidents: disruption console, second approver, review-by time, scoped resolution, planned works, incident lifecycle, emergency termination, plain-text content, banners and retraction | Proposed | 8 |
+| SPEC-027 | Disruptions and incidents: disruption console, second approver, review-by time, scoped resolution, planned works, incident lifecycle, emergency termination, plain-text content, banners and retraction | In progress (API in SPEC-031) | 8 |
 | SPEC-028 | Station Master console: own-station view and actions, live access status (lifts, stairs, gates) | Proposed | 2 |
-| SPEC-029 | Punctuality report | Proposed | 1 |
-| SPEC-030 | Catering menu service (Node): read-only menu with call to order, failure isolated from the railway | Proposed | 3 |
+| SPEC-029 | Punctuality report | In progress (API in SPEC-031) | 1 |
+| SPEC-030 | Catering menu service (Node): read-only menu with call to order, failure isolated from the railway | In progress | 3 |
+| SPEC-031 | Controller, scheduler and administrator console API: roles and permissions, live board and journey actions, disruptions with a second approver, incidents, driver messages, timetable versions, planning, staff, devices, security settings, audit | Verifying | 0 |
 
 ## SPEC-001 Identity foundation (Keycloak, roles, secure by default)
 
@@ -108,7 +109,7 @@ Status: Planned
 
 ## SPEC-008 Flutter foundation: shared packages, app shell, router, localization
 
-Status: Planned
+Status: In progress
 
 | Requirement | Title | Priority | MVP | Note |
 |---|---|---|---|---|
@@ -131,7 +132,7 @@ Status: Planned
 
 ## SPEC-010 Live network board and controller journey actions with reasons and audit: cancel, terminate short, interrupt, resume, reinstate, platform change, driver messages, concurrent-edit detection
 
-Status: Planned
+Status: In progress (API in SPEC-031)
 
 | Requirement | Title | Priority | MVP | Note |
 |---|---|---|---|---|
@@ -163,7 +164,7 @@ Status: Planned
 
 ## SPEC-012 Assignments (vehicle, driver), vehicle unavailability, unassigned alerts, vehicle failure cascade, roles administration, device health and revocation, staff account protection
 
-Status: Planned
+Status: In progress (API in SPEC-031)
 
 | Requirement | Title | Priority | MVP | Note |
 |---|---|---|---|---|
@@ -190,7 +191,7 @@ Status: Planned
 
 ## SPEC-015 Timetable versioning workflow: draft, review, approve, publish (API and console)
 
-Status: Planned
+Status: In progress (API in SPEC-031)
 
 | Requirement | Title | Priority | MVP | Note |
 |---|---|---|---|---|
@@ -198,7 +199,7 @@ Status: Planned
 
 ## SPEC-016 Journey search A to B with one transfer (REQ-PAX-006)
 
-Status: Planned
+Status: In progress
 
 | Requirement | Title | Priority | MVP | Note |
 |---|---|---|---|---|
@@ -244,7 +245,7 @@ Status: Proposed
 
 ## SPEC-021 Passenger accounts: register, sign in, recover tickets on a new device, delete account and device data, sign-in protection
 
-Status: Proposed
+Status: In progress
 
 | Requirement | Title | Priority | MVP | Note |
 |---|---|---|---|---|
@@ -256,7 +257,7 @@ Status: Proposed
 
 ## SPEC-022 Ticketing core: tickets bound to a journey, sales window, fares and categories, ticket states, cancellation affects tickets, signed QR with offline display
 
-Status: Proposed
+Status: In progress
 
 | Requirement | Title | Priority | MVP | Note |
 |---|---|---|---|---|
@@ -326,7 +327,7 @@ Status: Proposed
 
 ## SPEC-027 Disruptions and incidents: disruption console, second approver, review-by time, scoped resolution, planned works, incident lifecycle, emergency termination, plain-text content, banners and retraction
 
-Status: Proposed
+Status: In progress (API in SPEC-031)
 
 | Requirement | Title | Priority | MVP | Note |
 |---|---|---|---|---|
@@ -350,7 +351,7 @@ Status: Proposed
 
 ## SPEC-029 Punctuality report
 
-Status: Proposed
+Status: In progress (API in SPEC-031)
 
 | Requirement | Title | Priority | MVP | Note |
 |---|---|---|---|---|
@@ -358,7 +359,7 @@ Status: Proposed
 
 ## SPEC-030 Catering menu service (Node): read-only menu with call to order, failure isolated from the railway
 
-Status: Proposed
+Status: In progress
 
 | Requirement | Title | Priority | MVP | Note |
 |---|---|---|---|---|

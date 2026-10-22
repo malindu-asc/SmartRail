@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -45,6 +45,11 @@
     <ProjectReference Include="..\..\src\Modules\Notifications\SmartRail.Modules.Notifications.Infrastructure\SmartRail.Modules.Notifications.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Modules\Notifications\SmartRail.Modules.Notifications.Api\SmartRail.Modules.Notifications.Api.csproj" />
     <ProjectReference Include="..\..\src\Modules\Notifications\SmartRail.Modules.Notifications.Contracts\SmartRail.Modules.Notifications.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Ticketing\SmartRail.Modules.Ticketing.Domain\SmartRail.Modules.Ticketing.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Ticketing\SmartRail.Modules.Ticketing.Application\SmartRail.Modules.Ticketing.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Ticketing\SmartRail.Modules.Ticketing.Infrastructure\SmartRail.Modules.Ticketing.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Ticketing\SmartRail.Modules.Ticketing.Api\SmartRail.Modules.Ticketing.Api.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Ticketing\SmartRail.Modules.Ticketing.Contracts\SmartRail.Modules.Ticketing.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

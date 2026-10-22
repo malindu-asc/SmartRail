@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Modules\Identity\SmartRail.Modules.Identity.Infrastructure\SmartRail.Modules.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Ticketing\SmartRail.Modules.Ticketing.Infrastructure\SmartRail.Modules.Ticketing.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Ticketing\SmartRail.Modules.Ticketing.Api\SmartRail.Modules.Ticketing.Api.csproj" />
     <ProjectReference Include="..\..\Modules\Identity\SmartRail.Modules.Identity.Api\SmartRail.Modules.Identity.Api.csproj" />
     <ProjectReference Include="..\..\Modules\Network\SmartRail.Modules.Network.Infrastructure\SmartRail.Modules.Network.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Network\SmartRail.Modules.Network.Api\SmartRail.Modules.Network.Api.csproj" />

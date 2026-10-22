@@ -9,6 +9,7 @@ using SmartRail.Modules.Journeys.Application.Ingest;
 using SmartRail.Modules.Journeys.Application.Manual;
 using SmartRail.Modules.Journeys.Application.Queries.GetBoard;
 using SmartRail.Modules.Journeys.Application.Queries.GetJourney;
+using SmartRail.Modules.Journeys.Application.Queries.Search;
 
 namespace SmartRail.Modules.Journeys.Api;
 
@@ -20,6 +21,14 @@ public static class JourneysEndpoints
     public static IEndpointRouteBuilder MapJourneysEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/journeys").WithTags(Tags.Journeys);
+
+        group.MapGet("/search", async (HttpContext http, string from, string to, DateTimeOffset? after, int? count, string? lang, ISender sender, CancellationToken ct) =>
+            {
+                var result = await sender.Send(new SearchJourneysQuery(from, to, after, count ?? 8, RequestedLanguage(http, lang)), ct);
+                return result.IsSuccess ? PublicCaching.Ok(http, result.Value, LiveMaxAgeSeconds) : ApiResults.Problem(result);
+            })
+            .AllowAnonymous()
+            .WithSummary("Trains from one station to another, direct or with one transfer");
 
         group.MapGet("/{journeyId:guid}", async (HttpContext http, Guid journeyId, string? lang, ISender sender, CancellationToken ct) =>
             {
@@ -36,6 +45,14 @@ public static class JourneysEndpoints
             })
             .AllowAnonymous()
             .WithSummary("The next departures from a station");
+
+        group.MapGet("/boards/{stationCode}/arrivals", async (HttpContext http, string stationCode, int? count, string? lang, ISender sender, CancellationToken ct) =>
+            {
+                var result = await sender.Send(new GetArrivalsQuery(stationCode, count ?? 10, RequestedLanguage(http, lang)), ct);
+                return result.IsSuccess ? PublicCaching.Ok(http, result.Value, LiveMaxAgeSeconds) : ApiResults.Problem(result);
+            })
+            .AllowAnonymous()
+            .WithSummary("The next arrivals at a station, with where each train started");
 
         group.MapPost("/manual", async (CreateManualJourneyRequest request, ISender sender, CancellationToken ct) =>
             {

@@ -56,6 +56,35 @@ public sealed class CrewDuty : Entity<Guid>
     }
 
     public bool Covers(DateTimeOffset from, DateTimeOffset to) => RosteredFrom <= from && to <= RosteredTo;
+
+    // A driver may sign on from half an hour before the shift until it ends.
+    public static readonly TimeSpan SignOnEarly = TimeSpan.FromMinutes(30);
+
+    public bool IsCurrent(DateTimeOffset now) => State is not (DutyState.SignedOff or DutyState.Orphaned) && now >= RosteredFrom - SignOnEarly && now <= RosteredTo;
+
+    public Result SignOn(DateTimeOffset now)
+    {
+        if (State != DutyState.Rostered)
+            return JourneysErrors.DutyAlreadySignedOn;
+        if (now < RosteredFrom - SignOnEarly || now > RosteredTo)
+            return JourneysErrors.DutyNotCurrent;
+
+        State = DutyState.SignedOn;
+        SignedOnAt = now;
+        return Result.Success();
+    }
+
+    public Result SignOff(DateTimeOffset now)
+    {
+        if (State is not (DutyState.SignedOn or DutyState.OnJourney))
+            return JourneysErrors.DutyNotSignedOn;
+
+        State = DutyState.SignedOff;
+        SignedOffAt = now;
+        return Result.Success();
+    }
+
+    public bool IsOn => State is DutyState.SignedOn or DutyState.OnJourney;
 }
 
 // Time-ranged. Two assignments on one journey cannot overlap, so a handover closes the outgoing duty first.

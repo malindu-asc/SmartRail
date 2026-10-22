@@ -18,6 +18,8 @@ public sealed class JourneysDbContext(DbContextOptions<JourneysDbContext> option
     public DbSet<Journey> Journeys => Set<Journey>();
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
     public DbSet<CrewDuty> CrewDuties => Set<CrewDuty>();
+    public DbSet<PlanApproval> PlanApprovals => Set<PlanApproval>();
+    public DbSet<VehicleUnavailability> VehicleUnavailabilities => Set<VehicleUnavailability>();
     public DbSet<JourneyEvent> JourneyEvents => Set<JourneyEvent>();
     public DbSet<TelemetryReading> TelemetryReadings => Set<TelemetryReading>();
 

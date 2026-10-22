@@ -10,6 +10,8 @@ using SmartRail.Modules.Notifications.Api;
 using SmartRail.Modules.Notifications.Infrastructure.Persistence;
 using SmartRail.Modules.Operations.Api;
 using SmartRail.Modules.Operations.Infrastructure.Persistence;
+using SmartRail.Modules.Ticketing.Api;
+using SmartRail.Modules.Ticketing.Infrastructure.Persistence;
 
 namespace SmartRail.Api.Extensions;
 
@@ -19,10 +21,15 @@ internal static class WebApplicationExtensions
     internal static WebApplication MapEndpoints(this WebApplication app)
     {
         app.MapIdentityEndpoints();
+        app.MapAdminEndpoints();
         app.MapNetworkEndpoints();
         app.MapJourneysEndpoints();
+        app.MapOpsJourneysEndpoints();
+        app.MapDriverEndpoints();
         app.MapOperationsEndpoints();
+        app.MapTimetableVersionEndpoints();
         app.MapNotificationsEndpoints();
+        app.MapTicketingEndpoints();
         return app;
     }
 
@@ -37,6 +44,7 @@ internal static class WebApplicationExtensions
         await services.GetRequiredService<JourneysDbContext>().Database.MigrateAsync();
         await services.GetRequiredService<OperationsDbContext>().Database.MigrateAsync();
         await services.GetRequiredService<NotificationsDbContext>().Database.MigrateAsync();
+        await services.GetRequiredService<TicketingDbContext>().Database.MigrateAsync();
     }
 
     // Development and test feed sources from configuration (Identity:FeedSources:Seed). Insert-only.

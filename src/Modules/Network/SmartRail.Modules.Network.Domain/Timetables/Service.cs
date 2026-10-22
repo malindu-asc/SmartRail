@@ -74,6 +74,25 @@ public sealed partial class Service : Entity<Guid>
         return service;
     }
 
+    // New times for the same stops (a draft edit). The stops and their order do not change; the same rules as a new service apply.
+    public Result ChangeTimes(IReadOnlyList<ServiceStopTime> times)
+    {
+        if (times.Count != _stops.Count)
+            return NetworkErrors.StopTimesMismatch;
+
+        var drafts = _stops.OrderBy(s => s.Sequence).Select((s, i) =>
+            new ServiceStopDraft(s.Sequence, s.StationId, times[i].ArrivalMinutes, times[i].DepartureMinutes, s.DefaultPlatformId, s.Kind)).ToList();
+
+        var valid = ValidateTimes(drafts);
+        if (valid.IsFailure)
+            return valid;
+
+        foreach (var stop in _stops.OrderBy(s => s.Sequence).Zip(drafts))
+            stop.First.SetTimes(stop.Second.ArrivalMinutes, stop.Second.DepartureMinutes);
+
+        return Result.Success();
+    }
+
     // The stops may skip stations (an express) but never reorder them.
     private static bool FollowsRoute(Route route, ServiceDirection direction, IReadOnlyList<ServiceStopDraft> stops)
     {
@@ -149,6 +168,12 @@ public sealed class ServiceStop
         Kind = draft.Kind;
     }
 
+    internal void SetTimes(int? arrival, int? departure)
+    {
+        ArrivalMinutes = arrival;
+        DepartureMinutes = departure;
+    }
+
     public Guid ServiceId { get; private set; }
     public int Sequence { get; private set; }
     public Guid StationId { get; private set; }
@@ -165,3 +190,6 @@ public sealed record ServiceStopDraft(
     int? DepartureMinutes,
     Guid? DefaultPlatformId,
     StopKind Kind);
+
+// New times for one stop, in order: the first stop has only a departure, the last only an arrival.
+public sealed record ServiceStopTime(int? ArrivalMinutes, int? DepartureMinutes);

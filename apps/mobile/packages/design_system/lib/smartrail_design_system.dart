@@ -1,5 +1,19 @@
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+/// Colours, spacing, type, themes and the shared widgets of the passenger and driver apps.
+///
+/// The tokens and components mirror the Figma file "SmartRail-HighFed". Feature code uses these names and widgets only: no hex
+/// values and no raw font sizes.
+library;
+
+export 'src/motion/motion.dart';
+export 'src/theme/smartrail_theme.dart';
+export 'src/tokens/tokens.dart';
+export 'src/widgets/dashed_box.dart';
+export 'src/widgets/info_banner.dart';
+export 'src/widgets/layout_pieces.dart';
+export 'src/widgets/sheet.dart';
+export 'src/widgets/smartrail_button.dart';
+export 'src/widgets/smartrail_text_field.dart';
+export 'src/widgets/state_widgets.dart';
+export 'src/widgets/status_chip.dart';
+export 'src/widgets/svg_icon.dart';
+export 'src/widgets/tab_bar_and_app_bar.dart';

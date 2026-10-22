@@ -1,32 +1,46 @@
-# React + TypeScript + Vite
+# SmartRail Ops console
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React 19 + TypeScript + Tailwind (theme tokens) + TanStack Query. Controller, scheduler and administrator screens in one app; what a person sees depends on their permissions. Rules for changing it: `.claude/skills/smartrail-frontend/SKILL.md`. API contract: `docs/guides/ops-admin-console-api.md`.
 
-Currently, two official plugins are available:
+## Run it
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**With Docker (everything, including sign-in and the API):**
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+docker compose up -d --build api console
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Open <http://localhost:3000>. You are sent to the sign-in page and back.
+
+**For development (hot reload):** keep the stack above running, then
+
+```bash
+cd apps/web
+npm install
+npm run dev -w console
+```
+
+Open <http://localhost:3000> (stop the `console` container first, or it holds the port). Vite proxies `/api` to `http://localhost:5080`. Change the target with `VITE_API_PROXY`; the sign-in service defaults to `http://localhost:8080` (`VITE_KEYCLOAK_URL`, `VITE_KEYCLOAK_REALM`, `VITE_KEYCLOAK_CLIENT_ID`).
+
+## Checks
+
+```bash
+cd apps/web/console
+npm run lint && npm run typecheck && npm run test && npm run build
+```
+
+## Seeded staff accounts
+
+Sign in with the email and the password from `infra/keycloak/smartrail-realm.json`.
+
+| Email | Role | Lands on |
+|---|---|---|
+| admin@gmail.com | System administrator | Admin console |
+| controller@gmail.com | Network controller | Dashboard |
+| controller2@gmail.com | Network controller (second approver) | Dashboard |
+| scheduler@gmail.com | Scheduler | Dashboard |
+| scheduler2@gmail.com | Scheduler (second approver) | Dashboard |
+
+Passenger and driver accounts (`passenger@gmail.com`, `driver@gmail.com`, `driver2@gmail.com`, `driver3@gmail.com`) are for the mobile apps; in the console they land on the no-access page.
+
+A change to the realm file only applies to a new Keycloak volume (`docker compose down -v` wipes accounts made through the app).

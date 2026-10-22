@@ -22,7 +22,8 @@ public sealed class TestTokenIssuer
         string issuer = Issuer,
         string audience = Audience,
         DateTime? expires = null,
-        SecurityKey? key = null)
+        SecurityKey? key = null,
+        IEnumerable<string>? stations = null)
     {
         var claims = new Dictionary<string, object>
         {
@@ -30,6 +31,9 @@ public sealed class TestTokenIssuer
             ["preferred_username"] = userName,
             ["roles"] = (roles ?? []).ToArray()
         };
+
+        if (stations is not null)
+            claims["stations"] = stations.ToArray();
 
         var descriptor = new SecurityTokenDescriptor
         {

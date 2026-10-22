@@ -41,6 +41,31 @@ public sealed class JourneyStop
     public DateTimeOffset? PlatformChangedAt { get; private set; }
     public string? PlatformChangedBy { get; private set; }
 
+    // A new platform for this stop. The first platform stays on record so clients can say "changed from 2".
+    internal void ChangePlatform(string code, string changedBy, DateTimeOffset at)
+    {
+        PlatformCode = code;
+        PlatformState = PlatformState.Changed;
+        PlatformChangedAt = at;
+        PlatformChangedBy = changedBy;
+    }
+
+    // The train will not call here: it was cancelled or ended before this stop.
+    internal void MarkCancelled()
+    {
+        State = JourneyStopState.Cancelled;
+        EstimatedArrivalUtc = null;
+        EstimatedDepartureUtc = null;
+        EstimateSource = EstimateSource.Scheduled;
+    }
+
+    // The cancellation was undone before departure.
+    internal void RestorePending()
+    {
+        if (State == JourneyStopState.Cancelled)
+            State = JourneyStopState.Pending;
+    }
+
     // ---- live data (SPEC-005). Scheduled times are never touched. ----
 
     internal void RecordArrival(DateTimeOffset at)

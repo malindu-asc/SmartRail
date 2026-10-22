@@ -29,6 +29,8 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
     command: ["start-dev", "--import-realm"]
+    # Development only: Docker creates the named volume owned by root, and Keycloak's default user cannot write its H2 files there.
+    user: "0"
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
@@ -40,6 +42,7 @@ services:
       - "8080:8080"
     volumes:
       - ./infra/keycloak:/opt/keycloak/data/import:ro
+      - ./infra/keycloak-themes/smartrail:/opt/keycloak/themes/smartrail:ro
       - keycloak-data:/opt/keycloak/data/h2
     restart: unless-stopped
 
@@ -60,10 +63,23 @@ services:
       Authentication__Audience: smartrail-api
       Authentication__RequireHttpsMetadata: "false"
       Diagnostics__Identity: "true"
+      # Passenger accounts are created through Keycloak's admin API (SPEC-021). Development secret.
+      Identity__Admin__BaseUrl: http://keycloak:8080
+      # Development: there is no email service, so an invite returns a one-time temporary password for the console to show.
+      Identity__Staff__ReturnTemporaryPassword: "true"
+      # The catering menu (RailBite) is read over HTTP with its own key. If it is down only the menu says so.
+      Catering__BaseUrl: http://catering:4000
+      Catering__ApiKey: ${CATERING_API_KEY:-dev-catering-key-change-me}
+      Identity__Admin__ClientSecret: ${IDENTITY_ADMIN_SECRET:-dev-only-change-me}
       Database__ApplyMigrationsOnStartup: "true"
       Network__Seed__ReferenceData: "true"
       Journeys__Generation__RunOnStartup: "true"
-      Journeys__Seed__DemoFleet: "true"
+      # No pre-assigned drivers: the scheduler generates the week's plan in the console (Planning, Week), then approves it.
+      Journeys__Planning__ApprovalRequired: "true"
+      # Demo only: a driver taps at each stop, minutes apart, so keep the last estimate for longer before a train falls back to "Scheduled".
+      # The defaults are 60 and 300 seconds (a live feed sends positions every few seconds).
+      Journeys__Live__StaleAfterSeconds: "900"
+      Journeys__Live__UnknownAfterSeconds: "1800"
       # Development feed sources for the simulator (SPEC-005). Never use these keys outside development.
       Identity__FeedSources__Seed__0__Code: "SIM"
       Identity__FeedSources__Seed__0__Name: "Development feed"
@@ -105,6 +121,7 @@ services:
     image: smartrail/catering:${TAG:-local}
     environment:
       PORT: "4000"
+      CATERING_API_KEY: ${CATERING_API_KEY:-dev-catering-key-change-me}
     ports:
       - "4000:4000"
     restart: unless-stopped
@@ -115,6 +132,8 @@ services:
       args:
         APP: console
     image: smartrail/console:${TAG:-local}
+    depends_on:
+      - api
     ports:
       - "3000:8080"
     restart: unless-stopped
