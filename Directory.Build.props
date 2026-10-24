@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- IANA time zone ids (Network:TimeZone) need ICU; the runtime images and CI have it. -->
+    <InvariantGlobalization>false</InvariantGlobalization>
   </PropertyGroup>
 </Project>

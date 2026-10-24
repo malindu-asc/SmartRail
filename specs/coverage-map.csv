@@ -1,0 +1,142 @@
+req,spec,note
+REQ-LIVE-001,SPEC-004,table and rules built; Running/Completed driven by feed in 005; interrupt/resume in 010
+REQ-LIVE-002,SPEC-005,fields exist from 004; computed in 005
+REQ-LIVE-003,SPEC-005,
+REQ-LIVE-004,SPEC-005,
+REQ-LIVE-005,SPEC-005,
+REQ-LIVE-006,SPEC-005,driver becomes a third source in 011
+REQ-LIVE-007,SPEC-005,
+REQ-LIVE-008,SPEC-004,
+REQ-LIVE-009,SPEC-004,board crossing midnight re-checked live in 005
+REQ-LIVE-010,SPEC-004,telemetry resolution in 005
+REQ-LIVE-011,SPEC-012,unassigned alerts at 24 h and 2 h
+REQ-LIVE-012,SPEC-005,
+REQ-LIVE-013,SPEC-010,interrupt and resume; null delay already enforced in 005
+REQ-LIVE-014,SPEC-010,data per stop built in 004; change action and push in 010 and 007
+REQ-LIVE-015,SPEC-005,internal flag only; ops list in 010
+REQ-LIVE-016,SPEC-027,section/route/station disruption resolves to journeys
+REQ-LIVE-017,SPEC-004,
+REQ-LIVE-018,SPEC-012,vehicle failure cascade
+REQ-LIVE-019,SPEC-004,
+REQ-LIVE-020,SPEC-010,platform conflict warning
+REQ-PAX-001,SPEC-004,public reads without sign-in
+REQ-PAX-002,SPEC-009,
+REQ-PAX-003,SPEC-009,
+REQ-PAX-004,SPEC-009,rule applies to every UI spec
+REQ-PAX-005,SPEC-009,
+REQ-PAX-006,SPEC-016,
+REQ-PAX-007,SPEC-020,
+REQ-PAX-008,SPEC-020,
+REQ-PAX-009,SPEC-027,banners and retraction; shown in 009
+REQ-PAX-010,SPEC-009,offline cache
+REQ-PAX-011,SPEC-009,
+REQ-PAX-012,SPEC-021,delete device data
+REQ-PAX-013,SPEC-008,two languages in the Flutter foundation
+REQ-PAX-014,SPEC-008,accessibility baseline; checked in each app spec
+REQ-PAX-015,SPEC-020,
+REQ-DRV-001,SPEC-011,
+REQ-DRV-002,SPEC-011,
+REQ-DRV-003,SPEC-011,departed/arrived/skipped, delay reason, assistance
+REQ-DRV-004,SPEC-011,
+REQ-DRV-005,SPEC-011,
+REQ-DRV-006,SPEC-011,
+REQ-DRV-007,SPEC-011,driver side; sender is REQ-OPS-013 in 010
+REQ-DRV-008,SPEC-011,
+REQ-DRV-009,SPEC-011,
+REQ-DRV-010,SPEC-011,
+REQ-DRV-011,SPEC-011,
+REQ-DSP-001,SPEC-013,
+REQ-DSP-002,SPEC-013,
+REQ-DSP-003,SPEC-013,
+REQ-DSP-004,SPEC-013,
+REQ-DSP-005,SPEC-013,
+REQ-DSP-006,SPEC-013,
+REQ-DSP-007,SPEC-013,
+REQ-DSP-008,SPEC-013,
+REQ-TRM-001,SPEC-019,
+REQ-TRM-002,SPEC-019,
+REQ-TRM-003,SPEC-019,
+REQ-TRM-004,SPEC-019,
+REQ-TRM-005,SPEC-019,
+REQ-OPS-001,SPEC-001,roles; separation of duties verified per action in 017
+REQ-OPS-002,SPEC-010,live network board
+REQ-OPS-003,SPEC-015,versioning and approval workflow
+REQ-OPS-004,SPEC-010,cancel terminate-short interrupt resume reinstate with reasons
+REQ-OPS-005,SPEC-027,
+REQ-OPS-006,SPEC-027,
+REQ-OPS-007,SPEC-027,incident lifecycle
+REQ-OPS-008,SPEC-027,emergency termination
+REQ-OPS-009,SPEC-012,device health and revocation (admin console)
+REQ-OPS-010,SPEC-010,concurrent edit detection
+REQ-OPS-011,SPEC-004,audit building block; used by every action spec
+REQ-OPS-012,SPEC-012,vehicle unavailability
+REQ-OPS-013,SPEC-010,messages to drivers
+REQ-OPS-014,SPEC-029,punctuality report
+REQ-OPS-016,SPEC-027,planned disruptions
+REQ-OPS-018,SPEC-028,station master own-station view
+REQ-OPS-019,SPEC-028,lifts stairs gates status
+REQ-SEC-001,SPEC-001,
+REQ-SEC-002,SPEC-017,
+REQ-SEC-003,SPEC-017,
+REQ-SEC-004,SPEC-005,
+REQ-SEC-005,SPEC-027,plain-text disruption content
+REQ-SEC-006,SPEC-012,staff account protection
+REQ-DATA-001,SPEC-017,
+REQ-DATA-002,SPEC-017,
+REQ-DATA-003,SPEC-017,retention and legal hold; telemetry purge job
+REQ-NFR-001,SPEC-007,end-to-end freshness
+REQ-NFR-002,SPEC-007,departures performance
+REQ-NFR-003,SPEC-008,WCAG baseline for apps; web in 018
+REQ-NFR-004,SPEC-017,observability
+REQ-NFR-005,SPEC-004,time handling
+REQ-NFR-006,SPEC-017,degraded-mode matrix
+REQ-NFR-007,SPEC-007,realtime fallback
+REQ-NFR-008,SPEC-020,notification event matrix
+REQ-SIM-001,SPEC-006,
+REQ-SIM-002,SPEC-006,
+REQ-SIM-003,SPEC-006,
+REQ-SIM-004,SPEC-006,
+REQ-SIM-005,SPEC-006,
+REQ-INT-001,SPEC-030,
+REQ-INT-004,SPEC-030,
+REQ-INT-005,SPEC-030,
+REQ-ACC-001,SPEC-021,
+REQ-ACC-002,SPEC-021,
+REQ-ACC-003,SPEC-021,
+REQ-ACC-004,SPEC-021,
+REQ-TKT-001,SPEC-022,
+REQ-TKT-002,SPEC-022,
+REQ-TKT-003,SPEC-022,
+REQ-TKT-004,SPEC-022,
+REQ-TKT-005,SPEC-022,
+REQ-TKT-006,SPEC-023,
+REQ-TKT-007,SPEC-023,
+REQ-TKT-008,SPEC-022,
+REQ-TKT-009,SPEC-022,cancellation affects tickets
+REQ-TKT-010,SPEC-020,auto-follow and platform change notices
+REQ-TKT-011,SPEC-022,
+REQ-TKT-012,SPEC-022,signed QR and offline display
+REQ-PAY-001,SPEC-023,
+REQ-PAY-002,SPEC-023,
+REQ-PAY-003,SPEC-023,
+REQ-REF-001,SPEC-024,
+REQ-REF-002,SPEC-024,
+REQ-REF-003,SPEC-024,
+REQ-REF-004,SPEC-024,
+REQ-REF-005,SPEC-024,
+REQ-INS-001,SPEC-025,
+REQ-INS-002,SPEC-025,
+REQ-INS-003,SPEC-025,
+REQ-INS-004,SPEC-025,
+REQ-INS-005,SPEC-025,
+REQ-INS-006,SPEC-025,
+REQ-GAT-001,SPEC-026,
+REQ-GAT-002,SPEC-026,
+REQ-GAT-003,SPEC-026,
+REQ-GAT-004,SPEC-026,
+REQ-GAT-005,SPEC-026,
+REQ-GAT-006,SPEC-026,
+REQ-GAT-007,SPEC-026,
+REQ-GAT-008,SPEC-026,
+REQ-GAT-009,SPEC-026,
+REQ-GAT-010,SPEC-026,

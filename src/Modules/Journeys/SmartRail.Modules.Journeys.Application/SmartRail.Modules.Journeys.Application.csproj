@@ -3,6 +3,8 @@
   <ItemGroup>
     <ProjectReference Include="..\SmartRail.Modules.Journeys.Domain\SmartRail.Modules.Journeys.Domain.csproj" />
     <ProjectReference Include="..\SmartRail.Modules.Journeys.Contracts\SmartRail.Modules.Journeys.Contracts.csproj" />
+    <ProjectReference Include="..\..\Network\SmartRail.Modules.Network.Contracts\SmartRail.Modules.Network.Contracts.csproj" />
+    <ProjectReference Include="..\..\Identity\SmartRail.Modules.Identity.Contracts\SmartRail.Modules.Identity.Contracts.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\SmartRail.Application.Core\SmartRail.Application.Core.csproj" />
   </ItemGroup>
 

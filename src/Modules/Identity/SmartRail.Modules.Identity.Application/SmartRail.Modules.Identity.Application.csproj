@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SmartRail.Modules.Identity.Domain\SmartRail.Modules.Identity.Domain.csproj" />
     <ProjectReference Include="..\SmartRail.Modules.Identity.Contracts\SmartRail.Modules.Identity.Contracts.csproj" />
+    <ProjectReference Include="..\..\Network\SmartRail.Modules.Network.Contracts\SmartRail.Modules.Network.Contracts.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\SmartRail.Application.Core\SmartRail.Application.Core.csproj" />
   </ItemGroup>
 

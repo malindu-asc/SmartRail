@@ -1,0 +1,45 @@
+version: 2
+
+updates:
+  - package-ecosystem: nuget
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      microsoft:
+        patterns: ["Microsoft.*", "System.*", "Aspire.*"]
+      opentelemetry:
+        patterns: ["OpenTelemetry*"]
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: npm
+    directory: "/apps/web"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: npm
+    directory: "/services/catering"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: pub
+    directory: "/apps/mobile"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: docker
+    directories:
+      - "/src/Host/SmartRail.Api"
+      - "/tools/Simulator/SmartRail.Simulator"
+      - "/services/catering"
+      - "/apps/web"
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly

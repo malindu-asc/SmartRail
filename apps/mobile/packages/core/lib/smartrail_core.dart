@@ -1,5 +1,6 @@
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+/// Shared by the passenger and driver apps: errors, the use case base and network-time handling.
+library;
+
+export 'src/failures.dart';
+export 'src/network_clock.dart';
+export 'src/use_case.dart';

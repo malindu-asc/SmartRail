@@ -1,0 +1,195 @@
+using Microsoft.EntityFrameworkCore;
+using SmartRail.Modules.Journeys.Application.Abstractions;
+using SmartRail.Modules.Journeys.Contracts;
+using SmartRail.Modules.Journeys.Domain.Journeys;
+
+namespace SmartRail.Modules.Journeys.Infrastructure.Persistence;
+
+internal sealed class JourneyReader(JourneysDbContext context) : IJourneyReader, IJourneyLookup
+{
+    public async Task<JourneyReadModel?> GetJourneyAsync(Guid journeyId, CancellationToken cancellationToken)
+    {
+        var journey = await context.Journeys
+            .AsNoTracking()
+            .Include(j => j.Stops)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(j => j.Id == journeyId, cancellationToken);
+
+        return journey is null
+            ? null
+            : new JourneyReadModel(
+                journey.Id,
+                journey.ServiceDate,
+                journey.TrainNumber,
+                journey.RouteCode,
+                journey.OriginStationCode,
+                journey.DestinationStationCode,
+                journey.Lifecycle,
+                journey.Confidence,
+                journey.DelayMinutes,
+                journey.PunctualityBand,
+                journey.LastAcceptedUpdateAt,
+                journey.Stops.OrderBy(s => s.Sequence).Select(s => new JourneyStopReadModel(
+                    s.Sequence, s.StationCode, s.Kind, s.State,
+                    s.ScheduledArrivalUtc, s.ScheduledDepartureUtc, s.EstimatedArrivalUtc, s.EstimatedDepartureUtc,
+                    s.ActualArrivalUtc, s.ActualDepartureUtc, s.PlatformCode, s.PlatformState)).ToList());
+    }
+
+    public async Task<IReadOnlyList<BoardRowReadModel>> GetBoardAsync(
+        string stationCode,
+        IReadOnlyCollection<DateOnly> serviceDates,
+        DateTimeOffset notBeforeUtc,
+        DateTimeOffset cancelledNotBeforeUtc,
+        DateTimeOffset runningNotBeforeUtc,
+        int count,
+        CancellationToken cancellationToken)
+    {
+        var dates = serviceDates.ToArray();
+
+        var rows = await context.Journeys
+            .AsNoTracking()
+            .Where(j => dates.Contains(j.ServiceDate) && j.Lifecycle != JourneyLifecycle.Completed)
+            .SelectMany(j => j.Stops, (j, s) => new { Journey = j, Stop = s })
+            .Where(x => x.Stop.StationCode == stationCode
+                        && x.Stop.Kind != JourneyStopKind.Passing
+                        && x.Stop.Kind != JourneyStopKind.SetDownOnly
+                        && x.Stop.ScheduledDepartureUtc != null
+                        && (x.Journey.Lifecycle == JourneyLifecycle.Cancelled
+                            ? x.Stop.ScheduledDepartureUtc >= cancelledNotBeforeUtc
+                            : (x.Stop.ScheduledDepartureUtc >= notBeforeUtc
+                               || (x.Stop.ActualDepartureUtc != null && x.Stop.ActualDepartureUtc >= notBeforeUtc)
+                               || (x.Journey.Lifecycle == JourneyLifecycle.Running
+                                   && x.Stop.State != JourneyStopState.Departed
+                                   && x.Stop.ScheduledDepartureUtc >= runningNotBeforeUtc))))
+            .OrderBy(x => x.Stop.EstimatedDepartureUtc ?? x.Stop.ScheduledDepartureUtc)
+            .ThenBy(x => x.Journey.TrainNumber)
+            .Take(count)
+            .Select(x => new BoardRowReadModel(
+                x.Journey.Id,
+                x.Journey.TrainNumber,
+                x.Journey.RouteCode,
+                x.Journey.DestinationStationCode,
+                x.Stop.ScheduledDepartureUtc!.Value,
+                x.Stop.EstimatedDepartureUtc,
+                x.Stop.ActualDepartureUtc,
+                x.Stop.PlatformCode,
+                x.Stop.PlatformState,
+                x.Journey.Lifecycle,
+                x.Journey.Confidence,
+                x.Journey.DelayMinutes,
+                x.Journey.PunctualityBand,
+                x.Journey.LastAcceptedUpdateAt,
+                x.Stop.State))
+            .ToListAsync(cancellationToken);
+
+        return rows;
+    }
+
+    public async Task<IReadOnlyList<ArrivalRowReadModel>> GetArrivalsAsync(
+        string stationCode,
+        IReadOnlyCollection<DateOnly> serviceDates,
+        DateTimeOffset arrivedNotBeforeUtc,
+        DateTimeOffset cancelledNotBeforeUtc,
+        DateTimeOffset runningNotBeforeUtc,
+        int count,
+        CancellationToken cancellationToken)
+    {
+        var dates = serviceDates.ToArray();
+
+        // A journey that has finished is still read: its last arrival is the row that must show for a minute.
+        var rows = await context.Journeys
+            .AsNoTracking()
+            .Where(j => dates.Contains(j.ServiceDate))
+            .SelectMany(j => j.Stops, (j, s) => new { Journey = j, Stop = s })
+            .Where(x => x.Stop.StationCode == stationCode
+                        && x.Stop.Kind != JourneyStopKind.Passing
+                        && x.Stop.Kind != JourneyStopKind.PickUpOnly
+                        && x.Stop.ScheduledArrivalUtc != null
+                        && (x.Journey.Lifecycle == JourneyLifecycle.Cancelled
+                            ? x.Stop.ScheduledArrivalUtc >= cancelledNotBeforeUtc
+                            : (x.Stop.ActualArrivalUtc != null
+                                ? x.Stop.ActualArrivalUtc >= arrivedNotBeforeUtc
+                                : (x.Journey.Lifecycle != JourneyLifecycle.Completed
+                                   && (x.Stop.ScheduledArrivalUtc >= arrivedNotBeforeUtc
+                                       || (x.Journey.Lifecycle == JourneyLifecycle.Running
+                                           && x.Stop.ScheduledArrivalUtc >= runningNotBeforeUtc))))))
+            .OrderBy(x => x.Stop.EstimatedArrivalUtc ?? x.Stop.ScheduledArrivalUtc)
+            .ThenBy(x => x.Journey.TrainNumber)
+            .Take(count)
+            .Select(x => new ArrivalRowReadModel(
+                x.Journey.Id,
+                x.Journey.TrainNumber,
+                x.Journey.RouteCode,
+                x.Journey.OriginStationCode,
+                x.Stop.ScheduledArrivalUtc!.Value,
+                x.Stop.EstimatedArrivalUtc,
+                x.Stop.ActualArrivalUtc,
+                x.Stop.PlatformCode,
+                x.Stop.PlatformState,
+                x.Journey.Lifecycle,
+                x.Journey.Confidence,
+                x.Journey.DelayMinutes,
+                x.Journey.PunctualityBand,
+                x.Journey.LastAcceptedUpdateAt))
+            .ToListAsync(cancellationToken);
+
+        return rows;
+    }
+
+    public async Task<IReadOnlyList<JourneyReadModel>> GetSearchCandidatesAsync(
+        string fromStationCode,
+        string toStationCode,
+        IReadOnlyCollection<DateOnly> serviceDates,
+        DateTimeOffset notBeforeUtc,
+        CancellationToken cancellationToken)
+    {
+        var dates = serviceDates.ToArray();
+
+        var journeys = await context.Journeys
+            .AsNoTracking()
+            .Include(j => j.Stops)
+            .AsSplitQuery()
+            .Where(j => dates.Contains(j.ServiceDate)
+                        && j.Lifecycle != JourneyLifecycle.Completed
+                        && j.Lifecycle != JourneyLifecycle.Cancelled
+                        && j.Lifecycle != JourneyLifecycle.TerminatedEmergency
+                        && j.Stops.Any(s => s.StationCode == fromStationCode || s.StationCode == toStationCode)
+                        && j.Stops.Any(s => s.ScheduledDepartureUtc >= notBeforeUtc || s.ScheduledArrivalUtc >= notBeforeUtc))
+            .ToListAsync(cancellationToken);
+
+        return journeys.Select(journey => new JourneyReadModel(
+            journey.Id,
+            journey.ServiceDate,
+            journey.TrainNumber,
+            journey.RouteCode,
+            journey.OriginStationCode,
+            journey.DestinationStationCode,
+            journey.Lifecycle,
+            journey.Confidence,
+            journey.DelayMinutes,
+            journey.PunctualityBand,
+            journey.LastAcceptedUpdateAt,
+            journey.Stops.OrderBy(s => s.Sequence).Select(s => new JourneyStopReadModel(
+                s.Sequence, s.StationCode, s.Kind, s.State,
+                s.ScheduledArrivalUtc, s.ScheduledDepartureUtc, s.EstimatedArrivalUtc, s.EstimatedDepartureUtc,
+                s.ActualArrivalUtc, s.ActualDepartureUtc, s.PlatformCode, s.PlatformState)).ToList())).ToList();
+    }
+
+    // IJourneyLookup: what other modules may know about a journey.
+    public async Task<JourneyRef?> FindAsync(Guid journeyId, CancellationToken cancellationToken)
+    {
+        var journey = await context.Journeys
+            .AsNoTracking()
+            .Include(j => j.Stops)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(j => j.Id == journeyId, cancellationToken);
+
+        return journey is null
+            ? null
+            : new JourneyRef(
+                journey.Id,
+                journey.ServiceDate,
+                journey.Lifecycle.ToString(),
+                journey.Stops.OrderBy(s => s.Sequence).Select(s => s.StationCode).ToList());
+    }
+}

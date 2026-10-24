@@ -145,7 +145,7 @@ cd apps/passenger && flutter run      # or apps/driver
 ## Testing
 
 ```bash
-dotnet test                                                  # architecture tests
+dotnet test                                                  # unit, architecture and API tests (API tests need Docker)
 npm run build --workspace=console --prefix apps/web          # web build
 npm run typecheck --prefix services/catering                 # catering typecheck
 cd apps/mobile/apps/passenger && flutter test                # mobile tests
@@ -155,7 +155,69 @@ CI runs all of the above plus a Docker build of every image on each push and pul
 
 ## Signing in (development)
 
-Keycloak seeds one user per role: `passenger`, `driver`, `controller` and `admin`. Their development passwords are in `infra/keycloak/smartrail-realm.json`. They are for local use only.
+Keycloak seeds one user per role: `passenger`, `driver`, `controller`, `scheduler` and `admin`. Their development passwords are in `infra/keycloak/smartrail-realm.json`. They are for local use only.
+
+### Getting a token (development)
+
+```bash
+scripts/get-token.sh controller
+curl -H "Authorization: Bearer $(scripts/get-token.sh controller)" http://localhost:5080/api/identity/whoami
+```
+
+Every endpoint requires a signed-in user unless it is explicitly marked anonymous; a test fails the build if an
+unexpected endpoint becomes public. Roles map to the `Driver`, `Controller`, `Scheduler` and `Admin` policies.
+
+## Network data (public API)
+
+Stations and routes are public, read-only and need no token. Names follow `?lang=` or `Accept-Language`
+(`en` default, `si`).
+
+```bash
+curl "http://localhost:5080/api/network/stations?q=oak&lang=si"
+curl  http://localhost:5080/api/network/stations/CEN
+curl  http://localhost:5080/api/network/routes
+curl  http://localhost:5080/api/network/routes/HILL
+```
+
+Scheduled timetable (public, read-only). `date` is `yyyy-MM-dd` and defaults to today in the network time zone
+(`Network__TimeZone`, default `Asia/Colombo`). Times after midnight continue past 24 (`24:24`).
+
+```bash
+curl "http://localhost:5080/api/network/stations/CEN/timetable?date=2026-10-14"
+curl "http://localhost:5080/api/network/stations/CEN/timetable?date=2026-10-14&kind=arrivals"
+curl "http://localhost:5080/api/network/services/<serviceId>?date=2026-10-14"
+```
+
+### Journeys
+
+Journeys are generated from the timetable for the next 7 days at 01:00 network time, and once at startup when
+`Journeys__Generation__RunOnStartup=true`. `Journeys__Seed__DemoFleet=true` adds 8 demo trainsets, a roster and
+assignments so every generated journey is Ready (Aspire and Docker Compose set both). Reads are public and cached for 5 seconds.
+
+```bash
+curl "http://localhost:5080/api/journeys/boards/CEN?count=10"
+curl  http://localhost:5080/api/journeys/<journeyId>
+# manual journey: needs a token with the scheduler role (scripts/get-token.sh)
+curl -X POST http://localhost:5080/api/journeys/manual -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json"   -d '{"routeCode":"MAIN","trainNumber":"SP1","serviceDate":"2026-10-14","reason":"Festival special","stops":[{"stationCode":"CEN","departure":"22:00"},{"stationCode":"OAK","arrival":"22:20"}]}'
+```
+
+### Live feed ingest
+
+The train detection feed (and the simulator) send live data with their own source key, not a user token. Send
+`X-Source-Code` and `X-Source-Key` headers; a wrong or missing key answers `401`. Sequences are one increasing counter per source,
+across both endpoints. Each message in a batch (1 to 100) gets its own result.
+
+```bash
+curl -X POST http://localhost:5080/api/ingest/stop-events -H "X-Source-Code: SIM" -H "X-Source-Key: $FEED_KEY" -H "Content-Type: application/json"   -d '{"events":[{"sequence":1,"journeyId":"<journeyId>","stopSequence":1,"type":"departed","occurredAt":"2026-10-14T02:08:00Z"}]}'
+curl -X POST http://localhost:5080/api/ingest/positions -H "X-Source-Code: SIM" -H "X-Source-Key: $FEED_KEY" -H "Content-Type: application/json"   -d '{"readings":[{"sequence":2,"vehicleCode":"MAIN-F","recordedAt":"2026-10-14T02:10:00Z","fromStation":"CEN","toStation":"OAK","progress":0.4,"speedKmh":72}]}'
+```
+
+`type` is `arrived`, `departed` or `passed`. Aspire and Docker Compose create two development sources (`SIM` rank 1 and
+`SIM-B` rank 2) from `Identity__FeedSources__Seed__*`; their keys are for development only. Live thresholds are in
+`Journeys:Live` (stale after 60 s, Unknown after 300 s).
+
+The demo network is inserted at startup when `Network__Seed__ReferenceData=true` (set by the Aspire AppHost and
+Docker Compose). It only adds missing rows and never changes existing ones.
 
 ## Database migrations
 
@@ -181,6 +243,17 @@ Services export OpenTelemetry to a collector, which sends traces to Tempo, logs 
 | `ci.yml` | Backend build and tests, web build, catering typecheck, Flutter analyze and test, Docker image builds |
 | `cd.yml` | Publishes images to GitHub Container Registry from `main` |
 | `deploy-azure.yml` | Manual `azd` deployment to Azure Container Apps |
+
+## Security checks
+
+| Check | Where |
+|---|---|
+| Secret scanning (Gitleaks) | `security.yml` |
+| Static analysis (CodeQL, C# and TypeScript) | `security.yml` |
+| Vulnerable NuGet and npm packages | `security.yml` |
+| Repository and Dockerfile scan (Trivy) | `security.yml` |
+| Image scan (Trivy) | `ci.yml`, per image |
+| Dependency updates | `dependabot.yml`, weekly |
 
 ## Troubleshooting
 

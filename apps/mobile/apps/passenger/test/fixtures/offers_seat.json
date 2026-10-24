@@ -1,0 +1,147 @@
+{
+ "timeZone": "Asia/Colombo",
+ "fromName": "Market Street",
+ "toName": "Airport",
+ "offers": [
+  {
+   "journeyId": "8396a65d-32c5-4a82-aa82-1f7c3ebccbbc",
+   "trainNumber": "4004",
+   "fromCode": "MAR",
+   "toCode": "AIR",
+   "departureUtc": "2026-10-19T12:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:00:00+00:00",
+   "arrivalUtc": "2026-10-19T12:22:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T12:22:00+00:00",
+   "durationMinutes": 22,
+   "platform": "3",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": true,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 2,
+      "each": 180,
+      "total": 360
+     }
+    ],
+    "total": 360
+   }
+  },
+  {
+   "journeyId": "144484f7-96de-4a06-9098-dd7d8d93ea43",
+   "trainNumber": "4001",
+   "fromCode": "MAR",
+   "toCode": "AIR",
+   "departureUtc": "2026-10-20T01:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T01:00:00+00:00",
+   "arrivalUtc": "2026-10-20T01:22:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T01:22:00+00:00",
+   "durationMinutes": 22,
+   "platform": "3",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": true,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 2,
+      "each": 180,
+      "total": 360
+     }
+    ],
+    "total": 360
+   }
+  },
+  {
+   "journeyId": "8311b188-bbfa-4804-a5dc-e2190414c302",
+   "trainNumber": "4002",
+   "fromCode": "MAR",
+   "toCode": "AIR",
+   "departureUtc": "2026-10-20T02:30:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T02:30:00+00:00",
+   "arrivalUtc": "2026-10-20T02:52:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T02:52:00+00:00",
+   "durationMinutes": 22,
+   "platform": "3",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": true,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 2,
+      "each": 180,
+      "total": 360
+     }
+    ],
+    "total": 360
+   }
+  },
+  {
+   "journeyId": "f91e92a7-0d72-4fe4-931a-cb37d41ca64f",
+   "trainNumber": "4003",
+   "fromCode": "MAR",
+   "toCode": "AIR",
+   "departureUtc": "2026-10-20T06:30:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T06:30:00+00:00",
+   "arrivalUtc": "2026-10-20T06:52:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T06:52:00+00:00",
+   "durationMinutes": 22,
+   "platform": "3",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": true,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 2,
+      "each": 180,
+      "total": 360
+     }
+    ],
+    "total": 360
+   }
+  },
+  {
+   "journeyId": "f002dec7-c782-47cd-8600-055b7bb477ef",
+   "trainNumber": "4004",
+   "fromCode": "MAR",
+   "toCode": "AIR",
+   "departureUtc": "2026-10-20T12:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T12:00:00+00:00",
+   "arrivalUtc": "2026-10-20T12:22:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T12:22:00+00:00",
+   "durationMinutes": 22,
+   "platform": "3",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": true,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 2,
+      "each": 180,
+      "total": 360
+     }
+    ],
+    "total": 360
+   }
+  }
+ ]
+}

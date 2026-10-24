@@ -1,6 +1,16 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.AddPostgres("postgres")
+// Local credentials come from the repo-root .env (also used by Docker Compose), so there is one place
+// to change them. Without a .env the defaults below apply. Never use these values outside development.
+var env = ReadDotEnv(Path.GetFullPath(Path.Combine(builder.AppHostDirectory, "../../../.env")));
+string Setting(string key, string fallback) => env.TryGetValue(key, out var value) && value.Length > 0 ? value : fallback;
+
+var postgresUser = builder.AddParameter("postgres-user", Setting("POSTGRES_USER", "postgres"));
+var postgresPassword = builder.AddParameter("postgres-password", Setting("POSTGRES_PASSWORD", "postgres"), secret: true);
+var keycloakUser = builder.AddParameter("keycloak-admin-user", Setting("KEYCLOAK_ADMIN", "admin"));
+var keycloakPassword = builder.AddParameter("keycloak-admin-password", Setting("KEYCLOAK_ADMIN_PASSWORD", "admin"), secret: true);
+
+var postgres = builder.AddPostgres("postgres", postgresUser, postgresPassword)
     .WithDataVolume()
     .WithPgAdmin();
 
@@ -8,13 +18,32 @@ var database = postgres.AddDatabase("smartraildb");
 
 // Identity provider. Users, passwords and roles live here; the API only validates tokens.
 // The realm (clients, roles, seeded dev users) is imported from infra/keycloak on first start.
-var keycloak = builder.AddKeycloak("keycloak", 8080)
+var keycloak = builder.AddKeycloak("keycloak", 8080, keycloakUser, keycloakPassword)
     .WithDataVolume()
     .WithRealmImport("../../../infra/keycloak");
 
+// The API validates tokens from Keycloak. Keycloak is reached on the host at its fixed port.
 var api = builder.AddProject<Projects.SmartRail_Api>("api")
     .WithReference(database)
-    .WithReference(keycloak)
+    .WithEnvironment("Authentication__Authority", "https://localhost:8080/realms/smartrail")
+    .WithEnvironment("Authentication__Audience", "smartrail-api")
+    .WithEnvironment("Diagnostics__Identity", "true")
+    .WithEnvironment("Identity__Admin__BaseUrl", "http://localhost:8080")
+    .WithEnvironment("Identity__Admin__ClientSecret", "dev-only-change-me")
+    .WithEnvironment("Catering__BaseUrl", "http://localhost:4000")
+    .WithEnvironment("Catering__ApiKey", "dev-catering-key-change-me")
+    .WithEnvironment("Database__ApplyMigrationsOnStartup", "true")
+    .WithEnvironment("Network__Seed__ReferenceData", "true")
+    .WithEnvironment("Journeys__Generation__RunOnStartup", "true")
+    // Development feed sources for the simulator (SPEC-005). Never use these keys outside development.
+    .WithEnvironment("Identity__FeedSources__Seed__0__Code", "SIM")
+    .WithEnvironment("Identity__FeedSources__Seed__0__Name", "Development feed")
+    .WithEnvironment("Identity__FeedSources__Seed__0__Key", "dev-feed-key-sim-change-me")
+    .WithEnvironment("Identity__FeedSources__Seed__0__Rank", "1")
+    .WithEnvironment("Identity__FeedSources__Seed__1__Code", "SIM-B")
+    .WithEnvironment("Identity__FeedSources__Seed__1__Name", "Development second feed")
+    .WithEnvironment("Identity__FeedSources__Seed__1__Key", "dev-feed-key-simb-change-me")
+    .WithEnvironment("Identity__FeedSources__Seed__1__Rank", "2")
     .WaitFor(database)
     .WaitFor(keycloak);
 
@@ -52,8 +81,8 @@ if (string.Equals(builder.Configuration["Observability:Enabled"], "true", String
     builder.AddContainer("grafana", "grafana/grafana", "11.3.1")
         .WithBindMount($"{obs}/grafana/provisioning", "/etc/grafana/provisioning", isReadOnly: true)
         .WithBindMount($"{obs}/grafana/dashboards", "/var/lib/grafana/dashboards", isReadOnly: true)
-        .WithEnvironment("GF_SECURITY_ADMIN_USER", "admin")
-        .WithEnvironment("GF_SECURITY_ADMIN_PASSWORD", "admin")
+        .WithEnvironment("GF_SECURITY_ADMIN_USER", Setting("GRAFANA_ADMIN_USER", "admin"))
+        .WithEnvironment("GF_SECURITY_ADMIN_PASSWORD", Setting("GRAFANA_ADMIN_PASSWORD", "admin"))
         .WithEnvironment("GF_USERS_ALLOW_SIGN_UP", "false")
         .WithHttpEndpoint(port: 3002, targetPort: 3000, name: "http")
         .WaitFor(prometheus);
@@ -83,3 +112,25 @@ builder.AddViteApp("kiosk", "../../../apps/web/kiosk")
     .WaitFor(api);
 
 builder.Build().Run();
+
+static Dictionary<string, string> ReadDotEnv(string path)
+{
+    var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    if (!File.Exists(path))
+        return values;
+
+    foreach (var raw in File.ReadAllLines(path))
+    {
+        var line = raw.Trim();
+        if (line.Length == 0 || line.StartsWith('#'))
+            continue;
+
+        var index = line.IndexOf('=');
+        if (index <= 0)
+            continue;
+
+        values[line[..index].Trim()] = line[(index + 1)..].Trim().Trim('"');
+    }
+
+    return values;
+}

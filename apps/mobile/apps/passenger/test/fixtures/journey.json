@@ -1,0 +1,84 @@
+{
+ "journeyId": "810ac15e-8447-4ebc-bf2d-806c71ef594d",
+ "serviceDate": "2026-10-19",
+ "timeZone": "Asia/Colombo",
+ "trainNumber": "1004",
+ "routeCode": "MAIN",
+ "status": "Planned",
+ "confidence": "Scheduled",
+ "origin": {
+  "code": "CEN",
+  "name": "Central"
+ },
+ "destination": {
+  "code": "RIV",
+  "name": "Riverside"
+ },
+ "delayMinutes": null,
+ "punctuality": null,
+ "isStale": false,
+ "ageSeconds": null,
+ "asOfUtc": null,
+ "stops": [
+  {
+   "sequence": 1,
+   "stationCode": "CEN",
+   "stationName": "Central",
+   "state": "Pending",
+   "scheduledArrivalUtc": null,
+   "scheduledDepartureUtc": "2026-10-19T12:00:00+00:00",
+   "estimatedArrivalUtc": null,
+   "estimatedDepartureUtc": null,
+   "actualArrivalUtc": null,
+   "actualDepartureUtc": null,
+   "estimateSource": "Scheduled",
+   "platform": "2",
+   "platformState": "Assigned"
+  },
+  {
+   "sequence": 2,
+   "stationCode": "OAK",
+   "stationName": "Oak Park",
+   "state": "Pending",
+   "scheduledArrivalUtc": "2026-10-19T12:06:00+00:00",
+   "scheduledDepartureUtc": "2026-10-19T12:07:00+00:00",
+   "estimatedArrivalUtc": null,
+   "estimatedDepartureUtc": null,
+   "actualArrivalUtc": null,
+   "actualDepartureUtc": null,
+   "estimateSource": "Scheduled",
+   "platform": "1",
+   "platformState": "Assigned"
+  },
+  {
+   "sequence": 3,
+   "stationCode": "MIL",
+   "stationName": "Mill Lane",
+   "state": "Pending",
+   "scheduledArrivalUtc": "2026-10-19T12:14:00+00:00",
+   "scheduledDepartureUtc": "2026-10-19T12:15:00+00:00",
+   "estimatedArrivalUtc": null,
+   "estimatedDepartureUtc": null,
+   "actualArrivalUtc": null,
+   "actualDepartureUtc": null,
+   "estimateSource": "Scheduled",
+   "platform": "1",
+   "platformState": "Assigned"
+  },
+  {
+   "sequence": 4,
+   "stationCode": "RIV",
+   "stationName": "Riverside",
+   "state": "Pending",
+   "scheduledArrivalUtc": "2026-10-19T12:23:00+00:00",
+   "scheduledDepartureUtc": null,
+   "estimatedArrivalUtc": null,
+   "estimatedDepartureUtc": null,
+   "actualArrivalUtc": null,
+   "actualDepartureUtc": null,
+   "estimateSource": "Scheduled",
+   "platform": "1",
+   "platformState": "Assigned"
+  }
+ ]
+}

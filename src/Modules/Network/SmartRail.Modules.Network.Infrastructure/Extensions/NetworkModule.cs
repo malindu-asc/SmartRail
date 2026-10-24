@@ -4,7 +4,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartRail.Modules.Network.Application.Abstractions;
 using SmartRail.Modules.Network.Infrastructure.Persistence;
+using SmartRail.Modules.Network.Contracts;
+using SmartRail.Modules.Network.Infrastructure.Seeding;
+using SmartRail.Modules.Network.Infrastructure.Settings;
+using Microsoft.Extensions.Options;
+using SmartRail.Application.Core.Abstractions;
+using SmartRail.Infrastructure.Core.Audit;
 using SmartRail.Infrastructure.Core.Outbox;
+using SmartRail.Modules.Network.Application.Timetables.Versions;
 using SmartRail.Infrastructure.Core.Persistence;
 
 namespace SmartRail.Modules.Network.Infrastructure.Extensions;
@@ -25,9 +32,38 @@ public static class NetworkModule
 
         services.AddScoped<INetworkUnitOfWork>(sp => sp.GetRequiredService<NetworkDbContext>());
         services.AddScoped<IOutboxMessageProcessor, OutboxMessageProcessor<NetworkDbContext>>();
+        services.AddScoped<INetworkReader, NetworkReader>();
+        services.AddScoped<NetworkReferenceSeeder>();
+        services.AddScoped<NetworkTimetableSeeder>();
 
-        // Register repositories here.
+        services.AddScoped<ITimetableReader, TimetableReader>();
+        services.AddScoped<INetworkTimetable, NetworkTimetable>();
+        services.AddScoped<ITimetableVersionStore, TimetableVersionStore>();
+        services.AddScoped<INetworkAuditLog, NetworkAuditLog>();
+        services.AddScoped<IAuditSource>(sp => new AuditSource<NetworkDbContext>(sp.GetRequiredService<NetworkDbContext>(), "network", false));
+
+        services.AddOptions<NetworkOptions>().Bind(configuration.GetSection(NetworkOptions.SectionName)).ValidateOnStart();
+        services.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
+        services.AddSingleton<NetworkSettings>();
+        services.AddSingleton<INetworkSettings>(sp => sp.GetRequiredService<NetworkSettings>());
+        services.AddSingleton<INetworkTimeZone>(sp => sp.GetRequiredService<NetworkSettings>());
+        services.AddScoped<INetworkStations, NetworkStations>();
+
+        // The catering provider (RailBite) is external: its address and key come from the Catering section, and a quick timeout
+        // keeps a slow kitchen from slowing anything else down.
+        services.Configure<SmartRail.Modules.Network.Infrastructure.Catering.CateringOptions>(configuration.GetSection(SmartRail.Modules.Network.Infrastructure.Catering.CateringOptions.Section));
+        services.AddHttpClient<SmartRail.Modules.Network.Application.Stations.GetStationMenu.ICateringProvider, SmartRail.Modules.Network.Infrastructure.Catering.RailBiteClient>(
+            client => client.Timeout = TimeSpan.FromSeconds(3));
+        services.AddScoped<INetworkRoutes, NetworkRoutes>();
 
         return services;
+    }
+
+    // Inserts the demo network when it is missing. Never updates existing rows.
+    public static async Task SeedNetworkReferenceDataAsync(this IServiceProvider services, CancellationToken cancellationToken = default)
+    {
+        await using var scope = services.CreateAsyncScope();
+        await scope.ServiceProvider.GetRequiredService<NetworkReferenceSeeder>().SeedAsync(cancellationToken);
+        await scope.ServiceProvider.GetRequiredService<NetworkTimetableSeeder>().SeedAsync(cancellationToken);
     }
 }

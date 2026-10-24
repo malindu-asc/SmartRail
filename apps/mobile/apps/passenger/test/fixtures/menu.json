@@ -1,0 +1,60 @@
+{
+ "stationCode": "OAK",
+ "currency": "LKR",
+ "orderPhone": "+94 11 555 0101",
+ "categories": [
+  {
+   "id": "meals",
+   "name": "Meals",
+   "items": [
+    {
+     "id": "roll",
+     "name": "Egg and vegetable roll",
+     "price": 180
+    },
+    {
+     "id": "rice",
+     "name": "Chicken fried rice",
+     "price": 650
+    },
+    {
+     "id": "kottu",
+     "name": "Vegetable kottu",
+     "price": 520
+    }
+   ]
+  },
+  {
+   "id": "snacks",
+   "name": "Snacks",
+   "items": [
+    {
+     "id": "cutlet",
+     "name": "Fish cutlet",
+     "price": 90
+    },
+    {
+     "id": "samosa",
+     "name": "Vegetable samosa",
+     "price": 70
+    }
+   ]
+  },
+  {
+   "id": "drinks",
+   "name": "Drinks",
+   "items": [
+    {
+     "id": "tea",
+     "name": "Tea",
+     "price": 60
+    },
+    {
+     "id": "water",
+     "name": "Bottled water",
+     "price": 80
+    }
+   ]
+  }
+ ]
+}

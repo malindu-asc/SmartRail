@@ -1,0 +1,441 @@
+erDiagram
+  identity_audit_entries {
+    bigint id PK
+    timestamptz occurred_at
+    varchar actor_subject
+    varchar actor_role
+    varchar action
+    varchar target_type
+    varchar target_id
+    varchar reason
+    jsonb before_state
+    jsonb after_state
+    varchar correlation_id
+  }
+  identity_devices {
+    uuid Id PK
+    varchar Name
+    varchar Type
+    varchar StationCode
+    varchar Location
+    varchar Status
+    varchar SoftwareVersion
+    varchar RegisteredBy
+    timestamptz RegisteredAt
+    timestamptz LastHeartbeatAt
+    timestamptz RevokedAt
+    varchar RevokedBy
+    varchar RevokedReason
+  }
+  identity_feed_sources {
+    uuid id PK
+    varchar code
+    varchar name
+    varchar key_hash
+    int precedence_rank
+    bool is_active
+    timestamptz created_at
+    timestamptz rotated_at
+    timestamptz last_used_at
+  }
+  identity_settings {
+    varchar Key PK
+    varchar Value
+    varchar UpdatedBy
+    timestamptz UpdatedAt
+  }
+  journeys_audit_entries {
+    bigint id PK
+    timestamptz occurred_at
+    varchar actor_subject
+    varchar actor_role
+    varchar action
+    varchar target_type
+    varchar target_id
+    varchar reason
+    jsonb before_state
+    jsonb after_state
+    varchar correlation_id
+  }
+  journeys_crew_duties {
+    uuid id PK
+    varchar driver_subject
+    date service_date
+    timestamptz rostered_from
+    timestamptz rostered_to
+    varchar state
+    timestamptz signed_on_at
+    timestamptz signed_off_at
+    uuid handover_from_duty_id FK
+    varchar review_state
+    timestamptz created_at
+  }
+  journeys_driver_assignments {
+    uuid id PK
+    uuid journey_id FK
+    uuid duty_id FK
+    timestamptz valid_from
+    timestamptz valid_to
+    varchar assigned_by
+    timestamptz created_at
+  }
+  journeys_journey_events {
+    bigint id PK
+    uuid journey_id FK
+    varchar event_type
+    int stop_sequence
+    varchar source_kind
+    uuid source_id
+    int source_rank
+    timestamptz occurred_at_source
+    timestamptz received_at
+    bigint device_sequence
+    jsonb payload
+    varchar disposition
+    varchar disposition_reason
+    bigint superseded_by_event_id FK
+  }
+  journeys_journey_stops {
+    uuid journey_id PK
+    int sequence PK
+    varchar station_code
+    varchar kind
+    varchar state
+    timestamptz scheduled_arrival_utc
+    timestamptz scheduled_departure_utc
+    timestamptz estimated_arrival_utc
+    timestamptz estimated_departure_utc
+    timestamptz actual_arrival_utc
+    timestamptz actual_departure_utc
+    varchar estimate_source
+    int dwell_minutes
+    varchar platform_code
+    varchar platform_state
+    varchar platform_original_code
+    timestamptz platform_changed_at
+    varchar platform_changed_by
+  }
+  journeys_journeys {
+    uuid id PK
+    uuid service_id
+    uuid timetable_version_id
+    date service_date
+    varchar train_number
+    varchar route_code
+    varchar origin_station_code
+    varchar destination_station_code
+    varchar creation_origin
+    varchar manual_reason
+    timestamptz scheduled_departure_utc
+    timestamptz scheduled_arrival_utc
+    varchar lifecycle
+    varchar running_sub_state
+    int current_stop_sequence
+    int delay_minutes
+    varchar punctuality_band
+    varchar confidence
+    timestamptz last_accepted_update_at
+    timestamptz interrupted_at
+    timestamptz ended_at
+    int ended_at_stop_sequence
+    varchar cancel_reason_code
+    int version
+    timestamptz created_at_utc
+    timestamptz updated_at_utc
+    varchar controller_note
+    varchar end_reason_code
+    timestamptz delay_reason_at
+    varchar delay_reason_code
+  }
+  journeys_telemetry_readings {
+    bigint id PK
+    uuid source_id
+    varchar vehicle_code
+    timestamptz recorded_at
+    timestamptz received_at
+    bigint sequence
+    varchar section_from_station_code
+    varchar section_to_station_code
+    numeric progress
+    numeric speed_kmh
+    uuid resolved_journey_id
+    bool accepted
+    varchar reject_reason
+    bool legal_hold
+  }
+  journeys_vehicle_assignments {
+    uuid id PK
+    uuid journey_id FK
+    uuid vehicle_id FK
+    timestamptz valid_from
+    timestamptz valid_to
+    varchar assigned_by
+    varchar reason
+    timestamptz created_at
+  }
+  journeys_vehicle_unavailability {
+    uuid id PK
+    uuid vehicle_id FK
+    timestamptz from
+    timestamptz to
+    varchar reason
+    varchar created_by
+    timestamptz created_at
+    timestamptz ended_at
+  }
+  journeys_vehicles {
+    uuid id PK
+    varchar code
+    varchar name
+    varchar kind
+    bool is_active
+  }
+  network_audit_entries {
+    bigint id PK
+    timestamptz occurred_at
+    varchar actor_subject
+    varchar actor_role
+    varchar action
+    varchar target_type
+    varchar target_id
+    varchar reason
+    jsonb before_state
+    jsonb after_state
+    varchar correlation_id
+  }
+  network_calendar_exceptions {
+    uuid calendar_id PK
+    date date PK
+    varchar kind
+    varchar reason
+  }
+  network_languages {
+    varchar code PK
+    varchar name
+    bool is_default
+  }
+  network_platforms {
+    uuid id PK
+    uuid station_id FK
+    varchar code
+    bool is_available
+  }
+  network_route_stops {
+    uuid route_id PK
+    int sequence PK
+    uuid station_id FK
+    uuid default_platform_id FK
+    int minutes_from_previous
+    int dwell_minutes
+    varchar kind
+  }
+  network_routes {
+    uuid id PK
+    varchar code
+    varchar name
+    bool is_active
+    timestamptz created_at_utc
+    timestamptz updated_at_utc
+  }
+  network_service_calendars {
+    uuid id PK
+    varchar code
+    varchar name
+    bool monday
+    bool tuesday
+    bool wednesday
+    bool thursday
+    bool friday
+    bool saturday
+    bool sunday
+    date valid_from
+    date valid_to
+  }
+  network_service_stops {
+    uuid service_id PK
+    int sequence PK
+    uuid station_id FK
+    int arrival_minutes
+    int departure_minutes
+    uuid default_platform_id FK
+    varchar kind
+  }
+  network_services {
+    uuid id PK
+    uuid timetable_version_id FK
+    uuid route_id FK
+    uuid calendar_id FK
+    varchar train_number
+    varchar direction
+    varchar service_category
+  }
+  network_station_translations {
+    uuid station_id PK
+    varchar language_code PK
+    varchar name
+  }
+  network_stations {
+    uuid id PK
+    varchar code
+    varchar name
+    bool is_active
+    ARRAY facilities
+    timestamptz created_at_utc
+    timestamptz updated_at_utc
+  }
+  network_timetable_versions {
+    uuid id PK
+    varchar label
+    varchar status
+    date effective_from
+    varchar author
+    varchar approved_by
+    timestamptz published_at
+    timestamptz created_at_utc
+    timestamptz updated_at_utc
+  }
+  operations_assistance_requests {
+    uuid id PK
+    varchar driver_subject
+    uuid journey_id
+    varchar train_number
+    varchar station_code
+    varchar note
+    timestamptz requested_at_utc
+    varchar status
+    varchar handled_by
+    timestamptz handled_at_utc
+    varchar outcome
+  }
+  operations_audit_entries {
+    bigint id PK
+    timestamptz occurred_at
+    varchar actor_subject
+    varchar actor_role
+    varchar action
+    varchar target_type
+    varchar target_id
+    varchar reason
+    jsonb before_state
+    jsonb after_state
+    varchar correlation_id
+  }
+  operations_control_messages {
+    uuid id PK
+    varchar driver_subject
+    uuid journey_id
+    varchar train_number
+    varchar unit_code
+    uuid incident_id
+    varchar template
+    varchar body
+    bool requires_ack
+    timestamptz valid_until_utc
+    varchar sent_by
+    timestamptz sent_at_utc
+    timestamptz delivered_at_utc
+    timestamptz acknowledged_at_utc
+    int resent_count
+  }
+  operations_disruptions {
+    uuid id PK
+    varchar title
+    varchar message
+    varchar severity
+    varchar status
+    bool network_wide
+    jsonb station_codes
+    timestamptz expected_end_utc
+    timestamptz review_by_utc
+    varchar created_by
+    varchar approved_by
+    timestamptz created_at_utc
+    timestamptz updated_at_utc
+    timestamptz published_at_utc
+    varchar rejected_by
+    varchar rejection_comment
+    timestamptz starts_at_utc
+    timestamptz submitted_at_utc
+    varchar type
+  }
+  operations_incident_entries {
+    uuid id PK
+    uuid incident_id FK
+    varchar kind
+    varchar text
+    varchar detail
+    varchar author
+    timestamptz at
+  }
+  operations_incidents {
+    uuid id PK
+    varchar title
+    varchar severity
+    varchar status
+    varchar owner_subject
+    varchar opened_by
+    timestamptz opened_at_utc
+    varchar reported_by
+    jsonb station_codes
+    uuid disruption_id
+    timestamptz resolved_at_utc
+    varchar resolved_by
+    varchar resolution_note
+  }
+  ticketing_bookings {
+    uuid id PK
+    varchar reference
+    varchar booking_code
+    varchar user_id
+    varchar contact_email
+    uuid journey_id
+    date service_date
+    varchar route_code
+    varchar train_number
+    varchar from_station_code
+    varchar to_station_code
+    int from_index
+    int to_index
+    timestamptz departure_utc
+    timestamptz arrival_utc
+    int adults
+    int children
+    int seniors
+    bool needs_help
+    numeric fare_total
+    varchar currency
+    jsonb seats
+    timestamptz created_at_utc
+  }
+  ticketing_seat_holds {
+    uuid id PK
+    varchar user_id
+    uuid journey_id
+    int from_index
+    int to_index
+    jsonb seats
+    timestamptz expires_at_utc
+  }
+  journeys_crew_duties ||--o{ journeys_crew_duties : "handover_from_duty_id"
+  journeys_journeys ||--o{ journeys_driver_assignments : "journey_id"
+  journeys_crew_duties ||--o{ journeys_driver_assignments : "duty_id"
+  journeys_journey_events ||--o{ journeys_journey_events : "superseded_by_event_id"
+  journeys_journeys ||--o{ journeys_journey_events : "journey_id"
+  journeys_journeys ||--o{ journeys_journey_stops : "journey_id"
+  journeys_vehicles ||--o{ journeys_vehicle_assignments : "vehicle_id"
+  journeys_journeys ||--o{ journeys_vehicle_assignments : "journey_id"
+  journeys_vehicles ||--o{ journeys_vehicle_unavailability : "vehicle_id"
+  network_service_calendars ||--o{ network_calendar_exceptions : "calendar_id"
+  network_stations ||--o{ network_platforms : "station_id"
+  network_platforms ||--o{ network_route_stops : "default_platform_id"
+  network_routes ||--o{ network_route_stops : "route_id"
+  network_stations ||--o{ network_route_stops : "station_id"
+  network_platforms ||--o{ network_service_stops : "default_platform_id"
+  network_services ||--o{ network_service_stops : "service_id"
+  network_stations ||--o{ network_service_stops : "station_id"
+  network_timetable_versions ||--o{ network_services : "timetable_version_id"
+  network_service_calendars ||--o{ network_services : "calendar_id"
+  network_routes ||--o{ network_services : "route_id"
+  network_stations ||--o{ network_station_translations : "station_id"
+  network_languages ||--o{ network_station_translations : "language_code"
+  operations_incidents ||--o{ operations_incident_entries : "incident_id"

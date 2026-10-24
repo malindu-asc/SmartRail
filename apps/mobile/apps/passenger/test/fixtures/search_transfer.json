@@ -1,0 +1,430 @@
+{
+ "timeZone": "Asia/Colombo",
+ "asOfUtc": "2026-10-19T10:01:57.5068391+00:00",
+ "from": {
+  "code": "MIL",
+  "name": "Mill Lane"
+ },
+ "to": {
+  "code": "HIL",
+  "name": "Hill Town"
+ },
+ "options": [
+  {
+   "transfers": 1,
+   "departureUtc": "2026-10-19T12:09:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:09:00+00:00",
+   "arrivalUtc": "2026-10-19T18:36:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T18:36:00+00:00",
+   "durationMinutes": 387,
+   "transfer": {
+    "stationCode": "OAK",
+    "stationName": "Oak Park",
+    "waitMinutes": 371,
+    "connectionAtRisk": false
+   },
+   "legs": [
+    {
+     "journeyId": "85c5b52b-e762-4592-ac9e-3be0a4b66e75",
+     "trainNumber": "1504",
+     "routeCode": "MAIN",
+     "fromCode": "MIL",
+     "fromName": "Mill Lane",
+     "toCode": "OAK",
+     "toName": "Oak Park",
+     "departureUtc": "2026-10-19T12:09:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T12:09:00+00:00",
+     "arrivalUtc": "2026-10-19T12:16:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T12:16:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    },
+    {
+     "journeyId": "41b6b7b0-8a42-44af-8257-2e0a0566ce40",
+     "trainNumber": "D201",
+     "routeCode": "HILL",
+     "fromCode": "OAK",
+     "fromName": "Oak Park",
+     "toCode": "HIL",
+     "toName": "Hill Town",
+     "departureUtc": "2026-10-19T18:27:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T18:27:00+00:00",
+     "arrivalUtc": "2026-10-19T18:36:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T18:36:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 1,
+   "departureUtc": "2026-10-19T14:39:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T14:39:00+00:00",
+   "arrivalUtc": "2026-10-19T18:36:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T18:36:00+00:00",
+   "durationMinutes": 237,
+   "transfer": {
+    "stationCode": "OAK",
+    "stationName": "Oak Park",
+    "waitMinutes": 221,
+    "connectionAtRisk": false
+   },
+   "legs": [
+    {
+     "journeyId": "347a0321-bf76-406c-9d1f-2179e20b9d67",
+     "trainNumber": "D102",
+     "routeCode": "MAIN",
+     "fromCode": "MIL",
+     "fromName": "Mill Lane",
+     "toCode": "OAK",
+     "toName": "Oak Park",
+     "departureUtc": "2026-10-19T14:39:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T14:39:00+00:00",
+     "arrivalUtc": "2026-10-19T14:46:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T14:46:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    },
+    {
+     "journeyId": "41b6b7b0-8a42-44af-8257-2e0a0566ce40",
+     "trainNumber": "D201",
+     "routeCode": "HILL",
+     "fromCode": "OAK",
+     "fromName": "Oak Park",
+     "toCode": "HIL",
+     "toName": "Hill Town",
+     "departureUtc": "2026-10-19T18:27:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T18:27:00+00:00",
+     "arrivalUtc": "2026-10-19T18:36:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T18:36:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 1,
+   "departureUtc": "2026-10-19T12:09:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:09:00+00:00",
+   "arrivalUtc": "2026-10-20T01:16:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T01:16:00+00:00",
+   "durationMinutes": 787,
+   "transfer": {
+    "stationCode": "OAK",
+    "stationName": "Oak Park",
+    "waitMinutes": 771,
+    "connectionAtRisk": false
+   },
+   "legs": [
+    {
+     "journeyId": "85c5b52b-e762-4592-ac9e-3be0a4b66e75",
+     "trainNumber": "1504",
+     "routeCode": "MAIN",
+     "fromCode": "MIL",
+     "fromName": "Mill Lane",
+     "toCode": "OAK",
+     "toName": "Oak Park",
+     "departureUtc": "2026-10-19T12:09:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T12:09:00+00:00",
+     "arrivalUtc": "2026-10-19T12:16:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T12:16:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    },
+    {
+     "journeyId": "5573a7cf-0eba-4a43-b8e0-c32f73d0436f",
+     "trainNumber": "2001",
+     "routeCode": "HILL",
+     "fromCode": "OAK",
+     "fromName": "Oak Park",
+     "toCode": "HIL",
+     "toName": "Hill Town",
+     "departureUtc": "2026-10-20T01:07:00+00:00",
+     "expectedDepartureUtc": "2026-10-20T01:07:00+00:00",
+     "arrivalUtc": "2026-10-20T01:16:00+00:00",
+     "expectedArrivalUtc": "2026-10-20T01:16:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 1,
+   "departureUtc": "2026-10-19T14:39:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T14:39:00+00:00",
+   "arrivalUtc": "2026-10-20T01:16:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T01:16:00+00:00",
+   "durationMinutes": 637,
+   "transfer": {
+    "stationCode": "OAK",
+    "stationName": "Oak Park",
+    "waitMinutes": 621,
+    "connectionAtRisk": false
+   },
+   "legs": [
+    {
+     "journeyId": "347a0321-bf76-406c-9d1f-2179e20b9d67",
+     "trainNumber": "D102",
+     "routeCode": "MAIN",
+     "fromCode": "MIL",
+     "fromName": "Mill Lane",
+     "toCode": "OAK",
+     "toName": "Oak Park",
+     "departureUtc": "2026-10-19T14:39:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T14:39:00+00:00",
+     "arrivalUtc": "2026-10-19T14:46:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T14:46:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    },
+    {
+     "journeyId": "5573a7cf-0eba-4a43-b8e0-c32f73d0436f",
+     "trainNumber": "2001",
+     "routeCode": "HILL",
+     "fromCode": "OAK",
+     "fromName": "Oak Park",
+     "toCode": "HIL",
+     "toName": "Hill Town",
+     "departureUtc": "2026-10-20T01:07:00+00:00",
+     "expectedDepartureUtc": "2026-10-20T01:07:00+00:00",
+     "arrivalUtc": "2026-10-20T01:16:00+00:00",
+     "expectedArrivalUtc": "2026-10-20T01:16:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 1,
+   "departureUtc": "2026-10-19T12:15:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:15:00+00:00",
+   "arrivalUtc": "2026-10-20T01:17:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T01:17:00+00:00",
+   "durationMinutes": 782,
+   "transfer": {
+    "stationCode": "RIV",
+    "stationName": "Riverside",
+    "waitMinutes": 764,
+    "connectionAtRisk": false
+   },
+   "legs": [
+    {
+     "journeyId": "810ac15e-8447-4ebc-bf2d-806c71ef594d",
+     "trainNumber": "1004",
+     "routeCode": "MAIN",
+     "fromCode": "MIL",
+     "fromName": "Mill Lane",
+     "toCode": "RIV",
+     "toName": "Riverside",
+     "departureUtc": "2026-10-19T12:15:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T12:15:00+00:00",
+     "arrivalUtc": "2026-10-19T12:23:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T12:23:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    },
+    {
+     "journeyId": "c4115fd8-a7ae-4740-9bc5-56d74f2fa9d0",
+     "trainNumber": "2501",
+     "routeCode": "HILL",
+     "fromCode": "RIV",
+     "fromName": "Riverside",
+     "toCode": "HIL",
+     "toName": "Hill Town",
+     "departureUtc": "2026-10-20T01:07:00+00:00",
+     "expectedDepartureUtc": "2026-10-20T01:07:00+00:00",
+     "arrivalUtc": "2026-10-20T01:17:00+00:00",
+     "expectedArrivalUtc": "2026-10-20T01:17:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 1,
+   "departureUtc": "2026-10-19T14:45:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T14:45:00+00:00",
+   "arrivalUtc": "2026-10-20T01:17:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T01:17:00+00:00",
+   "durationMinutes": 632,
+   "transfer": {
+    "stationCode": "RIV",
+    "stationName": "Riverside",
+    "waitMinutes": 614,
+    "connectionAtRisk": false
+   },
+   "legs": [
+    {
+     "journeyId": "62907d5f-20c0-4276-aeef-1ee7f51f9aee",
+     "trainNumber": "D101",
+     "routeCode": "MAIN",
+     "fromCode": "MIL",
+     "fromName": "Mill Lane",
+     "toCode": "RIV",
+     "toName": "Riverside",
+     "departureUtc": "2026-10-19T14:45:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T14:45:00+00:00",
+     "arrivalUtc": "2026-10-19T14:53:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T14:53:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    },
+    {
+     "journeyId": "c4115fd8-a7ae-4740-9bc5-56d74f2fa9d0",
+     "trainNumber": "2501",
+     "routeCode": "HILL",
+     "fromCode": "RIV",
+     "fromName": "Riverside",
+     "toCode": "HIL",
+     "toName": "Hill Town",
+     "departureUtc": "2026-10-20T01:07:00+00:00",
+     "expectedDepartureUtc": "2026-10-20T01:07:00+00:00",
+     "arrivalUtc": "2026-10-20T01:17:00+00:00",
+     "expectedArrivalUtc": "2026-10-20T01:17:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 1,
+   "departureUtc": "2026-10-19T12:09:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:09:00+00:00",
+   "arrivalUtc": "2026-10-20T02:46:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T02:46:00+00:00",
+   "durationMinutes": 877,
+   "transfer": {
+    "stationCode": "OAK",
+    "stationName": "Oak Park",
+    "waitMinutes": 861,
+    "connectionAtRisk": false
+   },
+   "legs": [
+    {
+     "journeyId": "85c5b52b-e762-4592-ac9e-3be0a4b66e75",
+     "trainNumber": "1504",
+     "routeCode": "MAIN",
+     "fromCode": "MIL",
+     "fromName": "Mill Lane",
+     "toCode": "OAK",
+     "toName": "Oak Park",
+     "departureUtc": "2026-10-19T12:09:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T12:09:00+00:00",
+     "arrivalUtc": "2026-10-19T12:16:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T12:16:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    },
+    {
+     "journeyId": "fd958b42-43ae-491e-a60f-3a715b9fdce0",
+     "trainNumber": "2002",
+     "routeCode": "HILL",
+     "fromCode": "OAK",
+     "fromName": "Oak Park",
+     "toCode": "HIL",
+     "toName": "Hill Town",
+     "departureUtc": "2026-10-20T02:37:00+00:00",
+     "expectedDepartureUtc": "2026-10-20T02:37:00+00:00",
+     "arrivalUtc": "2026-10-20T02:46:00+00:00",
+     "expectedArrivalUtc": "2026-10-20T02:46:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  },
+  {
+   "transfers": 1,
+   "departureUtc": "2026-10-19T14:39:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T14:39:00+00:00",
+   "arrivalUtc": "2026-10-20T02:46:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T02:46:00+00:00",
+   "durationMinutes": 727,
+   "transfer": {
+    "stationCode": "OAK",
+    "stationName": "Oak Park",
+    "waitMinutes": 711,
+    "connectionAtRisk": false
+   },
+   "legs": [
+    {
+     "journeyId": "347a0321-bf76-406c-9d1f-2179e20b9d67",
+     "trainNumber": "D102",
+     "routeCode": "MAIN",
+     "fromCode": "MIL",
+     "fromName": "Mill Lane",
+     "toCode": "OAK",
+     "toName": "Oak Park",
+     "departureUtc": "2026-10-19T14:39:00+00:00",
+     "expectedDepartureUtc": "2026-10-19T14:39:00+00:00",
+     "arrivalUtc": "2026-10-19T14:46:00+00:00",
+     "expectedArrivalUtc": "2026-10-19T14:46:00+00:00",
+     "platform": "1",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    },
+    {
+     "journeyId": "fd958b42-43ae-491e-a60f-3a715b9fdce0",
+     "trainNumber": "2002",
+     "routeCode": "HILL",
+     "fromCode": "OAK",
+     "fromName": "Oak Park",
+     "toCode": "HIL",
+     "toName": "Hill Town",
+     "departureUtc": "2026-10-20T02:37:00+00:00",
+     "expectedDepartureUtc": "2026-10-20T02:37:00+00:00",
+     "arrivalUtc": "2026-10-20T02:46:00+00:00",
+     "expectedArrivalUtc": "2026-10-20T02:46:00+00:00",
+     "platform": "2",
+     "platformState": "Assigned",
+     "status": "Planned",
+     "confidence": "Scheduled",
+     "delayMinutes": null
+    }
+   ]
+  }
+ ]
+}

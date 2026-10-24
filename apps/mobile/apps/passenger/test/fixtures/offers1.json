@@ -1,0 +1,287 @@
+{
+ "timeZone": "Asia/Colombo",
+ "fromName": "Central",
+ "toName": "Riverside",
+ "offers": [
+  {
+   "journeyId": "810ac15e-8447-4ebc-bf2d-806c71ef594d",
+   "trainNumber": "1004",
+   "fromCode": "CEN",
+   "toCode": "RIV",
+   "departureUtc": "2026-10-19T12:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:00:00+00:00",
+   "arrivalUtc": "2026-10-19T12:23:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T12:23:00+00:00",
+   "durationMinutes": 23,
+   "platform": "2",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": false,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 1,
+      "each": 190,
+      "total": 190
+     }
+    ],
+    "total": 190
+   }
+  },
+  {
+   "journeyId": "c0a2a5c4-22af-4a8e-adc0-c2e79301265d",
+   "trainNumber": "2004",
+   "fromCode": "CEN",
+   "toCode": "RIV",
+   "departureUtc": "2026-10-19T12:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T12:00:00+00:00",
+   "arrivalUtc": "2026-10-19T12:27:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T12:27:00+00:00",
+   "durationMinutes": 27,
+   "platform": "1",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": false,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 1,
+      "each": 210,
+      "total": 210
+     }
+    ],
+    "total": 210
+   }
+  },
+  {
+   "journeyId": "62907d5f-20c0-4276-aeef-1ee7f51f9aee",
+   "trainNumber": "D101",
+   "fromCode": "CEN",
+   "toCode": "RIV",
+   "departureUtc": "2026-10-19T14:30:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T14:30:00+00:00",
+   "arrivalUtc": "2026-10-19T14:53:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T14:53:00+00:00",
+   "durationMinutes": 23,
+   "platform": "2",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": false,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 1,
+      "each": 190,
+      "total": 190
+     }
+    ],
+    "total": 190
+   }
+  },
+  {
+   "journeyId": "41b6b7b0-8a42-44af-8257-2e0a0566ce40",
+   "trainNumber": "D201",
+   "fromCode": "CEN",
+   "toCode": "RIV",
+   "departureUtc": "2026-10-19T18:20:00+00:00",
+   "expectedDepartureUtc": "2026-10-19T18:20:00+00:00",
+   "arrivalUtc": "2026-10-19T18:47:00+00:00",
+   "expectedArrivalUtc": "2026-10-19T18:47:00+00:00",
+   "durationMinutes": 27,
+   "platform": "1",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": false,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 1,
+      "each": 210,
+      "total": 210
+     }
+    ],
+    "total": 210
+   }
+  },
+  {
+   "journeyId": "46170344-2cc3-4718-bb8d-714744a4f249",
+   "trainNumber": "1001",
+   "fromCode": "CEN",
+   "toCode": "RIV",
+   "departureUtc": "2026-10-20T01:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T01:00:00+00:00",
+   "arrivalUtc": "2026-10-20T01:23:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T01:23:00+00:00",
+   "durationMinutes": 23,
+   "platform": "2",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": false,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 1,
+      "each": 190,
+      "total": 190
+     }
+    ],
+    "total": 190
+   }
+  },
+  {
+   "journeyId": "5573a7cf-0eba-4a43-b8e0-c32f73d0436f",
+   "trainNumber": "2001",
+   "fromCode": "CEN",
+   "toCode": "RIV",
+   "departureUtc": "2026-10-20T01:00:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T01:00:00+00:00",
+   "arrivalUtc": "2026-10-20T01:27:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T01:27:00+00:00",
+   "durationMinutes": 27,
+   "platform": "1",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": false,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 1,
+      "each": 210,
+      "total": 210
+     }
+    ],
+    "total": 210
+   }
+  },
+  {
+   "journeyId": "02f070ae-fe2a-4b25-a4a1-96f26584a1d1",
+   "trainNumber": "1002",
+   "fromCode": "CEN",
+   "toCode": "RIV",
+   "departureUtc": "2026-10-20T02:30:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T02:30:00+00:00",
+   "arrivalUtc": "2026-10-20T02:53:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T02:53:00+00:00",
+   "durationMinutes": 23,
+   "platform": "2",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": false,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 1,
+      "each": 190,
+      "total": 190
+     }
+    ],
+    "total": 190
+   }
+  },
+  {
+   "journeyId": "fd958b42-43ae-491e-a60f-3a715b9fdce0",
+   "trainNumber": "2002",
+   "fromCode": "CEN",
+   "toCode": "RIV",
+   "departureUtc": "2026-10-20T02:30:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T02:30:00+00:00",
+   "arrivalUtc": "2026-10-20T02:57:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T02:57:00+00:00",
+   "durationMinutes": 27,
+   "platform": "1",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": false,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 1,
+      "each": 210,
+      "total": 210
+     }
+    ],
+    "total": 210
+   }
+  },
+  {
+   "journeyId": "bac2b807-b3f3-4f06-8b07-bc1fccea2d61",
+   "trainNumber": "1003",
+   "fromCode": "CEN",
+   "toCode": "RIV",
+   "departureUtc": "2026-10-20T06:30:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T06:30:00+00:00",
+   "arrivalUtc": "2026-10-20T06:53:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T06:53:00+00:00",
+   "durationMinutes": 23,
+   "platform": "2",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": false,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 1,
+      "each": 190,
+      "total": 190
+     }
+    ],
+    "total": 190
+   }
+  },
+  {
+   "journeyId": "b82a481c-8982-4713-915a-f4ac971a3b63",
+   "trainNumber": "2003",
+   "fromCode": "CEN",
+   "toCode": "RIV",
+   "departureUtc": "2026-10-20T06:30:00+00:00",
+   "expectedDepartureUtc": "2026-10-20T06:30:00+00:00",
+   "arrivalUtc": "2026-10-20T06:57:00+00:00",
+   "expectedArrivalUtc": "2026-10-20T06:57:00+00:00",
+   "durationMinutes": 27,
+   "platform": "1",
+   "status": "Planned",
+   "confidence": "Scheduled",
+   "delayMinutes": null,
+   "seatRequired": false,
+   "fare": {
+    "currency": "LKR",
+    "lines": [
+     {
+      "category": "Adult",
+      "count": 1,
+      "each": 210,
+      "total": 210
+     }
+    ],
+    "total": 210
+   }
+  }
+ ]
+}

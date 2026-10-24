@@ -1,0 +1,115 @@
+name: Security
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  schedule:
+    - cron: "0 3 * * 1" # weekly, Monday 03:00 UTC: new advisories appear without a code change
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    name: Secret scan (Gitleaks)
+    runs-on: ubuntu-latest
+    # The action lists the pull request's commits, which needs this read permission.
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+  codeql:
+    name: CodeQL (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: csharp
+            build-mode: manual
+          - language: javascript-typescript
+            build-mode: none
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        if: matrix.language == 'csharp'
+        with:
+          dotnet-version: 10.0.x
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+      - name: Build backend for CodeQL
+        if: matrix.language == 'csharp'
+        run: dotnet build SmartRail.slnx -c Release
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  dependencies:
+    name: Vulnerable dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: NuGet packages, including transitive
+        run: |
+          dotnet restore SmartRail.slnx
+          dotnet list SmartRail.slnx package --vulnerable --include-transitive 2>&1 | tee vuln.txt
+          if grep -qE "has the following vulnerable packages" vuln.txt; then
+            echo "::error::Vulnerable NuGet packages found"
+            exit 1
+          fi
+
+      - name: npm audit, web apps
+        working-directory: apps/web
+        run: |
+          npm ci
+          npm audit --audit-level=high
+
+      - name: npm audit, catering
+        working-directory: services/catering
+        run: |
+          npm ci
+          npm audit --audit-level=high
+
+  trivy:
+    name: Trivy (repository and configuration)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan lockfiles and infrastructure files
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,misconfig
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
+          skip-dirs: apps/mobile/apps/passenger/android,apps/mobile/apps/driver/android

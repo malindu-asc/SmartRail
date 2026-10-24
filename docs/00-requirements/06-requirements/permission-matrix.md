@@ -36,6 +36,7 @@ do what* and holds **no** operational permission. One compromised admin account 
 | Permission | NC | SCH | SM | IM | CS | FC | RA | SA | DRV | DEV | FEED | PUB |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | journey.read | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | own | ✓ | ✗ | ✓ public view |
+| ops.read *(staff live board and journey detail; `journey.read` is the public and own-duty view)* | ✓ | ✓ | own | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | journey.cancel | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | journey.reinstate | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | journey.terminate_short | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
