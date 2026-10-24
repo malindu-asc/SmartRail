@@ -127,8 +127,9 @@ class ApiClient {
         return right(ApiResponse(body: response.data, fetchedAt: fetchedAt));
       } on DioException catch (error) {
         final failure = ProblemMapper.fromDio(error);
-        if (attempt == 1 && failure == const NetworkFailure.unreachable())
+        if (attempt == 1 && failure == const NetworkFailure.unreachable()) {
           continue;
+        }
         return left(failure);
       }
     }

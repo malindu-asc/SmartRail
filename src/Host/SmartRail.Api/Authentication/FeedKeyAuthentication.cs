@@ -51,7 +51,10 @@ internal sealed class FeedKeyAuthenticationHandler(
         // The response never says whether the code or the key was wrong.
         var reason = Request.Headers.ContainsKey(FeedSourceAuth.KeyHeader) ? "feed_key_invalid" : "feed_key_missing";
         AuthMetrics.Failures.Add(1, new KeyValuePair<string, object?>("reason", reason));
-        Logger.LogWarning("Feed authentication refused: reason={Reason} {Method} {Path}", reason, Request.Method, Request.Path.Value);
+        // Request values are stripped of line breaks before logging (log forging).
+        var safeMethod = Request.Method.Replace("\r", string.Empty).Replace("\n", string.Empty);
+        var safePath = (Request.Path.Value ?? string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
+        Logger.LogWarning("Feed authentication refused: reason={Reason} {Method} {Path}", reason, safeMethod, safePath);
 
         Response.StatusCode = StatusCodes.Status401Unauthorized;
         await Response.WriteAsJsonAsync(

@@ -105,7 +105,14 @@ public static class AuthenticationExtensions
 
     // Values that came from a request are stripped of line breaks before logging (log forging).
     private static string? Clean(string? value) =>
-        value is null ? null : new string(value.Where(c => !char.IsControl(c)).ToArray());
+        value is null
+            ? null
+            : new string(
+                value
+                    .Replace("\r", string.Empty)
+                    .Replace("\n", string.Empty)
+                    .Where(c => !char.IsControl(c))
+                    .ToArray());
 
     private static Task WriteProblem(HttpContext http, int status, string title)
     {

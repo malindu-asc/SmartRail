@@ -43,14 +43,30 @@ export function StationChecklist({ selected, onChange, disabled }: StationCheckl
     onChange(selected.includes(code) ? selected.filter((c) => c !== code) : [...selected, code])
   }
 
+  const all = (stations.data ?? []).map((station) => station.code)
+  const everyone = all.length > 0 && all.every((code) => selected.includes(code))
+
   return (
-    <div role="group" aria-label="Stations" className="grid max-h-44 grid-cols-2 gap-x-4 gap-y-1 overflow-y-auto rounded-control border border-line-strong p-3">
-      {(stations.data ?? []).map((station) => (
-        <label key={station.code} className={cn('flex items-center gap-2 py-0.5', disabled && 'opacity-50')}>
-          <input type="checkbox" checked={selected.includes(station.code)} disabled={disabled} onChange={() => toggle(station.code)} />
-          {station.name}
-        </label>
-      ))}
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between">
+        <span className="text-fg-secondary">{selected.length} of {all.length} selected</span>
+        <span className="flex gap-3">
+          <button type="button" className="font-semibold text-primary hover:underline disabled:opacity-50" disabled={disabled || everyone} onClick={() => onChange(all)}>
+            Select all
+          </button>
+          <button type="button" className="font-semibold text-primary hover:underline disabled:opacity-50" disabled={disabled || selected.length === 0} onClick={() => onChange([])}>
+            Clear
+          </button>
+        </span>
+      </div>
+      <div role="group" aria-label="Stations" className="grid max-h-44 grid-cols-2 gap-x-4 gap-y-1 overflow-y-auto rounded-control border border-line-strong p-3">
+        {(stations.data ?? []).map((station) => (
+          <label key={station.code} className={cn('flex items-center gap-2 py-0.5', disabled && 'opacity-50')}>
+            <input type="checkbox" checked={selected.includes(station.code)} disabled={disabled} onChange={() => toggle(station.code)} />
+            {station.name}
+          </label>
+        ))}
+      </div>
     </div>
   )
 }

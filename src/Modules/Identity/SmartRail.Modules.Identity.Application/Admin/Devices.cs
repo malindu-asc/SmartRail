@@ -118,7 +118,7 @@ public sealed record RegisterDeviceCommand(string Name, string Type, string Stat
 public sealed record RegisteredDevice(Guid Id);
 
 public sealed class RegisterDeviceCommandHandler(
-    IDeviceStore store, ISecuritySettingsStore settings, INetworkStations stations, IIdentityAuditLog audit,
+    IDeviceStore store, INetworkStations stations, IIdentityAuditLog audit,
     IIdentityUnitOfWork unitOfWork, ICurrentUser user, TimeProvider clock)
     : ICommandHandler<RegisterDeviceCommand, RegisteredDevice>
 {
