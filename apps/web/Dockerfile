@@ -13,7 +13,7 @@ RUN npm ci
 COPY . .
 RUN npm run build --workspace=${APP}
 
-FROM nginxinc/nginx-unprivileged:1.27-alpine AS runtime
+FROM nginxinc/nginx-unprivileged:1.31-alpine AS runtime
 ARG APP=console
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /repo/${APP}/dist /usr/share/nginx/html
