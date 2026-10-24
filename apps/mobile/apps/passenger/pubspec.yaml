@@ -47,7 +47,7 @@ dependencies:
   smartrail_api_client:
     path: ../../packages/api_client
   shared_preferences: ^2.5.6
-  flutter_secure_storage: ^9.2.4
+  flutter_secure_storage: ^11.2.0
   dio: ^5.11.1
   qr_flutter: ^4.1.0
   url_launcher: ^6.3.1
