@@ -39,7 +39,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_riverpod: ^3.4.3
-  go_router: ^18.0.2
+  go_router: ^18.1.1
   smartrail_core:
     path: ../../packages/core
   smartrail_design_system:
