@@ -1,7 +1,7 @@
 # Build context: apps/web.
 #   docker build -f apps/web/Dockerfile --build-arg APP=console -t smartrail-console apps/web
 #   docker build -f apps/web/Dockerfile --build-arg APP=kiosk   -t smartrail-kiosk   apps/web
-FROM node:24-alpine AS build
+FROM node:25-alpine AS build
 ARG APP=console
 WORKDIR /repo
 
