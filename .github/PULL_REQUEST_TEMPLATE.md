@@ -29,9 +29,20 @@ Spec:
 
 <!-- Closes #123, requirement references -->
 
-## How was this tested?
+## Checks run
 
-<!-- Commands run, scenarios checked, screenshots for UI changes. -->
+<!-- Only what was actually run, with the real result (for example "dotnet test: 121 passed"). -->
+
+| Check | Result |
+| --- | --- |
+|  |  |
+
+## Not verified
+
+<!-- Checks the spec or CI expects that were not run, with the specific reason (no device, stack not
+running, blocked network). Never list an unrun check as passed. Write "none" if everything ran. -->
+
+-
 
 ## Acceptance criteria
 

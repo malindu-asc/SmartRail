@@ -41,6 +41,12 @@ Fill in the pull request template, including the spec ID and the acceptance-crit
 - module boundaries hold (architecture tests pass);
 - the spec's verification and sync sections are filled in.
 
+## Working with AI agents
+
+[`CLAUDE.md`](CLAUDE.md) holds the rules for any coding agent (`AGENTS.md` points to it). The slash commands in `.claude/commands/` are
+`/verify` (run the CI checks for what changed), `/review` (read-only review) and `/commit` (draft a message, never commits). Agents follow
+the same spec workflow, the same commit rules (no AI attribution) and report only the checks they actually ran.
+
 ## Backend conventions
 
 Backend code follows the rules in [`.claude/skills/smartrail-modular-monolith/SKILL.md`](.claude/skills/smartrail-modular-monolith/SKILL.md).
