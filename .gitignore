@@ -29,3 +29,7 @@ secrets.json
 .claude/settings.local.json
 *.xlsx.tmp
 ~$*
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
+# Feature-check reports (screenshots can show data)
+reports/
