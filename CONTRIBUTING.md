@@ -44,7 +44,7 @@ Fill in the pull request template, including the spec ID and the acceptance-crit
 ## Working with AI agents
 
 [`CLAUDE.md`](CLAUDE.md) holds the rules for any coding agent (`AGENTS.md` points to it). The slash commands in `.claude/commands/` are
-`/verify` (run the CI checks for what changed), `/review` (read-only review) and `/commit` (draft a message, never commits). Agents follow
+`/verify` (run the CI checks for what changed), `/feature-check` (checks plus browser flows, screenshots and a report), `/review` (read-only review) and `/commit` (draft a message, never commits). Agents follow
 the same spec workflow, the same commit rules (no AI attribution) and report only the checks they actually ran.
 
 ## Backend conventions

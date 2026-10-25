@@ -82,7 +82,12 @@ cd apps/mobile/apps/driver && flutter test # and apps/passenger
 
 ## Commands (`.claude/commands/`)
 
-`/verify` run the checks for what changed. `/review` read-only review of a target. `/commit` draft a commit message (never commits).
+`/verify` run the checks for what changed. `/feature-check` run them plus the browser flows and screenshots, and write a report (Markdown, HTML, PDF) to `reports/feature-check/`. `/review` read-only review of a target. `/commit` draft a commit message (never commits).
+
+## Connectors
+
+- `.mcp.json` declares a read-only GitHub connector (pull requests, Actions, code scanning) for reading CI and CodeQL results. It needs `GITHUB_MCP_TOKEN` in your environment, a fine-grained token with read access to this repository. The token is never stored in the repo.
+- `playwright-cli` (skill in `.claude/skills/playwright-cli/`) drives a real browser for checks and screenshots. It cannot open `file:` pages.
 
 ## Where to read more
 
